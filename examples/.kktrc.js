@@ -10,7 +10,8 @@ export default (conf, env, options) => {
   conf = lessModules(conf, env, options);
 
   conf.plugins.push(new MdCodePreviewPlugin({
-    cwd: path.join(process.cwd(), "..")
+    cwd: path.join(process.cwd(), ".."),
+    ignored: /examples/
   }))
 
   conf.resolve = {

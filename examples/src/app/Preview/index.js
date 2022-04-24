@@ -42,17 +42,12 @@ const Preview = (props) => {
         } = props;
 
         const line = node.position.start.line
-        if (mdStr.assets[line]) {
-          const filename = mdStr.assets[line].filename
-          const Dom = React.lazy(() => import(`@@/${fileDirName}/${filename}`))
-          return <React.Suspense fallback="loading..." >
-            <Dom />
-          </React.Suspense>
-        }
+
 
         if (inline) {
           return <code {...props} />;
         }
+
         const config = {
           noPreview,
           noScroll,
@@ -61,6 +56,19 @@ const Preview = (props) => {
           codePen,
           codeSandboxOption,
         };
+
+        if (mdStr.assets[line]) {
+          const filename = mdStr.assets[line].filename
+          const Dom = React.lazy(() => import(`@@/${fileDirName}/${filename}`))
+          return <React.Fragment>
+            <React.Suspense fallback="loading..." >
+              <Dom />
+            </React.Suspense>
+            <div style={{ border: "1px solid red" }} ></div>
+            <code {...props} />
+          </React.Fragment>
+        }
+
         if (
           Object.keys(config).filter(
             (name) => config[name] !== undefined,
@@ -69,7 +77,7 @@ const Preview = (props) => {
           return <code {...props} />;
         }
 
-        return <div>212</div>
+        return <React.Fragment />
       },
     }}
 

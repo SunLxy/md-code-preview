@@ -3,7 +3,9 @@ Use an example of `Markdown`.
 ```jsx
 
 export default ()=>{
-  return <div>22</div>
+  return <div>
+    <button>按钮</button>
+  </div>
 }
 
 ```
