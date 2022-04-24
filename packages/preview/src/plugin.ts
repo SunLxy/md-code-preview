@@ -3,12 +3,16 @@ import path from "path"
 import webpack from "webpack"
 import chokidar from 'chokidar';
 import { markdownParse, getFileDirName } from "./utils"
-
+import anymatch from "anymatch"
 export interface MdCodePreviewPluginProps {
   /** 监听的根目录 默认：path.join(process.cwd(), "") */
   cwd?: string;
   /** 输入文件地址,默认: path.join(process.cwd(), "src/.docs") **/
   output?: string;
+  /** 监听文件格式 可以参照 https://www.npmjs.com/package/chokidar   **/
+  matchRules?: string | string[]
+  /** 忽略监听文件规则  默认忽略 node_modules 下所有的文件 ***/
+  ignored?: any
 }
 
 // 输出文件 默认路径去除根路径，其他的拼接起来当文件夹名称，每个文件夹下对应当前md文件所有的 代码块
@@ -20,10 +24,26 @@ class MdCodePreviewPlugin {
   cwd: string = ''
   output: string = ""
   oldOut: Map<string, string> = new Map([])
+  ignored: any = [/node_modules/]
+  matchRules: string[] = ["*.md", "*/**/*.md"]
 
   constructor(props: MdCodePreviewPluginProps = {}) {
     this.cwd = props.cwd || path.join(process.cwd(), "")
     this.output = props.output || path.join(process.cwd(), "src/.docs")
+    if (props.ignored) {
+      if (Array.isArray(props.ignored)) {
+        this.ignored = this.ignored.concat(props.ignored)
+      } else {
+        this.ignored = this.ignored.concat([props.ignored])
+      }
+    }
+    if (props.matchRules) {
+      if (Array.isArray(props.matchRules)) {
+        this.matchRules = this.matchRules.concat(props.matchRules)
+      } else {
+        this.matchRules = this.ignored.concat([props.matchRules])
+      }
+    }
     this.getPathDeep(this.cwd)
   }
 
@@ -43,16 +63,26 @@ class MdCodePreviewPlugin {
     }
   }
 
+  private getIgnored = (filePath: string) => {
+    const paths = filePath.replace(/\/|\\/g, "/")
+    return anymatch(this.ignored, paths)
+
+  }
+
+
   // 递归文件
   getPathDeep = (filePath: string, parent: string = '') => {
     const files = FS.readdirSync(filePath);
-    if (files && !/node_modules/.test(filePath)) {
+    if (files && !this.getIgnored(filePath)) {
       files.forEach((filename: string) => {
         let child = parent === "" ? filename : `${parent}/${filename}`
         const filedir = path.join(filePath, filename);
         const isNoEmty = FS.existsSync(filedir);
         if (!isNoEmty) {
           return;
+        }
+        if (this.getIgnored(child)) {
+          return
         }
         const stats = FS.statSync(filedir);
         if (stats) {
@@ -61,7 +91,7 @@ class MdCodePreviewPlugin {
           if (isFile && /\.md$/.test(filename)) {
             this.readFile(child)
           }
-          if (isDir && !/node_modules/.test(filePath)) {
+          if (isDir) {
             this.getPathDeep(filedir, child); //递归，如果是文件夹，就继续遍历该文件夹下面的文件
           }
         }
@@ -72,9 +102,9 @@ class MdCodePreviewPlugin {
   apply(compiler: webpack.Compiler) {
     compiler.hooks.afterPlugins.tap('MdCodePreviewPlugin', () => {
       if (process.env.NODE_ENV === 'development') {
-        chokidar.watch(["*.md", "*/**/*.md"], {
+        chokidar.watch(this.matchRules, {
           cwd: this.cwd,
-          ignored: /node_modules/,
+          ignored: this.ignored,
         }).on("all", (event, path) => {
           this.readFile(path)
         })
