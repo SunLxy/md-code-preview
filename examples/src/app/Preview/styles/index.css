@@ -1,0 +1,30 @@
+.fieldset {
+  margin: 0px;
+  padding: 0px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  background-color: #fff;
+}
+.fieldset legend {
+  text-align: center;
+}
+.preview-body {
+  padding: 10px;
+}
+
+.preview-title {
+  height: 50px;
+  border-right: none;
+  border-left: none;
+  padding: 10px;
+}
+.preview-button {
+  padding: 10px;
+}
+
+.preview-code-false {
+  display: none;
+}
+
+.preview-code-true {
+  display: block;
+}

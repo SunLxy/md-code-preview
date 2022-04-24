@@ -1,6 +1,6 @@
 import MarkdownPreview from '@uiw/react-markdown-preview';
 import React from 'react';
-
+import Code from "./Code"
 export const getFileDirName = (resourcePath, rootContext) => {
   return resourcePath.split(/\/|\\/).join("").replace(/.md$/, "")
 }
@@ -61,11 +61,11 @@ const Preview = (props) => {
           const filename = mdStr.assets[line].filename
           const Dom = React.lazy(() => import(`@@/${fileDirName}/${filename}`))
           return <React.Fragment>
-            <React.Suspense fallback="loading..." >
-              <Dom />
-            </React.Suspense>
-            <div style={{ border: "1px solid red" }} ></div>
-            <code {...props} />
+            <Code code={<code {...props} />} >
+              <React.Suspense fallback="loading..." >
+                <Dom />
+              </React.Suspense>
+            </Code>
           </React.Fragment>
         }
 
