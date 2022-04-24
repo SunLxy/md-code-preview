@@ -14,20 +14,24 @@ export default function App() {
   React.useEffect(() => {
     const resl = async () => {
       const result = await import("md-code-preview/README.md")
-      // 相对于项目根目录的路径
+      // // 相对于项目根目录的路径
       const fileDirName = getFileDirName("packages/preview/README.md")
-      const { files } = result.default
-      let arr = []
-      for (const key in files) {
-        if (Object.hasOwnProperty.call(files, key)) {
-          const path = files[key];
-          const Dom = React.lazy(() => import(`@@/${fileDirName}/${path}`))
-          arr.push(<React.Suspense key={key} fallback="loading..." >
-            <Dom />
-          </React.Suspense>)
+
+      if (result && result.default) {
+        // 这个文件名的命名规则是 markdown解析后的children 数组中所处code下标 
+        const files = ["1.jsx", "4.tsx"]
+        let arr = []
+        for (const key in files) {
+          if (Object.hasOwnProperty.call(files, key)) {
+            const path = files[key];
+            const Dom = React.lazy(() => import(`@@/${fileDirName}/${path}`))
+            arr.push(<React.Suspense key={key} fallback="loading..." >
+              <Dom />
+            </React.Suspense>)
+          }
         }
+        setRenderArr(arr)
       }
-      setRenderArr(arr)
     }
     resl()
   }, [])

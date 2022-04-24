@@ -24,9 +24,12 @@
     "unified": "9.2.2",
     "loader-utils": "3.2.0",
     "rehype-stringify": "9.0.3",
-    "unified-stream": "2.0.0"
+    "unified-stream": "2.0.0",
+    "@babel/standalone": "^7.17.9",
+    "babel-plugin-transform-remove-imports": "^1.7.0"
   },
   "devDependencies": {
+    "@types/babel__standalone": "^7.1.4",
     "@types/fs-extra": "9.0.13",
     "@types/loader-utils": "2.0.3"
   }

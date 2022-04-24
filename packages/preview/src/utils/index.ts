@@ -2,7 +2,6 @@ import unified from "unified"
 import remarkParse from "remark-parse"
 import FS from "fs-extra"
 import path from "path"
-
 type StartAndEndType = {
   column: number,
   offset: number,

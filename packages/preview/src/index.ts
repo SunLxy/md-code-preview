@@ -12,7 +12,7 @@ export default function (source: string) {
   const files = markdownParse(source, fileDirName, options.path)
 
   return {
-    source: source,
+    source,
     files,
     fileDirName
   }

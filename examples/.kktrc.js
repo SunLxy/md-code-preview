@@ -12,15 +12,7 @@ export default (conf, env, options) => {
   conf.plugins.push(new MdCodePreviewPlugin({
     cwd: path.join(process.cwd(), "..")
   }))
-  conf.module.rules.push({
-    test: /.md$/,
-    use: [
-      {
-        loader: "md-code-preview",
-        options: { path: path.join(process.cwd(), "src/.docs") }
-      }
-    ],
-  })
+
   conf.resolve = {
     ...conf.resolve,
     alias: {

@@ -1,6 +1,7 @@
 Use an example of `Markdown`.
 
 ```jsx
+import React from "react"
 
 export default ()=>{
   return <div>2</div>
