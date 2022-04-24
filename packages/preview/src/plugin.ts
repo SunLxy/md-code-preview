@@ -36,7 +36,11 @@ class MdCodePreviewPlugin {
       }
     }
     const fileDirName = getFileDirName(filePath, this.cwd)
-    markdownParse(mdStr, fileDirName, this.output)
+    const { filesValue } = markdownParse(mdStr, fileDirName, this.output)
+    if (filesValue && Object.keys(filesValue).length) {
+      const dirPath = path.join(this.output, fileDirName)
+      FS.writeFileSync(`${dirPath}/assets.json`, JSON.stringify(filesValue), { flag: "w+", encoding: "utf-8" })
+    }
   }
 
   // 递归文件

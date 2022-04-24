@@ -40,13 +40,23 @@ export const markdownParse = (source: string, fileDirName: string, savePath: str
   FS.emptyDirSync(dirPath)
   const markdownTree = getMD(source) as MarkdownTreeType
   const files: Record<number, string> = {}
+  const filesValue: Record<number, { filename: string, value: string, path: string }> = {}
 
-  markdownTree.children.map((itemChild, index) => {
+  markdownTree.children.map((itemChild) => {
     if (itemChild && itemChild.type === "code" && ["jsx", "tsx"].includes(itemChild.lang)) {
-      const filename = `${index}.${itemChild.lang}`
+      const line = itemChild.position.start.line
+      const filename = `${line}.${itemChild.lang}`
       FS.writeFileSync(`${dirPath}/${filename}`, itemChild.value, { flag: "w+", encoding: "utf-8" })
-      files[index] = filename
+      files[line] = filename
+      filesValue[line] = {
+        filename,
+        value: itemChild.value,
+        path: `${dirPath}/${filename}`
+      }
     }
   })
-  return files
+  return {
+    files,
+    filesValue
+  }
 }

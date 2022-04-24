@@ -14,7 +14,8 @@
   "license": "MIT",
   "dependencies": {
     "react": "~18.0.0",
-    "react-dom": "~18.0.0"
+    "react-dom": "~18.0.0",
+    "@uiw/react-markdown-preview": "3.4.7"
   },
   "devDependencies": {
     "@kkt/less-modules": "7.1.2",
