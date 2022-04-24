@@ -1,0 +1,37 @@
+{
+  "name": "examples",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "kkt start",
+    "build": "kkt build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kktjs/kkt.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "react": "~18.0.0",
+    "react-dom": "~18.0.0"
+  },
+  "devDependencies": {
+    "@kkt/less-modules": "7.1.2",
+    "@kkt/raw-modules": "7.1.2",
+    "kkt": "7.1.7",
+    "md-code-preview": "1.0.0"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

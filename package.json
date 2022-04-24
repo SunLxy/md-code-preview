@@ -1,0 +1,29 @@
+{
+  "name": "root",
+  "private": true,
+  "version": "1.0.0",
+  "license": "MIT",
+  "scripts": {
+    "start": "lerna exec --scope examples -- npm run start",
+    "build:web": "lerna exec --scope examples -- npm run build",
+    "build": "lerna exec --scope md-code-preview -- tsbb build --disable-babel",
+    "watch": "lerna exec --scope md-code-preview -- tsbb watch",
+    "watch:plugin": "lerna exec --scope md-code-preview-plugin -- tsbb watch",
+    "lerna": "lerna"
+  },
+  "devDependencies": {
+    "lerna": "^4.0.0",
+    "tsbb": "^3.7.2",
+    "kkt": "7.1.7"
+  },
+  "workspaces": {
+    "packages": [
+      "packages/*",
+      "examples"
+    ],
+    "nohoist": [
+      "**/unified/*",
+      "**/unified"
+    ]
+  }
+}
