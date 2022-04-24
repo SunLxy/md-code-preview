@@ -9,10 +9,19 @@ export default (conf, env, options) => {
   conf = rawModules(conf, env, options);
   conf = lessModules(conf, env, options);
 
-  conf.plugins.push(new MdCodePreviewPlugin({
-    cwd: path.join(process.cwd(), ".."),
-    ignored: /examples/
-  }))
+  // conf.plugins.push(new MdCodePreviewPlugin({
+  //   cwd: path.join(process.cwd(), ".."),
+  //   ignored: /examples/
+  // }))
+  conf.module.rules.push({
+    test: /.md$/,
+    use: [
+      {
+        loader: "md-code-preview",
+        options: { path: path.join(process.cwd(), "src/.docs") }
+      }
+    ],
+  })
 
   conf.resolve = {
     ...conf.resolve,

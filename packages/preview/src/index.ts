@@ -9,11 +9,12 @@ export {
 export default function (source: string) {
   const options = this.getOptions()
   const fileDirName = getFileDirName(this.resourcePath, this.rootContext)
-  const files = markdownParse(source, fileDirName, options.path)
+  const { files, filesValue } = markdownParse(source, fileDirName, options.path)
 
   return {
     source,
     files,
+    filesValue,
     fileDirName
   }
 }

@@ -2,6 +2,7 @@ import unified from "unified"
 import remarkParse from "remark-parse"
 import FS from "fs-extra"
 import path from "path"
+import { getTransformValue } from "./transform"
 type StartAndEndType = {
   column: number,
   offset: number,
@@ -40,18 +41,20 @@ export const markdownParse = (source: string, fileDirName: string, savePath: str
   FS.emptyDirSync(dirPath)
   const markdownTree = getMD(source) as MarkdownTreeType
   const files: Record<number, string> = {}
-  const filesValue: Record<number, { filename: string, value: string, path: string }> = {}
+  const filesValue: Record<number, { filename: string, value: string, path: string, babel: string }> = {}
 
   markdownTree.children.map((itemChild) => {
     if (itemChild && itemChild.type === "code" && ["jsx", "tsx"].includes(itemChild.lang)) {
       const line = itemChild.position.start.line
       const filename = `${line}.${itemChild.lang}`
       FS.writeFileSync(`${dirPath}/${filename}`, itemChild.value, { flag: "w+", encoding: "utf-8" })
+      FS.writeFileSync(`${dirPath}/da${filename}`, getTransformValue(itemChild.value), { flag: "w+", encoding: "utf-8" })
       files[line] = filename
       filesValue[line] = {
         filename,
         value: itemChild.value,
-        path: `${dirPath}/${filename}`.replace(path.join(process.cwd(), ""), "")
+        path: `${dirPath}/${filename}`.replace(path.join(process.cwd(), ""), ""),
+        babel: getTransformValue(itemChild.value)
       }
     }
   })

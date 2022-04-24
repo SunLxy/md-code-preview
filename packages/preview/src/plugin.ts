@@ -66,7 +66,6 @@ class MdCodePreviewPlugin {
   private getIgnored = (filePath: string) => {
     const paths = filePath.replace(/\/|\\/g, "/")
     return anymatch(this.ignored, paths)
-
   }
 
 

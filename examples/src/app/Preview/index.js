@@ -13,8 +13,7 @@ const Preview = (props) => {
     const getMds = async () => {
       const result = await props.getMdStr()
       if (result && result.default) {
-        const assets = require(`@@/${fileDirName}/assets.json`)
-        setMdStr({ str: result.default, assets })
+        setMdStr({ str: result.default.source, assets: result.default.filesValue })
       }
     }
     getMds()
@@ -43,7 +42,6 @@ const Preview = (props) => {
 
         const line = node.position.start.line
 
-
         if (inline) {
           return <code {...props} />;
         }
@@ -56,17 +54,9 @@ const Preview = (props) => {
           codePen,
           codeSandboxOption,
         };
-
         if (mdStr.assets[line]) {
-          const filename = mdStr.assets[line].filename
-          const Dom = React.lazy(() => import(`@@/${fileDirName}/${filename}`))
-          return <React.Fragment>
-            <Code code={<code {...props} />} >
-              <React.Suspense fallback="loading..." >
-                <Dom />
-              </React.Suspense>
-            </Code>
-          </React.Fragment>
+          const item = mdStr.assets[line]
+          return <Code code={<code {...props} />} item={item} />
         }
 
         if (
