@@ -12,7 +12,6 @@ export default function App() {
           Edit <code>src/app/App.js</code> and save to reload.
         </p>
         <Preview getMdStr={() => import("md-code-preview/README.md")} fileDirName="packages/preview/README.md" />
-        {/* {renderArr} */}
         <div>
           <a className={styles.AppLink} href="https://reactjs.org" target="_blank" rel="noopener noreferrer">
             Learn React

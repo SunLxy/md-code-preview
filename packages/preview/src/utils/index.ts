@@ -34,6 +34,11 @@ export const getFileDirName = (resourcePath: string, rootContext: string) => {
   return resourcePath.replace(rootContext, "").split(/\/|\\/).join("").replace(/.md$/, "")
 }
 
+export const getFileDir = (resourcePath: string, rootContext: string) => {
+  return resourcePath.replace(rootContext, "")
+}
+
+
 export const markdownParse = (source: string, fileDirName: string, savePath: string) => {
   const dirPath = path.join(savePath, fileDirName)
   // 置空文件夹
@@ -51,7 +56,7 @@ export const markdownParse = (source: string, fileDirName: string, savePath: str
       filesValue[line] = {
         filename,
         value: itemChild.value,
-        path: `${dirPath}/${filename}`
+        path: `${dirPath}/${filename}`.replace(path.join(process.cwd(), ""), "")
       }
     }
   })
