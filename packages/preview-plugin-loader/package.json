@@ -1,5 +1,5 @@
 {
-  "name": "md-code-preview",
+  "name": "md-code-preview-plugin-loader",
   "version": "1.0.0",
   "description": "",
   "author": "SunLxy <1011771396@qq.com>",
@@ -14,8 +14,8 @@
     "esm"
   ],
   "scripts": {
-    "build": "tsbb build  --disable-babel",
-    "watch": "tsbb watch  --disable-babel"
+    "build": "tsbb build",
+    "watch": "tsbb watch"
   },
   "dependencies": {
     "fs-extra": "^10.0.0",

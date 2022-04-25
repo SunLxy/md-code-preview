@@ -6,14 +6,13 @@ export const getFileDirName = (resourcePath, rootContext) => {
 }
 
 const Preview = (props) => {
-  const [mdStr, setMdStr] = React.useState({ str: "", assets: {} })
-  const fileDirName = React.useMemo(() => getFileDirName(props.fileDirName), [props.fileDirName])
+  const [mdStr, setMdStr] = React.useState({ source: "", assets: {} })
 
   React.useEffect(() => {
     const getMds = async () => {
       const result = await props.getMdStr()
       if (result && result.default) {
-        setMdStr({ str: result.default.source, assets: result.default.filesValue })
+        setMdStr({ source: result.default.source, assets: result.default.filesValue })
       }
     }
     getMds()
@@ -21,7 +20,7 @@ const Preview = (props) => {
 
   return <MarkdownPreview
     style={{ padding: '15px 15px' }}
-    source={mdStr.str}
+    source={mdStr.source}
     components={{
       /**
        * bgWhite 设置代码预览背景白色，否则为格子背景。
@@ -56,6 +55,7 @@ const Preview = (props) => {
         };
         if (mdStr.assets[line]) {
           const item = mdStr.assets[line]
+          console.log(mdStr)
           return <Code code={<code {...props} />} item={item} />
         }
 

@@ -6,9 +6,10 @@
   "scripts": {
     "start": "lerna exec --scope examples -- npm run start",
     "build:web": "lerna exec --scope examples -- npm run build",
-    "build": "lerna exec --scope md-code-preview -- tsbb build --disable-babel",
+    "build": "lerna exec --scope md-code-preview -- tsbb build",
     "watch": "lerna exec --scope md-code-preview -- tsbb watch",
-    "watch:plugin": "lerna exec --scope md-code-preview-plugin -- tsbb watch",
+    "watch:plugin": "lerna exec --scope md-code-preview-plugin-loader -- tsbb watch",
+    "build:plugin": "lerna exec --scope md-code-preview-plugin-loader -- tsbb build",
     "lerna": "lerna"
   },
   "devDependencies": {

@@ -13,7 +13,7 @@ export const getTransformValue = (str: string) => {
   const result = `${code}`
     .replace(`Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});`, "")
     .replace(`exports["default"] = void 0;`, "")
-    .replace(`exports["default"] = _default;`, `var Preview = _default; \n ReactDOM.createRoot(_mount_).render(/*#__PURE__*/React.createElement(Preview, null));`)
+    .replace(`exports["default"] = _default;`, `var Preview = _default;`)
 
   return result
 }

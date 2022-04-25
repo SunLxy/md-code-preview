@@ -1,7 +1,7 @@
 import lessModules from '@kkt/less-modules';
 import rawModules from '@kkt/raw-modules';
 import path from "path"
-import { MdCodePreviewPlugin } from "md-code-preview"
+// import { MdCodePreviewPlugin } from "md-code-preview-plugin-loader"
 // md-code-preview
 export default (conf, env, options) => {
   // console.log('conf:', conf)
@@ -17,8 +17,7 @@ export default (conf, env, options) => {
     test: /.md$/,
     use: [
       {
-        loader: "md-code-preview",
-        options: { path: path.join(process.cwd(), "src/.docs") }
+        loader: "md-code-preview-plugin-loader",
       }
     ],
   })

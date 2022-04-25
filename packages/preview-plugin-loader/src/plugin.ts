@@ -2,7 +2,7 @@ import FS from "fs-extra"
 import path from "path"
 import webpack from "webpack"
 import chokidar from 'chokidar';
-import { markdownParse, getFileDirName } from "./utils"
+import { markdownParsePlugin, getFileDirName } from "./utils"
 import anymatch from "anymatch"
 export interface MdCodePreviewPluginProps {
   /** 监听的根目录 默认：path.join(process.cwd(), "") */
@@ -13,6 +13,8 @@ export interface MdCodePreviewPluginProps {
   matchRules?: string | string[]
   /** 忽略监听文件规则  默认忽略 node_modules 下所有的文件 ***/
   ignored?: any
+  // 语言
+  lang?: string[]
 }
 
 // 输出文件 默认路径去除根路径，其他的拼接起来当文件夹名称，每个文件夹下对应当前md文件所有的 代码块
@@ -26,6 +28,7 @@ class MdCodePreviewPlugin {
   oldOut: Map<string, string> = new Map([])
   ignored: any = [/node_modules/]
   matchRules: string[] = ["*.md", "*/**/*.md"]
+  lang: string[] = ["jsx", "tsx"]
 
   constructor(props: MdCodePreviewPluginProps = {}) {
     this.cwd = props.cwd || path.join(process.cwd(), "")
@@ -44,6 +47,11 @@ class MdCodePreviewPlugin {
         this.matchRules = this.ignored.concat([props.matchRules])
       }
     }
+    if (props.lang) {
+      if (Array.isArray(props.lang)) {
+        this.lang = props.lang
+      }
+    }
     this.getPathDeep(this.cwd)
   }
 
@@ -56,7 +64,7 @@ class MdCodePreviewPlugin {
       }
     }
     const fileDirName = getFileDirName(filePath, this.cwd)
-    const { filesValue } = markdownParse(mdStr, fileDirName, this.output)
+    const filesValue = markdownParsePlugin(mdStr, fileDirName, this.output, this.lang)
     if (filesValue && Object.keys(filesValue).length) {
       const dirPath = path.join(this.output, fileDirName)
       FS.writeFileSync(`${dirPath}/assets.json`, JSON.stringify(filesValue), { flag: "w+", encoding: "utf-8" })
