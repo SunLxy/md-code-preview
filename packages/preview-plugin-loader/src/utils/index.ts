@@ -3,7 +3,8 @@ import remarkParse from "remark-parse";
 import FS from "fs-extra";
 import path from "path";
 import { getTransformValue } from "./transform";
-import { parse as commentParser } from "comment-parser";
+import { parse as jestDocblockParse } from "jest-docblock";
+
 export type StartAndEndType = {
   column: number;
   offset: number;
@@ -38,12 +39,13 @@ export type FilesValueType = {
 export type CommentsType = {
   title?: string;
   description?: string;
+  [k: string]: string;
 };
 
 // @ts-ignore
 export const getMD = (str: string) => unified().use(remarkParse).parse(str);
-// 解析文件 对文件内容进行区分生成临时文件，用于显示组件
 
+// 解析文件 对文件内容进行区分生成临时文件，用于显示组件
 export const getFileDirName = (resourcePath: string, rootContext: string) => {
   return resourcePath
     .replace(rootContext, "")
@@ -52,21 +54,23 @@ export const getFileDirName = (resourcePath: string, rootContext: string) => {
     .replace(/.md$/, "");
 };
 
+const removeColon = (key: string) => {
+  return key.replace(/:/, "");
+};
+
 // 解析注释内容
 export const getCommentParser = (source: string) => {
   // 默认解析第一个注释内容
-  const [parsed] = commentParser(source);
   const comments: CommentsType = {};
-  if (parsed && parsed.tags.length) {
-    const tags = parsed.tags;
-    tags.forEach((item) => {
-      if (/title:/.test(item.tag) && !comments.title) {
-        comments.title = item.name;
-      } else if (/description:/.test(item.tag) && !comments.description) {
-        comments.description = item.name;
-      }
-    });
-  }
+  const parsed = jestDocblockParse(source);
+  Object.entries(parsed).forEach(([key, value]) => {
+    // 解析字段一样时，取数组的第一个
+    if (Array.isArray(value)) {
+      comments[removeColon(key)] = value[0];
+    } else {
+      comments[removeColon(key)] = value;
+    }
+  });
   return comments;
 };
 
