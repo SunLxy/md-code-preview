@@ -55,7 +55,7 @@ export const getFileDirName = (resourcePath: string, rootContext: string) => {
 };
 
 const removeColon = (key: string) => {
-  return key.replace(/:/, "");
+  return key.replace(/:$/, "");
 };
 
 // 解析注释内容
@@ -86,9 +86,10 @@ export const markdownParse = (source: string, lang: string[]) => {
       lang.includes(itemChild.lang)
     ) {
       const line = itemChild.position.start.line;
+      const filename = `${line}.${itemChild.lang}`;
       const item: FilesValueType = {
         value: itemChild.value,
-        transform: getTransformValue(itemChild.value),
+        transform: getTransformValue(itemChild.value, filename),
         comments: getCommentParser(itemChild.value),
       };
       filesValue[line] = item;

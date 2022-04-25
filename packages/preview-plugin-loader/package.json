@@ -18,11 +18,11 @@
     "watch": "tsbb watch"
   },
   "dependencies": {
+    "@babel/standalone": "~7.17.6",
     "fs-extra": "~10.0.0",
     "remark-parse": "9.0.0",
     "unified": "9.2.2",
     "loader-utils": "3.2.0",
-    "@babel/standalone": "~7.17.6",
     "jest-docblock": "~27.5.1"
   },
   "devDependencies": {

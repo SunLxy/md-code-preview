@@ -35,7 +35,10 @@ interface A {
  * @title: 标题
  * @description:  按钮有类型：主按钮、次按钮、虚线按钮、文本按钮和链接按钮
  */
-const Com = () => {
+interface A {
+  s: string;
+}
+const Com = (props: A) => {
   return <div>233</div>;
 };
 export default Com;
