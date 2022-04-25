@@ -1,23 +1,29 @@
-import React from "react"
+import React from "react";
 
 export interface PreviewProps {
-  code?: string
-  className?: string,
-  dependencies: Record<string, any>
+  code?: string;
+  className?: string;
+  dependencies?: Record<string, any>;
+  getComponent?: () =>
+    | Promise<{ default: React.ComponentType<any> }>
+    | React.ReactNode;
 }
 
 const Preview = (props: PreviewProps) => {
-  const { code, className, dependencies } = props
-  const domRef = React.useRef(`${parseInt(String(Math.random() * 1e9), 10).toString(36)}`)
-  const { ReactDOM, ...rest } = dependencies
+  const { code, className, dependencies, getComponent } = props;
+  const [showDom, setShowDom] = React.useState(null);
+  const domRef = React.useRef(
+    `${parseInt(String(Math.random() * 1e9), 10).toString(36)}`
+  );
+  const { ReactDOM, ...rest } = dependencies;
 
   const ReactDOMClient = React.useMemo(() => {
-    return window.ReactDOM ? window.ReactDOM : ReactDOM
-  }, [])
+    return window.ReactDOM ? window.ReactDOM : ReactDOM;
+  }, []);
 
   const isV18 = React.useMemo(() => {
-    return Reflect.has(ReactDOMClient || {}, "createRoot")
-  }, [])
+    return Reflect.has(ReactDOMClient || {}, "createRoot");
+  }, []);
 
   /** 通过缓存的方式 解决 react v18 中 的报错   ***/
   // @ts-ignore
@@ -49,29 +55,52 @@ const Preview = (props: PreviewProps) => {
   /**  ------------------------   ***/
 
   const getRender = () => {
-    const deps = { ...rest }
-    deps.ReactDOM = isV18 ? ReactDOMRender(ReactDOMClient) : ReactDOMClient
+    const deps = { ...rest };
+    deps.ReactDOM = isV18 ? ReactDOMRender(ReactDOMClient) : ReactDOMClient;
     const args = [];
     const argv: any = [];
     for (const key in deps) {
       args.push(key);
       argv.push(deps[key]);
     }
-    let input = code
+    let input = code;
     // 判断是否是 react-dom v18版本
     if (Reflect.has(ReactDOM || {}, "createRoot") && input) {
-      input = input + `\n ReactDOM.createRoot("${domRef.current}").render(/*#__PURE__*/React.createElement(Preview, null))`
+      input =
+        input +
+        `\n ReactDOM.createRoot("${domRef.current}").render(/*#__PURE__*/React.createElement(Preview, null))`;
     } else if (input) {
-      input = input + `\n ReactDOM.render(/*#__PURE__*/React.createElement(Preview, null),document.getElementById('${domRef.current}'))`
+      input =
+        input +
+        `\n ReactDOM.render(/*#__PURE__*/React.createElement(Preview, null),document.getElementById('${domRef.current}'))`;
     }
     if (input) {
-      args.push(input || '');
+      args.push(input || "");
       new Function(...args).apply(null, argv);
     }
-  }
+  };
 
-  React.useEffect(() => getRender(), [code])
+  const component = async () => {
+    if (typeof getComponent === "function") {
+      const Dom = React.lazy(getComponent as any);
+      setShowDom(
+        <React.Suspense fallback="loading...">
+          <Dom />
+        </React.Suspense>
+      );
+    } else {
+      setShowDom(getComponent);
+    }
+  };
 
-  return <div className={className} id={domRef.current} />
-}
-export default Preview
+  React.useEffect(() => {
+    if (getComponent) {
+      component();
+    } else if (code) {
+      getRender();
+    }
+  }, [code, getComponent]);
+
+  return <div children={showDom} className={className} id={domRef.current} />;
+};
+export default Preview;

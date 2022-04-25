@@ -1,12 +1,16 @@
 import MarkdownPreview from "@uiw/react-markdown-preview";
 import React from "react";
 import Code from "./Code";
-export const getFileDirName = (resourcePath, rootContext) => {
+export const getFileDirName = (resourcePath) => {
   return resourcePath.split(/\/|\\/).join("").replace(/.md$/, "");
 };
 
 const Preview = (props) => {
   const [mdStr, setMdStr] = React.useState({ source: "", assets: {} });
+  const [mdAssets, setmdAssets] = React.useState({});
+  const fileDirName = React.useMemo(() => {
+    return getFileDirName(props.fileDirName);
+  }, [props.fileDirName]);
 
   React.useEffect(() => {
     const getMds = async () => {
@@ -20,6 +24,15 @@ const Preview = (props) => {
     };
     getMds();
   }, [props.getMdStr]);
+
+  // 使用plugin机制获取资源，再进行加载相应的案例组件
+  React.useEffect(() => {
+    const getAssset = async () => {
+      const assets = require(`@@/${fileDirName}/assets.json`);
+      setmdAssets(assets);
+    };
+    getAssset();
+  }, [fileDirName]);
 
   return (
     <MarkdownPreview
@@ -59,8 +72,19 @@ const Preview = (props) => {
           };
           if (mdStr.assets[line]) {
             const item = mdStr.assets[line];
-            console.log(item);
-            return <Code code={<code {...props} />} item={item} />;
+            // plugin 机制 获取值
+            const pluginItem = mdAssets[line];
+            return (
+              <React.Fragment>
+                <Code code={<code {...props} />} item={item} />
+                <div>下面是测试plugin机制</div>
+                <Code
+                  code={<code {...props} />}
+                  item={pluginItem}
+                  getComponent={() => import(`@@/${pluginItem.path}`)}
+                />
+              </React.Fragment>
+            );
           }
 
           if (

@@ -119,10 +119,7 @@ export const markdownParsePlugin = (
         filename,
         value: itemChild.value,
         comments: getCommentParser(itemChild.value),
-        path: `${dirPath}/${filename}`.replace(
-          path.join(process.cwd(), ""),
-          ""
-        ),
+        path: `${fileDirName}/${filename}`,
       };
       FS.writeFileSync(`${dirPath}/${filename}`, itemChild.value, {
         flag: "w+",

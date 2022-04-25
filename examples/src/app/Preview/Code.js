@@ -4,16 +4,16 @@ import { Button } from "uiw";
 import ReactDOM from "react-dom/client";
 import Preview from "md-code-preview";
 const Code = (props) => {
-  const { code, item } = props;
+  const { code, item, getComponent } = props;
   const { comments } = item;
   const [show, setShow] = React.useState(false);
-  console.log(comments);
 
   return (
     <fieldset className="fieldset">
       <Preview
         className="preview-body"
         code={item.transform}
+        getComponent={getComponent}
         dependencies={{ Button, React, ReactDOM }}
       />
       {/* <div  id={domRef.current} /> */}
