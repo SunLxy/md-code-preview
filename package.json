@@ -4,18 +4,29 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
+    "prepare": "husky install",
+    "build": "npm run build:code && npm run build:plugin",
     "start": "lerna exec --scope examples -- npm run start",
     "build:web": "lerna exec --scope examples -- npm run build",
-    "build": "lerna exec --scope md-code-preview -- tsbb build",
+    "build:code": "lerna exec --scope md-code-preview -- tsbb build",
     "watch": "lerna exec --scope md-code-preview -- tsbb watch",
     "watch:plugin": "lerna exec --scope md-code-preview-plugin-loader -- tsbb watch",
     "build:plugin": "lerna exec --scope md-code-preview-plugin-loader -- tsbb build",
-    "lerna": "lerna"
+    "lerna": "lerna",
+    "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,html,less,md,json}'"
   },
   "devDependencies": {
     "lerna": "^4.0.0",
     "tsbb": "^3.7.2",
-    "kkt": "7.1.7"
+    "kkt": "7.1.7",
+    "lint-staged": "~12.3.5",
+    "prettier": "~2.5.1",
+    "husky": "~7.0.4"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,html,less,md,json}": [
+      "prettier --write"
+    ]
   },
   "workspaces": {
     "packages": [
