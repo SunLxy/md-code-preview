@@ -76,6 +76,7 @@ const Preview = (props) => {
             const pluginItem = mdAssets[line];
             return (
               <React.Fragment>
+                <div>下面是测试loader机制</div>
                 <Code code={<code {...props} />} item={item} />
                 <div>下面是测试plugin机制</div>
                 <Code
