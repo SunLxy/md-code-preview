@@ -4,6 +4,8 @@ import FS from "fs-extra";
 import path from "path";
 import { getTransformValue } from "./transform";
 import { parse as jestDocblockParse } from "jest-docblock";
+import toHast from "mdast-util-to-hast";
+import toHtml from "hast-util-to-html";
 
 export type StartAndEndType = {
   column: number;
@@ -23,6 +25,7 @@ export type MarkdownTreeType = {
     type: string;
     value: string;
     position: PositionType;
+    children?: MarkdownTreeType[];
   }[];
   position: PositionType;
   type: string;
@@ -34,6 +37,8 @@ export type FilesValueType = {
   path?: string;
   transform?: string;
   comments?: CommentsType;
+  head?: string;
+  description?: string;
 };
 
 export type CommentsType = {
@@ -44,6 +49,76 @@ export type CommentsType = {
 
 // @ts-ignore
 export const getMD = (str: string) => unified().use(remarkParse).parse(str);
+
+export const getCodeString = (data: any[] = [], code: string = "") => {
+  data.forEach((node) => {
+    if (node.type === "text") {
+      code += node.value;
+    } else if (
+      node.type === "element" &&
+      node.children &&
+      Array.isArray(node.children)
+    ) {
+      code += getCodeString(node.children);
+    }
+  });
+  return code;
+};
+
+export const getHtml = (
+  children: MarkdownTreeType["children"],
+  isHead = false
+) => {
+  const hast: any = toHast({
+    children,
+    type: "root",
+  } as any);
+  if (isHead) {
+    return getCodeString(hast.children || []);
+  }
+  const html = toHtml(hast);
+  return html;
+};
+
+// jsx  tsx 之类需要展示效果的这种取之间的内容
+export const getSpace = (
+  endIndex: number,
+  child: MarkdownTreeType["children"]
+) => {
+  // 结束的下标
+  const space: MarkdownTreeType["children"] = [];
+  const head: MarkdownTreeType["children"] = [];
+  // 到第一个heading结束
+  let current = endIndex - 1;
+  let start: any;
+  const loop = () => {
+    const item = child[current];
+    if (item && item.type === "heading") {
+      start = item.position.start.line;
+      current = -1;
+      head.push(item);
+    } else if (item && item.type === "code") {
+      current = -1;
+    } else {
+      current = current - 1;
+      space.unshift(item);
+    }
+    if (current !== -1) {
+      loop();
+    }
+  };
+
+  loop();
+  return {
+    start,
+    end:
+      typeof start === "number"
+        ? child[endIndex].position.start.line
+        : undefined,
+    description: getHtml(space),
+    head: getHtml(head, true),
+  };
+};
 
 // 解析文件 对文件内容进行区分生成临时文件，用于显示组件
 export const getFileDirName = (resourcePath: string, rootContext: string) => {
@@ -78,8 +153,9 @@ export const getCommentParser = (source: string) => {
 export const markdownParse = (source: string, lang: string[]) => {
   const markdownTree = getMD(source) as MarkdownTreeType;
   const filesValue: Record<number, FilesValueType> = {};
+  const ignoreRows: { start?: number; end?: number }[] = [];
 
-  markdownTree.children.map((itemChild) => {
+  markdownTree.children.map((itemChild, index) => {
     if (
       itemChild &&
       itemChild.type === "code" &&
@@ -87,15 +163,31 @@ export const markdownParse = (source: string, lang: string[]) => {
     ) {
       const line = itemChild.position.start.line;
       const filename = `${line}.${itemChild.lang}`;
+      const space = getSpace(index, markdownTree.children);
+      if (typeof space.start === "number") {
+        ignoreRows.push({
+          start: space.start,
+          end: space.end,
+        });
+      }
       const item: FilesValueType = {
         value: itemChild.value,
         transform: getTransformValue(itemChild.value, filename),
-        comments: getCommentParser(itemChild.value),
+        // comments: getCommentParser(itemChild.value),
+        comments: {
+          title: space.head,
+          description: space.description,
+        },
+        head: space.head,
+        description: space.description,
       };
       filesValue[line] = item;
     }
   });
-  return filesValue;
+  return {
+    filesValue,
+    ignoreRows,
+  };
 };
 
 // plugin 中转换
@@ -108,11 +200,11 @@ export const markdownParsePlugin = (
   const dirPath = path.join(savePath, fileDirName);
   // 置空文件夹
   FS.emptyDirSync(dirPath);
-
+  const ignoreRows: { start?: number; end?: number }[] = [];
   const markdownTree = getMD(source) as MarkdownTreeType;
   const filesValue: Record<number, FilesValueType> = {};
 
-  markdownTree.children.map((itemChild) => {
+  markdownTree.children.map((itemChild, index) => {
     if (
       itemChild &&
       itemChild.type === "code" &&
@@ -120,11 +212,24 @@ export const markdownParsePlugin = (
     ) {
       const line = itemChild.position.start.line;
       const filename = `${line}.${itemChild.lang}`;
+      const space = getSpace(index, markdownTree.children);
+      if (typeof space.start === "number") {
+        ignoreRows.push({
+          start: space.start,
+          end: space.end,
+        });
+      }
       const item: FilesValueType = {
         filename,
         value: itemChild.value,
-        comments: getCommentParser(itemChild.value),
+        // comments: getCommentParser(itemChild.value),
+        comments: {
+          title: space.head,
+          description: space.description,
+        },
         path: `${fileDirName}/${filename}`,
+        head: space.head,
+        description: space.description,
       };
       FS.writeFileSync(`${dirPath}/${filename}`, itemChild.value, {
         flag: "w+",
@@ -133,5 +238,8 @@ export const markdownParsePlugin = (
       filesValue[line] = item;
     }
   });
-  return filesValue;
+  return {
+    filesValue,
+    ignoreRows,
+  };
 };

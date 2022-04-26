@@ -17,6 +17,28 @@
   border-left: none;
   padding: 10px;
 }
+.preview-title-head {
+  font-weight: 700;
+  font-size: 18px;
+}
+.preview-title-body {
+  padding-bottom: 10px;
+  margin-top: 10px;
+}
+.preview-title-body blockquote {
+  margin: 0px;
+  padding: 0px;
+  line-height: 0.1rem !important;
+}
+
+.preview-title-body ol,
+.preview-title-body li,
+.preview-title-body ul,
+.preview-title-body p {
+  margin: 0px;
+  line-height: 0.1rem !important;
+}
+
 .preview-title-top-border {
   min-height: 0px;
   padding: 0px;

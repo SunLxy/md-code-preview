@@ -1,11 +1,9 @@
 import React from "react";
-import Render, { RenderProps } from "./render";
-import Code, { CodeProps } from "./code";
+import Render from "./render";
+import Code from "./code";
 import "./styles/index.css";
-
-export interface PreviewProps extends RenderProps, CodeProps {
-  className?: string;
-}
+import { PreviewProps } from "./interface";
+export * from "./interface";
 
 const Preview = (props: PreviewProps) => {
   const { code, comments, className, node, ...rest } = props;

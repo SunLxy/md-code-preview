@@ -1,9 +1,6 @@
 import MarkdownPreview from "@uiw/react-markdown-preview";
 import React from "react";
 import Preview from "md-code-preview";
-import { Button } from "uiw";
-import ReactDOM from "react-dom/client";
-import Demo from "./Demo.tsx";
 
 export const getFileDirName = (resourcePath) => {
   return resourcePath.split(/\/|\\/).join("").replace(/.md$/, "");
@@ -11,7 +8,11 @@ export const getFileDirName = (resourcePath) => {
 
 const PreviewCode = (props) => {
   const { dependencies } = props;
-  const [mdStr, setMdStr] = React.useState({ source: "", assets: {} });
+  const [mdStr, setMdStr] = React.useState({
+    source: "",
+    assets: {},
+    ignoreRows: [],
+  });
   const [mdAssets, setmdAssets] = React.useState({});
   const fileDirName = React.useMemo(() => {
     return getFileDirName(props.fileDirName);
@@ -24,6 +25,7 @@ const PreviewCode = (props) => {
         setMdStr({
           source: result.default.source,
           assets: result.default.filesValue,
+          ignoreRows: result.default.ignoreRows,
         });
       }
     };
@@ -39,12 +41,39 @@ const PreviewCode = (props) => {
     getAssset();
   }, [fileDirName]);
 
+  const isShowNode = (ignoreRows = [], line) => {
+    let isShow = false;
+    let i = 0;
+    let lg = ignoreRows.length;
+    while (i < lg) {
+      const { start, end } = ignoreRows[i];
+      if (start <= line && line < end) {
+        isShow = true;
+        break;
+      }
+      i++;
+    }
+    return isShow;
+  };
+
+  const checkNode = ({ node, ...rest }) => {
+    const line = node.position.start.line;
+    const TagName = node.tagName;
+    if (isShowNode(mdStr.ignoreRows || [], line)) {
+      return null;
+    }
+    return <TagName {...rest} />;
+  };
+
   return (
     <React.Fragment>
       <MarkdownPreview
         style={{ padding: "15px 15px" }}
         source={mdStr.source}
         components={{
+          p: checkNode,
+          h2: checkNode,
+          blockquote: checkNode,
           /**
            * bgWhite 设置代码预览背景白色，否则为格子背景。
            * noCode 不显示代码编辑器。
@@ -63,6 +92,7 @@ const PreviewCode = (props) => {
             } = props;
 
             const line = node.position.start.line;
+            // console.log(isShowNode(mdStr.ignoreRows || [], line), node)
 
             if (inline) {
               return <code {...props} />;
