@@ -21,29 +21,11 @@ export interface RenderProps {
 }
 
 export type CommentsType = {
+  /** 标题 **/
   title?: string;
+  /** 简介 **/
   description?: string;
   [k: string]: string;
-};
-
-export type StartAndEndType = {
-  column: number;
-  offset: number;
-  line: number;
-};
-
-export type PositionType = {
-  start: StartAndEndType;
-  end: StartAndEndType;
-};
-
-export type Node = {
-  children: Node[];
-  position: PositionType;
-  tagName: string;
-  type: string;
-  value: string;
-  properties: { className: string[]; [k: string]: unknown };
 };
 
 export interface CodeProps {
@@ -51,8 +33,8 @@ export interface CodeProps {
   code?: React.ReactNode;
   /** 解析出的注释内容 **/
   comments?: CommentsType;
-  /** 解析出来的 node 对象 **/
-  node?: Node | Node[];
+  /** 代码块字符串 **/
+  copyNodes?: string;
 }
 
 export interface PreviewProps extends RenderProps, CodeProps {

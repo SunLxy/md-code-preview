@@ -4,25 +4,16 @@ import unexpand from "../assets/unexpand.svg";
 import copy from "./../assets/copy.svg";
 import checkSign from "./../assets/checkSign.svg";
 import copyTextToClipboard from "@uiw/copy-to-clipboard";
-import { CodeProps, Node } from "./../interface";
-import { getCodeString } from "./../utils";
+import { CodeProps } from "./../interface";
 
 const Code = (props: CodeProps) => {
-  const { code, comments = {}, node } = props;
+  const { code, comments = {}, copyNodes } = props;
   const [show, setShow] = React.useState(false);
   const copyRef = React.useRef<HTMLDivElement>();
-  const titleRef = React.useRef<HTMLLegendElement>();
   const descRef = React.useRef<HTMLDivElement>();
   const isCopy = React.useMemo(() => {
-    if (Array.isArray(node)) {
-      return !!node.length;
-    } else if (node) {
-      if (node.children && Array.isArray(node.children)) {
-        return !!node.children.length;
-      }
-    }
-    return false;
-  }, [node]);
+    return !!copyNodes;
+  }, [copyNodes]);
 
   const title = React.useMemo(() => {
     let domArr = [];
@@ -60,15 +51,15 @@ const Code = (props: CodeProps) => {
       "class",
       `${classList} preview-button-copy-active`
     );
-    let arrChild: Node[] = [];
-    if (Array.isArray(node)) {
-      arrChild = node;
-    } else if (node) {
-      if (node.children && Array.isArray(node.children)) {
-        arrChild = node.children;
-      }
-    }
-    copyTextToClipboard(getCodeString(arrChild), function () {
+    // let arrChild: Node[] = [];
+    // if (Array.isArray(node)) {
+    //   arrChild = node;
+    // } else if (node) {
+    //   if (node.children && Array.isArray(node.children)) {
+    //     arrChild = node.children;
+    //   }
+    // }
+    copyTextToClipboard(copyNodes, function () {
       setTimeout(() => {
         copyRef.current.setAttribute("class", `${classList}`);
       }, 2000);
@@ -89,7 +80,7 @@ const Code = (props: CodeProps) => {
       );
     }
     return <React.Fragment />;
-  }, [isCopy, node]);
+  }, [isCopy, copyNodes]);
 
   React.useEffect(() => {
     if (descRef.current) {

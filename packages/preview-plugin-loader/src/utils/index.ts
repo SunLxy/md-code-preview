@@ -178,8 +178,8 @@ export const markdownParse = (source: string, lang: string[]) => {
           title: space.head,
           description: space.description,
         },
-        head: space.head,
-        description: space.description,
+        // head: space.head,
+        // description: space.description,
       };
       filesValue[line] = item;
     }
@@ -228,8 +228,8 @@ export const markdownParsePlugin = (
           description: space.description,
         },
         path: `${fileDirName}/${filename}`,
-        head: space.head,
-        description: space.description,
+        // head: space.head,
+        // description: space.description,
       };
       FS.writeFileSync(`${dirPath}/${filename}`, itemChild.value, {
         flag: "w+",

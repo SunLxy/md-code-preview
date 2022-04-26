@@ -110,12 +110,13 @@ const PreviewCode = (props) => {
               const item = mdStr.assets[line];
               // plugin 机制 获取值
               const pluginItem = mdAssets[line];
+              console.log(pluginItem);
               const code = <code {...props} />;
               return (
                 <React.Fragment>
                   <div>下面是测试loader机制</div>
                   <Preview
-                    node={node}
+                    node={item.value}
                     transform={item.transform}
                     dependencies={dependencies}
                     code={code}
@@ -123,7 +124,7 @@ const PreviewCode = (props) => {
                   />
                   <div>下面是测试plugin机制</div>
                   <Preview
-                    node={node}
+                    node={pluginItem.value}
                     getComponent={() => import(`@@/${pluginItem.path}`)}
                     code={code}
                     comments={pluginItem.comments}

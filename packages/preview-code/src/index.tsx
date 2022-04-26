@@ -6,12 +6,12 @@ import { PreviewProps } from "./interface";
 export * from "./interface";
 
 const Preview = (props: PreviewProps) => {
-  const { code, comments, className, node, ...rest } = props;
+  const { code, comments, className, copyNodes = "", ...rest } = props;
 
   return (
     <fieldset className={`fieldset ${className}`}>
       <Render {...rest} />
-      <Code code={code} comments={comments} node={node} />
+      <Code code={code} comments={comments} copyNodes={copyNodes} />
     </fieldset>
   );
 };
