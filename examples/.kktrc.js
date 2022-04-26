@@ -12,7 +12,6 @@ export default (conf, env, options) => {
   conf.plugins.push(
     new MdCodePreviewPlugin({
       cwd: path.join(process.cwd(), ".."),
-      ignored: /examples/,
     })
   );
   conf.module.rules.push({
@@ -29,6 +28,7 @@ export default (conf, env, options) => {
     alias: {
       ...(conf.resolve.alias || {}),
       "@@": path.resolve(process.cwd(), "src/.docs"),
+      "@": path.resolve(process.cwd(), "src"),
     },
   };
   return conf;

@@ -1,0 +1,57 @@
+.fieldset {
+  margin: 0px;
+  padding: 0px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  background-color: #fff;
+}
+.fieldset legend {
+  text-align: center;
+}
+.preview-body {
+  padding: 10px;
+}
+
+.preview-title {
+  min-height: 20px;
+  border-right: none;
+  border-left: none;
+  padding: 10px;
+}
+.preview-title-top-border {
+  min-height: 0px;
+  padding: 0px;
+  border-bottom: none;
+}
+
+.preview-button {
+  padding: 10px;
+  text-align: center;
+}
+
+.preview-code-false {
+  display: none;
+}
+
+.preview-code-true {
+  display: block;
+}
+
+.preview-button .preview-code-exand-unexpand-icon {
+  opacity: 0.5;
+  display: inline-block;
+  cursor: pointer;
+}
+.preview-button .preview-code-exand-unexpand-icon:hover {
+  opacity: 1;
+}
+
+.preview-button
+  .preview-code-exand-unexpand-icon
+  .preview-code-exand-unexpand-icon-false {
+  display: none;
+}
+.preview-button
+  .preview-code-exand-unexpand-icon
+  .preview-code-exand-unexpand-icon-true {
+  display: inline-block;
+}

@@ -2,16 +2,18 @@ Use an example of `Markdown`.
 
 ```jsx
 /**
- * @title: 标题
+ * @title: 基础按钮组件
  * @description: 按钮有类型：主按钮、次按钮、虚线按钮、文本按钮和链接按钮
  */
 import { Button } from "uiw";
 import React from "react";
-
+import Demo from "@/app/Preview/Demo.tsx";
 export default () => {
+  window.HOSTY = 123243;
   return (
     <div>
-      <button>按钮</button>
+      <Demo />
+      <button>按钮{window.a}</button>
       <Button>按钮2</Button>
     </div>
   );
@@ -32,14 +34,22 @@ interface A {
 
 ```tsx
 /**
- * @title: 标题
+ * @title: 普通的tsx文件解析
  * @description:  按钮有类型：主按钮、次按钮、虚线按钮、文本按钮和链接按钮
  */
 interface A {
   s: string;
 }
+import Demo from "@/app/Preview/Demo.tsx";
 const Com = (props: A) => {
-  return <div>233</div>;
+  window.HOSTY = 322;
+
+  return (
+    <div>
+      <div>呵呵呵呵呵呵呵</div>
+      <Demo />
+    </div>
+  );
 };
 export default Com;
 ```
