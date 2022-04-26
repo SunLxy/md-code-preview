@@ -319,7 +319,7 @@ export const markdownParseCreateComponentPlugin = (
         description
       )}} >{${fun}()}</Code> \n `;
     } else if (item.type === "code") {
-      renderStr += `<pre><code class="language-${
+      renderStr += `<pre><code className="language-${
         item.lang
       }" children={\`${getHtml([item], true)}\`}  ></code></pre>`;
     } else {
