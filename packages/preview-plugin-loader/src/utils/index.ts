@@ -2,7 +2,7 @@ import unified from "unified";
 import remarkParse from "remark-parse";
 import FS from "fs-extra";
 import path from "path";
-import { getTransformValue } from "./transform";
+import { getTransformValue, getTransformValue2 } from "./transform";
 import { parse as jestDocblockParse } from "jest-docblock";
 import toHast from "mdast-util-to-hast";
 import toHtml from "hast-util-to-html";
@@ -242,4 +242,104 @@ export const markdownParsePlugin = (
     filesValue,
     ignoreRows,
   };
+};
+
+const isShowNode = (
+  ignoreRows: { start: number; end: number }[] = [],
+  line: number
+) => {
+  let isShow = false;
+  let i = 0;
+  let lg = ignoreRows.length;
+  while (i < lg) {
+    const { start, end } = ignoreRows[i];
+    if (start <= line && line < end) {
+      isShow = true;
+      break;
+    }
+    i++;
+  }
+  return isShow;
+};
+
+// plugin 中转换
+export const markdownParseCreateComponentPlugin = (
+  source: string,
+  lang: string[] = ["jsx", "tsx"]
+) => {
+  // 先做代码转换
+  // @ts-ignore
+  const markd = unified().use(remarkParse).parse(source);
+  // @ts-ignore
+  const child = markd.children || [];
+  const ignoreRows: any = [];
+  const filesValue: any = {};
+
+  // 第一遍先获取 code 及其标题简介之类的
+  child.forEach((item: any, index: any) => {
+    if (item.type === "code" && lang.includes(item.lang || "")) {
+      const { start, end, head, description } = getSpace(index, child);
+      if (typeof start === "number") {
+        ignoreRows.push({
+          start,
+          end,
+        });
+      }
+      filesValue[index] = {
+        head,
+        description,
+        value: item.value,
+        fun: `baseDom${index}`,
+      };
+    }
+  });
+
+  let renderStr = ``;
+  let baseComponent = ``;
+
+  child.forEach((item: any, index: any) => {
+    const line = item.position.start.line;
+    if (isShowNode(ignoreRows, line)) {
+      return;
+    }
+    if (
+      item.type === "code" &&
+      lang.includes(item.lang || "") &&
+      filesValue[index]
+    ) {
+      const { head, value, description, fun } = filesValue[index];
+      const code = getTransformValue2(value, `${fun}.${item.lang}`);
+      baseComponent += `
+      function ${fun}(){
+        ${code}
+      }\n`;
+      renderStr += `<Code head={${JSON.stringify(
+        head
+      )}} value={${JSON.stringify(value)}} desc={${JSON.stringify(
+        description
+      )}} >{${fun}()}</Code> \n `;
+    } else if (item.type === "code") {
+      renderStr += `<pre><code class="language-${
+        item.lang
+      }" children={\`${getHtml([item], true)}\`}  ></code></pre>`;
+    } else {
+      renderStr += `${getHtml([item])} \n `;
+    }
+  });
+
+  const render = `
+  import React from "react"
+  ${baseComponent}\n
+  const Code = (props) => {
+  return <div>
+    {props.children}
+  </div>
+}
+  export default ()=>{
+    return <React.Fragment>
+    ${renderStr}
+    </React.Fragment>
+  }
+  `;
+  return render;
 };

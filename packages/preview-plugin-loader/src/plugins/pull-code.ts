@@ -2,7 +2,7 @@ import FS from "fs-extra";
 import path from "path";
 import webpack from "webpack";
 import chokidar from "chokidar";
-import { markdownParsePlugin, getFileDirName } from "./utils";
+import { markdownParsePlugin, getFileDirName } from "../utils";
 import anymatch from "anymatch";
 export interface MdCodePreviewPluginProps {
   /** 监听的根目录 默认：path.join(process.cwd(), "") */
