@@ -25,7 +25,35 @@
 
 .preview-button {
   padding: 10px;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.preview-button-span {
+  margin-right: 20px;
+}
+
+.preview-button-copy {
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+.preview-button-copy:hover {
+  opacity: 1;
+}
+.preview-button-copy > .copy {
+  display: inline-block;
+}
+.preview-button-copy > .check {
+  display: none;
+}
+
+.preview-button-copy-active > .copy {
+  display: none;
+}
+
+.preview-button-copy-active > .check {
+  display: inline-block;
 }
 
 .preview-code-false {

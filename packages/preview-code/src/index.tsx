@@ -8,12 +8,12 @@ export interface PreviewProps extends RenderProps, CodeProps {
 }
 
 const Preview = (props: PreviewProps) => {
-  const { code, comments, className, ...rest } = props;
+  const { code, comments, className, node, ...rest } = props;
 
   return (
     <fieldset className={`fieldset ${className}`}>
       <Render {...rest} />
-      <Code code={code} comments={comments} />
+      <Code code={code} comments={comments} node={node} />
     </fieldset>
   );
 };

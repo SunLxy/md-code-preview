@@ -85,6 +85,7 @@ const PreviewCode = (props) => {
                 <React.Fragment>
                   <div>下面是测试loader机制</div>
                   <Preview
+                    node={node}
                     transform={item.transform}
                     dependencies={dependencies}
                     code={code}
@@ -92,6 +93,7 @@ const PreviewCode = (props) => {
                   />
                   <div>下面是测试plugin机制</div>
                   <Preview
+                    node={node}
                     getComponent={() => import(`@@/${pluginItem.path}`)}
                     code={code}
                     comments={pluginItem.comments}
