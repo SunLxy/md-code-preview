@@ -15,10 +15,10 @@ export default (conf, env, options) => {
   conf.plugins.push(
     new MdCodePreviewPlugin({
       cwd: path.join(process.cwd(), ".."),
-    }),
-    new MdCreateComponentsPlugin({
-      cwd: path.join(process.cwd(), ".."),
     })
+    // new MdCreateComponentsPlugin({
+    //   cwd: path.join(process.cwd(), ".."),
+    // })
   );
   conf.module.rules.push({
     test: /.md$/,
