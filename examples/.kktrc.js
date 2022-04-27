@@ -1,10 +1,7 @@
 import lessModules from "@kkt/less-modules";
 import rawModules from "@kkt/raw-modules";
 import path from "path";
-import {
-  MdCodePreviewPlugin,
-  MdCreateComponentsPlugin,
-} from "md-code-preview-plugin-loader";
+import { MdCodePreviewPlugin } from "md-code-preview-plugin-loader";
 // md-code-preview
 export default (conf, env, options) => {
   // console.log('conf:', conf)
@@ -16,9 +13,6 @@ export default (conf, env, options) => {
     new MdCodePreviewPlugin({
       cwd: path.join(process.cwd(), ".."),
     })
-    // new MdCreateComponentsPlugin({
-    //   cwd: path.join(process.cwd(), ".."),
-    // })
   );
   conf.module.rules.push({
     test: /.md$/,
