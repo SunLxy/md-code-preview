@@ -1,6 +1,5 @@
 import FS from "fs-extra";
 import path from "path";
-import { FilesValueType } from ".";
 import { stepOne, getProcessor, transformMarkdown } from "md-plugin-utils";
 
 // plugin 中转换
