@@ -121,6 +121,13 @@ export const stepOne = (
         // babel 转换后的 代码，最后需要拼接到结果文件中去的
         transform: getTransformValue(item.value, `${index}.${item.lang}`, line),
       };
+      const code = processor.runSync(
+        { children: [item], type: "root" } as any,
+        file
+      ) as any;
+      const codeStr = createElementStr(code, isAllString);
+      objs.code = codeStr;
+
       if (typeof start === "number") {
         ignoreRows.push({ start, end: isLine ? line : end });
         const headNode = processor.runSync(
@@ -131,15 +138,10 @@ export const stepOne = (
           { children: desc, type: "root" } as any,
           file
         ) as any;
-        const code = processor.runSync(
-          { children: [item], type: "root" } as any,
-          file
-        ) as any;
+
         const headStr = createElementStr(headNode, isAllString);
         const descStr = createElementStr(descNode, isAllString);
-        const codeStr = createElementStr(code, isAllString);
         objs.head = headStr;
-        objs.code = codeStr;
         objs.desc = descStr;
       }
       if (isLine) {

@@ -2,10 +2,11 @@ import FS from "fs-extra";
 import path from "path";
 import webpack from "webpack";
 import chokidar from "chokidar";
-
-import { lastReturn, getFileDirName } from "md-plugin-utils";
+import { markdownParsePlugin } from "../utils";
 import anymatch from "anymatch";
-export interface MdCodeCreatePluginProps {
+import { lastReturn, getFileDirName } from "md-plugin-utils";
+
+export interface MdCodePreviewPluginProps {
   /** 监听的根目录 默认：path.join(process.cwd(), "") */
   cwd?: string;
   /** 输入文件地址,默认: path.join(process.cwd(), "src/.docs") **/
@@ -18,10 +19,12 @@ export interface MdCodeCreatePluginProps {
   lang?: string[];
   /** 文件夹前缀 **/
   pre?: string;
+  /** 是否直接把markdown转换成react代码输出 **/
+  createJs?: boolean;
 }
 
 // 输出文件 默认路径去除根路径，其他的拼接起来当文件夹名称，每个文件夹下对应当前md文件所有的 代码块
-class MdCodeCreateJsPlugin {
+class MdCodePreviewPlugin {
   // 1. 输出目录，
   // 2. 哪些文件排除不进行监听
   // 3. 监听的根目录
@@ -33,8 +36,9 @@ class MdCodeCreateJsPlugin {
   matchRules: string[] = ["*.md", "*/**/*.md"];
   lang: string[] = ["jsx", "tsx"];
   pre: string = "";
+  createJs: boolean = true;
 
-  constructor(props: MdCodeCreatePluginProps = {}) {
+  constructor(props: MdCodePreviewPluginProps = {}) {
     this.cwd = props.cwd || path.join(process.cwd(), "");
     this.output = props.output || path.join(process.cwd(), "src/.docs");
     if (props.ignored) {
@@ -59,6 +63,9 @@ class MdCodeCreateJsPlugin {
     if (props.pre) {
       this.pre = `${props.pre}-`;
     }
+    if (Reflect.has(props, "createJs")) {
+      this.createJs = Reflect.get(props, "createJs");
+    }
     this.getPathDeep(this.cwd);
   }
 
@@ -71,16 +78,35 @@ class MdCodeCreateJsPlugin {
       }
     }
     const fileDirName = getFileDirName(filePath, this.cwd);
+    const fileDirNames = `${this.pre}${fileDirName}`;
+    const outDir = path.join(this.output, `${this.pre}${fileDirName}`);
+
+    FS.emptyDirSync(outDir);
     if (mdStr.trim()) {
-      const outDir = path.join(this.output, `${this.pre}${fileDirName}`);
-      FS.emptyDirSync(outDir);
-      const result = lastReturn(mdStr, this.lang);
-      Object.entries(result).forEach(([key, value]) => {
-        FS.writeFileSync(`${outDir}/${key}.js`, value as string, {
-          encoding: "utf8",
-          flag: "w+",
+      if (this.createJs) {
+        const result = lastReturn(mdStr, this.lang);
+        Object.entries(result).forEach(([key, value]) => {
+          FS.writeFileSync(`${outDir}/${key}.js`, value as string, {
+            encoding: "utf8",
+            flag: "w+",
+          });
         });
-      });
+      } else {
+        const initStr = markdownParsePlugin(
+          mdStr,
+          fileDirNames,
+          this.output,
+          this.lang
+        );
+        if (initStr) {
+          const dirPath = path.join(this.output, fileDirNames);
+          FS.writeFileSync(
+            `${dirPath}/assets.js`,
+            `import React from "react";\nexport default {${initStr}}`,
+            { flag: "w+", encoding: "utf-8" }
+          );
+        }
+      }
     }
   };
 
@@ -119,19 +145,21 @@ class MdCodeCreateJsPlugin {
   };
 
   apply(compiler: webpack.Compiler) {
-    compiler.hooks.afterPlugins.tap("MdCodeCreatePluginProps", () => {
-      console.log("process.env.NODE_ENV", process.env.NODE_ENV);
-      if (process.env.NODE_ENV === "development") {
-        chokidar
-          .watch(this.matchRules, {
-            cwd: this.cwd,
-            ignored: this.ignored,
-          })
-          .on("all", (event, path) => {
-            this.readFile(path);
-          });
+    compiler.hooks.afterPlugins.tap(
+      this.createJs ? "MdCodeCreateJsPlugin" : "MdCodePreviewPlugin",
+      () => {
+        if (process.env.NODE_ENV === "development") {
+          chokidar
+            .watch(this.matchRules, {
+              cwd: this.cwd,
+              ignored: this.ignored,
+            })
+            .on("all", (event, path) => {
+              this.readFile(path);
+            });
+        }
       }
-    });
+    );
   }
 }
-export default MdCodeCreateJsPlugin;
+export default MdCodePreviewPlugin;
