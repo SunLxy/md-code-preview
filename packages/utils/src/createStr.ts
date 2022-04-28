@@ -1,21 +1,14 @@
-import { OtherMapType, FilesValueType } from ".";
-
-export const createStr = (value: {
-  str: string;
-  otherMap: OtherMapType;
-  filesValue: FilesValueType;
-}) => {
-  const { otherMap, str, filesValue } = value;
-
+import { FilesValueType } from ".";
+export const createStr = (otherObj: FilesValueType, indexStrs: string) => {
   let codeStr = ``;
   let headStr = ``;
   let descStr = ``;
   let copyNodeStr = ``;
-
-  Array.from(otherMap.entries()).forEach(([key, values]) => {
-    const { code, copyNode, head, desc, properties } = values;
+  let transformStr = ``;
+  Object.entries(otherObj).forEach(([key, values]) => {
+    const { code, copyNode, head, desc, transform } = values;
     if (code) {
-      codeStr += `${key}:<pre ${properties}>${code}</pre>,\n`;
+      codeStr += `${key}:<pre>${code}</pre>,\n`;
     }
     if (head) {
       headStr += `${key}:<React.Fragment>${head}</React.Fragment>,\n`;
@@ -24,13 +17,11 @@ export const createStr = (value: {
       descStr += `${key}:<React.Fragment>${desc}</React.Fragment>,\n`;
     }
     if (copyNode) {
-      copyNodeStr += `${key}: \`${copyNode}\`,`;
+      copyNodeStr += `${key}: \`${copyNode}\`,\n`;
     }
-  });
-
-  let baseCode = ``;
-  Object.entries(filesValue).forEach(([key, values]) => {
-    baseCode += `${key}:${values.transform},\n`;
+    if (transform) {
+      transformStr += `${key}: ${transform},\n`;
+    }
   });
 
   const indexStr = `
@@ -44,7 +35,7 @@ export const createStr = (value: {
   import MdCodePreview from "md-code-preview"
   export default ()=>{
     return <div className="wmde-markdown wmde-markdown-color">
-    ${str}
+    ${indexStrs}
     </div>
   }
   `;
@@ -54,7 +45,7 @@ export const createStr = (value: {
     importHeadRender: `import React from "react";\nexport default {${headStr}}`,
     importDescRender: `import React from "react";\nexport default {${descStr}}`,
     importCopyNodeRender: `export default {${copyNodeStr}}`,
-    importBaseCodeRender: `export default {${baseCode}}`,
+    importBaseCodeRender: `export default {${transformStr}}`,
     index: indexStr,
   };
 };

@@ -12,32 +12,24 @@ export type PositionType = {
 export type IgnoreRows = {
   start: number;
   end: number;
-  line: number;
 };
 
-export type FilesValueType = Record<
-  number,
-  {
-    value: string;
-    transform: string;
-  }
->;
+export type FilesValueItemType = {
+  value?: string;
+  transform?: string;
+  desc?: string;
+  head?: string;
+  code?: string;
+  copyNode?: string;
+  lang?: string;
+};
+
+export type FilesValueType = Record<number, FilesValueItemType>;
 
 export type StepOneReturn = {
   ignoreRows: IgnoreRows[];
   filesValue: FilesValueType;
 };
-
-export type OtherMapType = Map<
-  number,
-  {
-    head: string;
-    desc: string;
-    code: string;
-    copyNode: string;
-    properties: string;
-  }
->;
 
 export type MarkDownTreeType = {
   children: {

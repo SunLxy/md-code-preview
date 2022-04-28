@@ -16,6 +16,8 @@ export interface MdCodeCreatePluginProps {
   ignored?: any;
   // 语言
   lang?: string[];
+  /** 文件夹前缀 **/
+  pre?: string;
 }
 
 // 输出文件 默认路径去除根路径，其他的拼接起来当文件夹名称，每个文件夹下对应当前md文件所有的 代码块
@@ -30,6 +32,7 @@ class MdCodeCreateJsPlugin {
   ignored: any = [/node_modules/];
   matchRules: string[] = ["*.md", "*/**/*.md"];
   lang: string[] = ["jsx", "tsx"];
+  pre: string = "";
 
   constructor(props: MdCodeCreatePluginProps = {}) {
     this.cwd = props.cwd || path.join(process.cwd(), "");
@@ -53,6 +56,9 @@ class MdCodeCreateJsPlugin {
         this.lang = props.lang;
       }
     }
+    if (props.pre) {
+      this.pre = `${props.pre}-`;
+    }
     this.getPathDeep(this.cwd);
   }
 
@@ -66,9 +72,9 @@ class MdCodeCreateJsPlugin {
     }
     const fileDirName = getFileDirName(filePath, this.cwd);
     if (mdStr.trim()) {
-      const outDir = path.join(this.output, fileDirName);
+      const outDir = path.join(this.output, `${this.pre}${fileDirName}`);
       FS.emptyDirSync(outDir);
-      const result = lastReturn(mdStr);
+      const result = lastReturn(mdStr, this.lang);
       Object.entries(result).forEach(([key, value]) => {
         FS.writeFileSync(`${outDir}/${key}.js`, value as string, {
           encoding: "utf8",

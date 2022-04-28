@@ -11,6 +11,7 @@ const Code = (props: CodeProps) => {
   const [show, setShow] = React.useState(false);
   const copyRef = React.useRef<HTMLDivElement>();
   const descRef = React.useRef<HTMLDivElement>();
+  const titleRef = React.useRef<HTMLLegendElement>();
   const isCopy = React.useMemo(() => {
     return !!copyNodes;
   }, [copyNodes]);
@@ -18,17 +19,13 @@ const Code = (props: CodeProps) => {
   const title = React.useMemo(() => {
     let domArr = [];
     let isTopBorder = true;
-    console.log(comments);
     if (comments && Object.keys(comments).length) {
       if (comments.title) {
         domArr.push(
-          <legend className="preview-title-head" key="1">
-            {comments.title}
-          </legend>
+          <legend ref={titleRef} className="preview-title-head" key="1" />
         );
         isTopBorder = true;
       }
-      console.log(comments.description);
       if (comments.description && typeof comments.description !== "string") {
         domArr.push(
           <div className="preview-title-body" key="2">
@@ -38,7 +35,7 @@ const Code = (props: CodeProps) => {
         isTopBorder = false;
       } else if (comments.description) {
         domArr.push(
-          <div className="preview-title-body" ref={descRef} key="2"></div>
+          <div className="preview-title-body" ref={descRef} key="2" />
         );
         isTopBorder = false;
       }
@@ -60,14 +57,6 @@ const Code = (props: CodeProps) => {
       "class",
       `${classList} preview-button-copy-active`
     );
-    // let arrChild: Node[] = [];
-    // if (Array.isArray(node)) {
-    //   arrChild = node;
-    // } else if (node) {
-    //   if (node.children && Array.isArray(node.children)) {
-    //     arrChild = node.children;
-    //   }
-    // }
     copyTextToClipboard(copyNodes, function () {
       setTimeout(() => {
         copyRef.current.setAttribute("class", `${classList}`);
@@ -97,7 +86,12 @@ const Code = (props: CodeProps) => {
         descRef.current.innerHTML = comments.description;
       }
     }
-  }, [descRef.current, JSON.stringify(comments)]);
+    if (titleRef.current) {
+      if (comments.title && typeof comments.title === "string") {
+        titleRef.current.innerHTML = comments.title;
+      }
+    }
+  }, [descRef.current, titleRef.current, JSON.stringify(comments)]);
 
   return (
     <React.Fragment>

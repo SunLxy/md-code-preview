@@ -1,5 +1,6 @@
 import { markdownParse } from "./utils";
 export { default as MdCodePreviewPlugin } from "./plugins/pull-code";
+export { default as MdCodeCreateJsPlugin } from "./plugins/create-components";
 export * from "./utils";
 
 export default function (source: string) {

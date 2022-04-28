@@ -15,6 +15,8 @@ export interface MdCodePreviewPluginProps {
   ignored?: any;
   // 语言
   lang?: string[];
+  /** 文件夹前缀 **/
+  pre?: string;
 }
 
 // 输出文件 默认路径去除根路径，其他的拼接起来当文件夹名称，每个文件夹下对应当前md文件所有的 代码块
@@ -29,6 +31,7 @@ class MdCodePreviewPlugin {
   ignored: any = [/node_modules/];
   matchRules: string[] = ["*.md", "*/**/*.md"];
   lang: string[] = ["jsx", "tsx"];
+  pre: string = "";
 
   constructor(props: MdCodePreviewPluginProps = {}) {
     this.cwd = props.cwd || path.join(process.cwd(), "");
@@ -52,6 +55,10 @@ class MdCodePreviewPlugin {
         this.lang = props.lang;
       }
     }
+    if (props.pre) {
+      this.pre = `${props.pre}-`;
+    }
+    console.log(this.pre);
     this.getPathDeep(this.cwd);
   }
 
@@ -64,14 +71,15 @@ class MdCodePreviewPlugin {
       }
     }
     const fileDirName = getFileDirName(filePath, this.cwd);
+    const fileDirNames = `${this.pre}${fileDirName}`;
     const { filesValue, ignoreRows } = markdownParsePlugin(
       mdStr,
-      fileDirName,
+      fileDirNames,
       this.output,
       this.lang
     );
     if (filesValue && Object.keys(filesValue).length) {
-      const dirPath = path.join(this.output, fileDirName);
+      const dirPath = path.join(this.output, fileDirNames);
       FS.writeFileSync(
         `${dirPath}/assets.json`,
         JSON.stringify({ ...filesValue, ignoreRows }),

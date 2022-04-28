@@ -5,7 +5,10 @@
   background-color: #fff;
 }
 .fieldset legend {
-  text-align: center;
+  /* text-align: center; */
+  margin-left: 20px;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 .preview-body {
   padding: 10px;
@@ -20,6 +23,10 @@
 .preview-title-head {
   font-weight: 600;
   font-size: 18px;
+}
+.preview-title .preview-title-head h2 {
+  font-size: 18px;
+  border-bottom: none;
 }
 
 .preview-title-body blockquote {

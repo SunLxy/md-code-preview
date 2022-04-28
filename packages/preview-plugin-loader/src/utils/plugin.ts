@@ -1,6 +1,7 @@
 import FS from "fs-extra";
 import path from "path";
-import { getSpace, getMD, MarkdownTreeType, FilesValueType } from ".";
+import { FilesValueType } from ".";
+import { stepOne, getProcessor, transformMarkdown } from "md-plugin-utils";
 
 // plugin 中转换
 export const markdownParsePlugin = (
@@ -12,46 +13,39 @@ export const markdownParsePlugin = (
   const dirPath = path.join(savePath, fileDirName);
   // 置空文件夹
   FS.emptyDirSync(dirPath);
-  const ignoreRows: { start?: number; end?: number }[] = [];
-  const markdownTree = getMD(source) as MarkdownTreeType;
-  const filesValue: Record<number, FilesValueType> = {};
+  const processor = getProcessor();
+  const { file, child } = transformMarkdown(source, processor);
+  const newfilesValue: Record<string, FilesValueType> = {};
+  const { filesValue, ignoreRows } = stepOne(
+    child.children,
+    lang,
+    getProcessor(),
+    file,
+    true,
+    true
+  );
 
-  markdownTree.children.map((itemChild, index) => {
-    if (
-      itemChild &&
-      itemChild.type === "code" &&
-      lang.includes(itemChild.lang)
-    ) {
-      const line = itemChild.position.start.line;
-      const filename = `${line}.${itemChild.lang}`;
-      const space = getSpace(index, markdownTree.children);
-      if (typeof space.start === "number") {
-        ignoreRows.push({
-          start: space.start,
-          end: space.end,
-        });
-      }
-      const item: FilesValueType = {
-        filename,
-        value: itemChild.value,
-        // comments: getCommentParser(itemChild.value),
-        comments: {
-          title: space.head,
-          description: space.description,
-        },
-        path: `${fileDirName}/${filename}`,
-        // head: space.head,
-        // description: space.description,
-      };
-      FS.writeFileSync(`${dirPath}/${filename}`, itemChild.value, {
-        flag: "w+",
-        encoding: "utf-8",
-      });
-      filesValue[line] = item;
-    }
+  Object.entries(filesValue).forEach(([key, item]) => {
+    const { copyNode, head, desc, lang } = item;
+    const filename = `${key}.${lang}`;
+    const itemValue: FilesValueType = {
+      filename,
+      value: copyNode,
+      comments: {
+        title: head,
+        description: desc,
+      },
+      path: `${fileDirName}/${filename}`,
+    };
+    newfilesValue[key] = itemValue;
+    FS.writeFileSync(`${dirPath}/${filename}`, copyNode, {
+      flag: "w+",
+      encoding: "utf-8",
+    });
   });
+
   return {
-    filesValue,
+    filesValue: newfilesValue,
     ignoreRows,
   };
 };

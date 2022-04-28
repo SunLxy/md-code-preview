@@ -35,7 +35,7 @@ const PreviewCode = (props) => {
   // 使用plugin机制获取资源，再进行加载相应的案例组件
   React.useEffect(() => {
     const getAssset = async () => {
-      const assets = require(`@@/${fileDirName}/assets.json`);
+      const assets = require(`@@/code-${fileDirName}/assets.json`);
       setmdAssets(assets);
     };
     getAssset();
