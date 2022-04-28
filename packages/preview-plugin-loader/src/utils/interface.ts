@@ -33,7 +33,7 @@ export type FilesValueType = {
 };
 
 export type CommentsType = {
-  title?: string;
-  description?: string;
-  [k: string]: string;
+  title?: any;
+  description?: any;
+  [k: string]: any;
 };

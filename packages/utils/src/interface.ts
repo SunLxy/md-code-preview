@@ -22,6 +22,8 @@ export type FilesValueItemType = {
   code?: string;
   copyNode?: string;
   lang?: string;
+  headTree?: any;
+  descTree?: any;
 };
 
 export type FilesValueType = Record<number, FilesValueItemType>;

@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "jsx": "react",
     "module": "esnext",
     "target": "es5",
     "esModuleInterop": true,
@@ -15,7 +16,5 @@
     "outDir": "lib",
     "baseUrl": "."
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }

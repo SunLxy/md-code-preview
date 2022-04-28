@@ -72,17 +72,17 @@ class MdCodePreviewPlugin {
     }
     const fileDirName = getFileDirName(filePath, this.cwd);
     const fileDirNames = `${this.pre}${fileDirName}`;
-    const { filesValue, ignoreRows } = markdownParsePlugin(
+    const initStr = markdownParsePlugin(
       mdStr,
       fileDirNames,
       this.output,
       this.lang
     );
-    if (filesValue && Object.keys(filesValue).length) {
+    if (initStr) {
       const dirPath = path.join(this.output, fileDirNames);
       FS.writeFileSync(
-        `${dirPath}/assets.json`,
-        JSON.stringify({ ...filesValue, ignoreRows }),
+        `${dirPath}/assets.js`,
+        `import React from "react";\nexport default {${initStr}}`,
         { flag: "w+", encoding: "utf-8" }
       );
     }

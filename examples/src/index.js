@@ -9,8 +9,8 @@ import "./markdown.less";
 ReactClient.createRoot(document.getElementById("root")).render(
   <React.Fragment>
     <div style={{ padding: 20 }}>
-      <Dmode2 />
-      <Dmode />
+      {/* <Dmode2 />
+      <Dmode /> */}
       <App />
     </div>
   </React.Fragment>

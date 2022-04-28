@@ -15,37 +15,38 @@ export const markdownParsePlugin = (
   FS.emptyDirSync(dirPath);
   const processor = getProcessor();
   const { file, child } = transformMarkdown(source, processor);
-  const newfilesValue: Record<string, FilesValueType> = {};
   const { filesValue, ignoreRows } = stepOne(
     child.children,
     lang,
     getProcessor(),
     file,
-    true,
     true
   );
-
+  let initStr = ``;
+  if (Array.isArray(ignoreRows) && ignoreRows.length) {
+    initStr += `ignoreRows:${JSON.stringify(ignoreRows)},\n`;
+  }
   Object.entries(filesValue).forEach(([key, item]) => {
     const { copyNode, head, desc, lang } = item;
     const filename = `${key}.${lang}`;
-    const itemValue: FilesValueType = {
-      filename,
-      value: copyNode,
-      comments: {
-        title: head,
-        description: desc,
-      },
-      path: `${fileDirName}/${filename}`,
-    };
-    newfilesValue[key] = itemValue;
+
+    initStr += `
+      ${key}:{
+        filename:\`${filename}\`,
+        value:\`${copyNode}\`,
+        comments:{title:${
+          head ? `<React.Fragment>${head}</React.Fragment>` : "``"
+        },description:${
+      desc ? `<React.Fragment>${desc}</React.Fragment>` : "``"
+    }},
+        path:\`${fileDirName}/${filename}\`,
+      },\n
+    `;
     FS.writeFileSync(`${dirPath}/${filename}`, copyNode, {
       flag: "w+",
       encoding: "utf-8",
     });
   });
 
-  return {
-    filesValue: newfilesValue,
-    ignoreRows,
-  };
+  return initStr;
 };

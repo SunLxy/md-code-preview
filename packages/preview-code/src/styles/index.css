@@ -27,17 +27,13 @@
 .preview-title .preview-title-head h2 {
   font-size: 18px;
   border-bottom: none;
+  line-height: 18px;
+  margin: 5px;
+  /* margin-bottom: 0px;
+  margin-top: 0px; */
 }
-
-.preview-title-body blockquote {
-  margin: 0px;
+.preview-title .preview-title-body {
   padding: 0px;
-}
-
-.preview-title-body ol,
-.preview-title-body li,
-.preview-title-body ul,
-.preview-title-body p {
   margin: 0px;
 }
 

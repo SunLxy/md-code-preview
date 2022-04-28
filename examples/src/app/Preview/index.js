@@ -22,6 +22,7 @@ const PreviewCode = (props) => {
     const getMds = async () => {
       const result = await props.getMdStr();
       if (result && result.default) {
+        console.log(result.default);
         setMdStr({
           source: result.default.source,
           assets: result.default.filesValue,
@@ -35,8 +36,11 @@ const PreviewCode = (props) => {
   // 使用plugin机制获取资源，再进行加载相应的案例组件
   React.useEffect(() => {
     const getAssset = async () => {
-      const assets = require(`@@/code-${fileDirName}/assets.json`);
-      setmdAssets(assets);
+      const assets = require(`@@/code-${fileDirName}/assets.js`);
+      if (assets && assets.default) {
+        console.log(assets.default);
+        setmdAssets(assets.default);
+      }
     };
     getAssset();
   }, [fileDirName]);
@@ -93,11 +97,9 @@ const PreviewCode = (props) => {
 
             const line = node.position.start.line;
             // console.log(isShowNode(mdStr.ignoreRows || [], line), node)
-
             if (inline) {
               return <code {...props} />;
             }
-
             const config = {
               noPreview,
               noScroll,
@@ -110,11 +112,15 @@ const PreviewCode = (props) => {
               const item = mdStr.assets[line];
               // plugin 机制 获取值
               const pluginItem = mdAssets[line];
-              console.log(pluginItem);
-              const code = <code {...props} />;
+              const code = (
+                <pre className={props.className}>
+                  <code {...props} />
+                </pre>
+              );
               return (
                 <React.Fragment>
                   <div>下面是测试loader机制</div>
+                  <pre></pre>
                   <Preview
                     copyNodes={item.value}
                     transform={item.transform}

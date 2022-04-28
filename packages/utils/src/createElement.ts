@@ -12,7 +12,7 @@ export const createElementStr = (
     const TagName = item.tagName;
     const properties = getProperties(item.properties || {}, isAllString);
     code += `<${TagName} ${properties}>${result}</${TagName}>`;
-  } else if (item.type === "text") {
+  } else if (item.type === "text" && item.value !== "\n") {
     code += `${transformSymbol(item.value)}`;
   }
   return code;

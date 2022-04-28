@@ -20,22 +20,30 @@ const Code = (props: CodeProps) => {
     let domArr = [];
     let isTopBorder = true;
     if (comments && Object.keys(comments).length) {
-      if (comments.title) {
+      if (comments.title && typeof comments.title !== "string") {
         domArr.push(
-          <legend ref={titleRef} className="preview-title-head" key="1" />
+          <legend className="preview-title-head" key="1">
+            {comments.title}
+          </legend>
+        );
+        isTopBorder = true;
+      } else if (comments.title) {
+        domArr.push(
+          <legend ref={titleRef} className="preview-title-head" key="2" />
         );
         isTopBorder = true;
       }
       if (comments.description && typeof comments.description !== "string") {
         domArr.push(
-          <div className="preview-title-body" key="2">
-            {comments.description}
+          <div className="preview-title-body" key="3">
+            {" "}
+            {comments.description}{" "}
           </div>
         );
         isTopBorder = false;
       } else if (comments.description) {
         domArr.push(
-          <div className="preview-title-body" ref={descRef} key="2" />
+          <div className="preview-title-body" ref={descRef} key="4" />
         );
         isTopBorder = false;
       }

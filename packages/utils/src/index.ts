@@ -85,7 +85,7 @@ export const getIntervalData = (
     }
     if (current !== -1) {
       loop();
-      desc.unshift(item);
+      desc.push(item);
     }
   };
   loop();
@@ -117,10 +117,10 @@ export const stepOne = (
       const line = item.position.start.line;
       const objs: FilesValueItemType = {
         copyNode: item.value,
+        lang: item.lang,
         // babel 转换后的 代码，最后需要拼接到结果文件中去的
         transform: getTransformValue(item.value, `${index}.${item.lang}`, line),
       };
-
       if (typeof start === "number") {
         ignoreRows.push({ start, end: isLine ? line : end });
         const headNode = processor.runSync(
@@ -141,7 +141,6 @@ export const stepOne = (
         objs.head = headStr;
         objs.code = codeStr;
         objs.desc = descStr;
-        objs.lang = item.lang;
       }
       if (isLine) {
         filesValue[line] = objs;
@@ -236,25 +235,25 @@ export const getProperties = (
   Object.entries(properties).forEach(([key, value]) => {
     // data-code
     if (key === "ariaHidden") {
-      str += ` aria-hidden={${value}} `;
+      str += isAllString
+        ? ` aria-hidden="${value}" `
+        : ` aria-hidden={${value}} `;
     } else if (typeof value === "function") {
       str += isAllString
-        ? ` ${key}=${value.toString()} `
+        ? ` ${key}="${value.toString()}" `
         : ` ${key}={${value.toString()}} `;
     } else if (Array.isArray(value)) {
       str += isAllString
-        ? ` ${key}=${value.join(" ")} `
+        ? ` ${key}="${value.join(" ")}" `
         : ` ${key}="${value.join(" ")}" `;
     } else if (Object.prototype.toString.call(value) === "[object Object]") {
       str += isAllString
-        ? ` ${key}=${JSON.stringify(value)} `
+        ? ` ${key}="${JSON.stringify(value)}" `
         : ` ${key}={${JSON.stringify(value)}} `;
-    } else if (typeof value === "string" && !isAllString) {
-      str += ` ${key}={\`${value}\`}`;
-    } else if (typeof value === "string" && isAllString) {
-      str += ` ${key}=${value}`;
+    } else if (typeof value === "string") {
+      str += isAllString ? ` ${key}="${value}" ` : ` ${key}={\`${value}\`}`;
     } else {
-      str += isAllString ? ` ${key}=${value} ` : ` ${key}={${value}} `;
+      str += isAllString ? ` ${key}="${value}" ` : ` ${key}={${value}} `;
     }
   });
   return str;
