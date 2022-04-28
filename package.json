@@ -5,13 +5,15 @@
   "license": "MIT",
   "scripts": {
     "prepare": "husky install",
-    "build": "npm run build:code && npm run build:plugin",
+    "build": "npm run build:code && npm run build:plugin && npm run build:js",
     "start": "lerna exec --scope examples -- npm run start",
     "build:web": "lerna exec --scope examples -- npm run build",
     "build:code": "lerna exec --scope md-code-preview -- tsbb build",
     "watch:code": "lerna exec --scope md-code-preview -- tsbb watch",
     "watch:plugin": "lerna exec --scope md-code-preview-plugin-loader -- tsbb watch",
     "build:plugin": "lerna exec --scope md-code-preview-plugin-loader -- tsbb build",
+    "watch:js": "lerna exec --scope md-create-js-plugin -- npm run watch",
+    "build:js": "lerna exec --scope md-create-js-plugin -- npm run build",
     "lerna": "lerna",
     "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,html,less,md,json}'"
   },
