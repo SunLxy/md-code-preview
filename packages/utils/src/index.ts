@@ -1,7 +1,7 @@
 import { VFile } from "vfile";
 import { unified, PluggableList } from "unified";
 import remarkParse from "remark-parse";
-import remarkRehype, { one } from "remark-rehype";
+import remarkRehype from "remark-rehype";
 
 import gfm from "remark-gfm";
 import slug from "rehype-slug";

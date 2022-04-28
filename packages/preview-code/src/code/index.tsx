@@ -17,7 +17,8 @@ const Code = (props: CodeProps) => {
 
   const title = React.useMemo(() => {
     let domArr = [];
-    let isTopBorder = false;
+    let isTopBorder = true;
+    console.log(comments);
     if (comments && Object.keys(comments).length) {
       if (comments.title) {
         domArr.push(
@@ -27,7 +28,15 @@ const Code = (props: CodeProps) => {
         );
         isTopBorder = true;
       }
-      if (comments.description) {
+      console.log(comments.description);
+      if (comments.description && typeof comments.description !== "string") {
+        domArr.push(
+          <div className="preview-title-body" key="2">
+            {comments.description}
+          </div>
+        );
+        isTopBorder = false;
+      } else if (comments.description) {
         domArr.push(
           <div className="preview-title-body" ref={descRef} key="2"></div>
         );
@@ -43,7 +52,7 @@ const Code = (props: CodeProps) => {
         {domArr}
       </fieldset>
     );
-  }, [JSON.stringify(comments)]);
+  }, [comments]);
 
   const onCopy = () => {
     const classList = copyRef.current.getAttribute("class");
@@ -84,7 +93,9 @@ const Code = (props: CodeProps) => {
 
   React.useEffect(() => {
     if (descRef.current) {
-      descRef.current.innerHTML = comments.description;
+      if (comments.description && typeof comments.description === "string") {
+        descRef.current.innerHTML = comments.description;
+      }
     }
   }, [descRef.current, JSON.stringify(comments)]);
 

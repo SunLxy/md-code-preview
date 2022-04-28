@@ -38,12 +38,14 @@ export const createElementStr = (
         copyNode: Ignore.filesValue[line].value,
         properties: properties,
       });
-      code += `<Code 
-       copyNode={importCopyNodeRender["${line}"]} 
-       desc={importDescRender["${line}"]}
-       head={importHeadRender["${line}"]}
+      code += `<MdCodePreview 
+       copyNodes={importCopyNodeRender["${line}"]} 
+       comments={{
+         title:importHeadRender["${line}"],
+         description:importDescRender["${line}"]
+       }}
        code={importCodeRender["${line}"]}
-      >{importBaseCodeRender["${line}"]&&importBaseCodeRender["${line}"]()}</Code>`;
+      >{importBaseCodeRender["${line}"]&&importBaseCodeRender["${line}"]()}</MdCodePreview>`;
     } else {
       code += `<${TagName} ${properties}>${result}</${TagName}>`;
     }

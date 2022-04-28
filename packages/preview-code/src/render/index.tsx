@@ -2,7 +2,13 @@ import React from "react";
 import { RenderProps } from "./../interface";
 
 const Render = (props: RenderProps) => {
-  const { transform, previewBodyClassName, dependencies, getComponent } = props;
+  const {
+    transform,
+    previewBodyClassName,
+    dependencies,
+    getComponent,
+    ...others
+  } = props;
   const [showDom, setShowDom] = React.useState(null);
   const domRef = React.useRef(
     `${parseInt(String(Math.random() * 1e9), 10).toString(36)}`
@@ -98,6 +104,7 @@ const Render = (props: RenderProps) => {
   return (
     <div
       children={showDom}
+      {...others}
       className={`preview-body ${previewBodyClassName}`}
       id={domRef.current}
     />

@@ -22,10 +22,10 @@ export interface RenderProps {
 
 export type CommentsType = {
   /** 标题 **/
-  title?: string;
+  title?: React.ReactNode;
   /** 简介 **/
-  description?: string;
-  [k: string]: string;
+  description?: React.ReactNode;
+  [k: string]: React.ReactNode;
 };
 
 export interface CodeProps {

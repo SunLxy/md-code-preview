@@ -2,7 +2,8 @@ import FS from "fs-extra";
 import path from "path";
 import webpack from "webpack";
 import chokidar from "chokidar";
-import { lastReturn, getFileDirName } from "./utils";
+
+import { lastReturn, getFileDirName } from "md-plugin-utils";
 import anymatch from "anymatch";
 export interface MdCodeCreatePluginProps {
   /** 监听的根目录 默认：path.join(process.cwd(), "") */
@@ -69,7 +70,7 @@ class MdCodeCreateJsPlugin {
       FS.emptyDirSync(outDir);
       const result = lastReturn(mdStr);
       Object.entries(result).forEach(([key, value]) => {
-        FS.writeFileSync(`${outDir}/${key}.js`, value, {
+        FS.writeFileSync(`${outDir}/${key}.js`, value as string, {
           encoding: "utf8",
           flag: "w+",
         });
@@ -113,6 +114,7 @@ class MdCodeCreateJsPlugin {
 
   apply(compiler: webpack.Compiler) {
     compiler.hooks.afterPlugins.tap("MdCodeCreatePluginProps", () => {
+      console.log("process.env.NODE_ENV", process.env.NODE_ENV);
       if (process.env.NODE_ENV === "development") {
         chokidar
           .watch(this.matchRules, {

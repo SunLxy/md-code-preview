@@ -41,13 +41,7 @@ export const createStr = (value: {
   import importCodeRender from "./importCodeRender"
   import importBaseCodeRender from "./importBaseCodeRender"
   import copyTextToClipboard from '@uiw/copy-to-clipboard';
-  const Code = (props)=>{
-    console.log(props)
-    return <div>
-      {props.children}
-      {props.code}
-    </div>
-  } 
+  import MdCodePreview from "md-code-preview"
   export default ()=>{
     return <div className="wmde-markdown wmde-markdown-color">
     ${str}
