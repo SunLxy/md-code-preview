@@ -8,7 +8,7 @@ export const createStr = (otherObj: FilesValueType, indexStrs: string) => {
   Object.entries(otherObj).forEach(([key, values]) => {
     const { code, copyNode, head, desc, transform } = values;
     if (code) {
-      codeStr += `${key}:<pre>${code}</pre>,\n`;
+      codeStr += `${key}:<React.Fragment>${code}</React.Fragment>,\n`;
     }
     if (head) {
       headStr += `${key}:<React.Fragment>${head}</React.Fragment>,\n`;

@@ -50,7 +50,7 @@ const Code = (props: CodeProps) => {
     }
     return (
       <fieldset
-        className={`preview-title fieldset ${
+        className={`preview-title preview-fieldset ${
           isTopBorder && "preview-title-top-border"
         }`}
       >
