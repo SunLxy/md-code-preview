@@ -13,9 +13,9 @@ export const createStr = (value: {
   let copyNodeStr = ``;
 
   Array.from(otherMap.entries()).forEach(([key, values]) => {
-    const { code, copyNode, head, desc } = values;
+    const { code, copyNode, head, desc, properties } = values;
     if (code) {
-      codeStr += `${key}:<React.Fragment>${code}</React.Fragment>,\n`;
+      codeStr += `${key}:<pre ${properties}>${code}</pre>,\n`;
     }
     if (head) {
       headStr += `${key}:<React.Fragment>${head}</React.Fragment>,\n`;
@@ -57,10 +57,10 @@ export const createStr = (value: {
 
   return {
     importCodeRender: `import React from "react";\nimport copyTextToClipboard from '@uiw/copy-to-clipboard';\nexport default {${codeStr}}`,
-    importHeadRender: `import React from "react";\nimport copyTextToClipboard from '@uiw/copy-to-clipboard';\nexport default {${headStr}}`,
-    importDescRender: `import React from "react";\nimport copyTextToClipboard from '@uiw/copy-to-clipboard';\nexport default {${descStr}}`,
-    importCopyNodeRender: `import copyTextToClipboard from '@uiw/copy-to-clipboard';\nexport default {${copyNodeStr}}`,
-    importBaseCodeRender: `import copyTextToClipboard from '@uiw/copy-to-clipboard';\nexport default {${baseCode}}`,
+    importHeadRender: `import React from "react";\nexport default {${headStr}}`,
+    importDescRender: `import React from "react";\nexport default {${descStr}}`,
+    importCopyNodeRender: `export default {${copyNodeStr}}`,
+    importBaseCodeRender: `export default {${baseCode}}`,
     index: indexStr,
   };
 };

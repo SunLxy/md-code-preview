@@ -30,7 +30,13 @@ export type StepOneReturn = {
 
 export type OtherMapType = Map<
   number,
-  { head: string; desc: string; code: string; copyNode: string }
+  {
+    head: string;
+    desc: string;
+    code: string;
+    copyNode: string;
+    properties: string;
+  }
 >;
 
 export type MarkDownTreeType = {

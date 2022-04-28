@@ -18,6 +18,7 @@
     "build": "npm run disable:build && npm run bundle && npm run bundle:mini",
     "disable:build": "tsbb build --disable-babel",
     "watch": "tsbb watch  --disable-babel",
+    "watch:bundle": "ncc watch src/index.ts --target node --filename index",
     "bundle": "ncc build src/index.ts --target node --filename index",
     "bundle:mini": "ncc build src/index.ts --target node --filename index --minify"
   },

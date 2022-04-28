@@ -36,9 +36,9 @@ export const createElementStr = (
         desc,
         code: result,
         copyNode: Ignore.filesValue[line].value,
+        properties: properties,
       });
       code += `<Code 
-      ${properties}
        copyNode={importCopyNodeRender["${line}"]} 
        desc={importDescRender["${line}"]}
        head={importHeadRender["${line}"]}
