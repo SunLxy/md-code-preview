@@ -22,7 +22,6 @@ const PreviewCode = (props) => {
     const getMds = async () => {
       const result = await props.getMdStr();
       if (result && result.default) {
-        console.log(result.default);
         setMdStr({
           source: result.default.source,
           assets: result.default.filesValue,
@@ -38,7 +37,6 @@ const PreviewCode = (props) => {
     const getAssset = async () => {
       const assets = require(`@@/code-${fileDirName}/assets.js`);
       if (assets && assets.default) {
-        console.log(assets.default);
         setmdAssets(assets.default);
       }
     };
