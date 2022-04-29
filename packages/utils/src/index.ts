@@ -47,9 +47,12 @@ export const getProcessor = () => {
     .use(rehypePlugins || []);
   return processor;
 };
+
 /**
- * markdown 字符串 转换
- * */
+ * @description: markdown 字符串 转换
+ * @param {string} scope  读取markdown字符串
+ * @param {Processor} processor Processor
+ */
 export const transformMarkdown = (scope: string, processor: Processor) => {
   const file: any = new VFile();
   file.value = scope;
@@ -60,7 +63,12 @@ export const transformMarkdown = (scope: string, processor: Processor) => {
   };
 };
 
-// -------------------  jsx  tsx 之类需要展示效果的这种取之间的内容 ----------------
+/**
+ * @description: 解析代码块以上到标题之间的内容并合并到展示组件中
+ * @param {number} endIndex 当前数组的下标
+ * @param {MarkDownTreeType["children"]} child 通过解析的markdown数据
+ * @param {boolean} isLine  是否是所属的行赋值还是数组下标进行赋值
+ */
 export const getIntervalData = (
   endIndex: number,
   child: MarkDownTreeType["children"],
@@ -97,14 +105,25 @@ export const getIntervalData = (
   };
 };
 
-/** 根据  child.children 找到 code 代码块及其上面到head之间的位置 */
+/**
+ * @description: 根据  child.children 找到 code 代码块及其上面到head之间的位置
+ * @param {MarkDownHastNodeTreeType["children"]} child 通过解析的markdown数据
+ * @param {string[]} lang 解析代码块的语言
+ * @param {Processor} processor Processor
+ * @param {any} file new VFile()赋值后的值
+ * @param {boolean} isLine 是否是所属的行赋值还是数组下标进行赋值
+ * @param {boolean} isPropertiesString  标签转换的属性是否直接返回字符串形式还是直接输出文件的形式
+ * @param {boolean} isInterval 是否需要解析代码块以上到标题之间的内容并合并到展示组件中
+ */
 export const stepOne = (
   child: MarkDownTreeType["children"],
   lang: string[],
   processor: Processor,
   file: any,
-  isLine = false,
-  isPropertiesString: boolean = false
+  isLine: boolean = false,
+  isPropertiesString: boolean = false,
+  // 是否需要查找代码块以上到标题之间的内容并合并到渲染组件内
+  isInterval: boolean = true
 ) => {
   /** 不需要展示的行 **/
   const ignoreRows: IgnoreRows[] = [];
@@ -113,7 +132,15 @@ export const stepOne = (
   // 第一遍先获取 code 及其标题简介位置之类的
   child.forEach((item, index) => {
     if (item.type === "code" && lang.includes(item.lang || "")) {
-      const { start, end, desc, head } = getIntervalData(index, child, isLine);
+      const { start, end, desc, head } = isInterval
+        ? getIntervalData(index, child, isLine)
+        : {
+            start: undefined,
+            end: undefined,
+            desc: undefined,
+            head: undefined,
+          };
+
       const line = item.position.start.line;
       const objs: FilesValueItemType = {
         copyNode: item.value,
@@ -128,7 +155,7 @@ export const stepOne = (
       const codeStr = createElementStr(code, isPropertiesString);
       objs.code = codeStr;
 
-      if (typeof start === "number") {
+      if (typeof start === "number" && isInterval) {
         ignoreRows.push({ start, end: isLine ? line : end });
         const headNode = processor.runSync(
           { children: head, type: "root" } as any,
@@ -157,13 +184,22 @@ export const stepOne = (
   };
 };
 
-// ----------------  查询转转换为dom之后的位置   --------------------
+/**
+ * @description: 查询转转换为dom之后的位置
+ * @param {StepOneReturn} stepOneReturn 第一步的返回值
+ * @param {MarkDownHastNodeTreeType["children"]} child 通过解析的markdown数据
+ * @param {any} file new VFile()赋值后的值
+ * @param {Processor} processor Processor
+ * @param {boolean} isPropertiesString  标签转换的属性是否直接返回字符串形式还是直接输出文件的形式
+ * @param {boolean} isInterval 是否需要解析代码块以上到标题之间的内容并合并到展示组件中
+ */
 export const stepTwo = (
   stepOneReturn: StepOneReturn,
   child: MarkDownHastNodeTreeType["children"],
   file: any,
   processor: Processor,
-  isPropertiesString: boolean = false
+  isPropertiesString: boolean = false,
+  isInterval: boolean = true
 ) => {
   const { ignoreRows, filesValue } = stepOneReturn;
   let indexStr = ``;
@@ -173,8 +209,10 @@ export const stepTwo = (
         indexStr += `<MdCodePreview 
         copyNodes={importCopyNodeRender["${index}"]} 
         comments={{
-          title:importHeadRender["${index}"],
-          description:importDescRender["${index}"]
+          title:${isInterval ? `importHeadRender["${index}"]` : `undefined`},
+          description:${
+            isInterval ? `importDescRender["${index}"]` : `undefined`
+          },
         }}
         code={importCodeRender["${index}"]}
         >{importBaseCodeRender["${index}"]&&importBaseCodeRender["${index}"]()}</MdCodePreview>`;
@@ -191,8 +229,16 @@ export const stepTwo = (
   return createStr(filesValue, indexStr);
 };
 
-// -------------   判断是否需要展示 ----------------
-export const isShowNode = (ignoreRows: IgnoreRows[] = [], index: number) => {
+/**
+ * @description: 判断是否需要展示
+ * @param {IgnoreRows} ignoreRows 忽略的对象
+ * @param {number} index 当前位置下标
+ * @return {boolean}
+ */
+export const isShowNode = (
+  ignoreRows: IgnoreRows[] = [],
+  index: number
+): boolean => {
   let isShow = true;
   let i = 0;
   let lg = ignoreRows.length;
@@ -228,11 +274,16 @@ export const transformSymbol = (str: string) => {
   return str;
 };
 
-// ----------------- 标签属性 拼接字符串  --------------------
+/**
+ * @description: 标签属性 拼接字符串
+ * @param {Record<string, unknown>} properties 属性对象
+ * @param {boolean} isPropertiesString 标签转换的属性是否直接返回字符串形式还是直接输出文件的形式
+ * @return {string}
+ */
 export const getProperties = (
   properties: Record<string, unknown>,
   isPropertiesString: boolean = false
-) => {
+): string => {
   let str = "";
   Object.entries(properties).forEach(([key, value]) => {
     // data-code
@@ -263,7 +314,11 @@ export const getProperties = (
   return str;
 };
 
-// 解析文件 对文件内容进行区分生成临时文件，用于显示组件
+/**
+ * @description: 获取文件夹名称
+ * @param {string} resourcePath  文件的绝对路径
+ * @param {string} rootContext 项目的根目录绝对路径
+ */
 export const getFileDirName = (resourcePath: string, rootContext: string) => {
   return resourcePath
     .replace(rootContext, "")
@@ -272,9 +327,35 @@ export const getFileDirName = (resourcePath: string, rootContext: string) => {
     .replace(/.md$/, "");
 };
 
-export const lastReturn = (scope: string, lang: string[] = ["jsx", "tsx"]) => {
+/**
+ * @description:  最终的返回内容
+ * @param {string} scope markdown字符串
+ * @param {string} lang 解析代码块的语言
+ * @param {boolean} isPropertiesString  标签转换的属性是否直接返回字符串形式还是直接输出文件的形式
+ * @param {boolean} isInterval 是否需要解析代码块以上到标题之间的内容并合并到展示组件中
+ */
+export const lastReturn = (
+  scope: string,
+  lang: string[] = ["jsx", "tsx"],
+  isPropertiesString: boolean = true,
+  isInterval: boolean = true
+) => {
   const processor = getProcessor();
   const { child, file } = transformMarkdown(scope, processor);
-  const One = stepOne(child.children, lang, processor, file);
-  return stepTwo(One, child.children as any, file, processor);
+  const One = stepOne(
+    child.children,
+    lang,
+    processor,
+    file,
+    isPropertiesString,
+    isInterval
+  );
+  return stepTwo(
+    One,
+    child.children as any,
+    file,
+    processor,
+    isPropertiesString,
+    isInterval
+  );
 };

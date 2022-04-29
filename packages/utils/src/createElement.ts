@@ -1,5 +1,9 @@
 import { transformSymbol, getProperties, MarkDownHastNodeTreeType } from ".";
-// ---------------   拼接标签      -----------------
+/**
+ * @description: 拼接标签
+ * @param {MarkDownHastNodeTreeType} item 解析后的dom数据
+ * @param {boolean} isPropertiesString 标签转换的属性是否直接返回字符串形式还是直接输出文件的形式
+ */
 export const createElementStr = (
   item: MarkDownHastNodeTreeType,
   isPropertiesString: boolean = false
