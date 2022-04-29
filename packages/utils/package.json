@@ -20,7 +20,6 @@
   },
   "dependencies": {
     "@babel/standalone": "~7.17.6",
-    "fs-extra": "~10.1.0",
     "remark-parse": "~10.0.1",
     "rehype-attr": "~2.0.8",
     "rehype-autolink-headings": "~6.1.1",
@@ -31,13 +30,12 @@
     "remark-gfm": "~3.0.1",
     "unified": "~10.0.0",
     "vfile": "~5.0.0",
-    "remark-rehype": "~10.1.0"
+    "remark-rehype": "~10.1.0",
+    "@uiw/copy-to-clipboard": "^1.0.12"
   },
   "devDependencies": {
-    "@uiw/copy-to-clipboard": "^1.0.12",
     "@types/hast": "^2.3.4",
     "@types/babel__standalone": "^7.1.4",
-    "@types/fs-extra": "9.0.13",
     "@kkt/ncc": "~1.0.8"
   }
 }
