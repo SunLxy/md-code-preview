@@ -9,17 +9,17 @@ export default (conf, env, options) => {
   conf = rawModules(conf, env, options);
   conf = lessModules(conf, env, options);
 
-  conf.plugins.push(
-    new MdCodePreviewPlugin({
-      cwd: path.join(process.cwd(), ".."),
-      pre: "code",
-      createJs: false,
-      isInterval: false,
-    }),
-    new MdCodePreviewPlugin({
-      cwd: path.join(process.cwd(), ".."),
-    })
-  );
+  // conf.plugins.push(
+  //   new MdCodePreviewPlugin({
+  //     cwd: path.join(process.cwd(), ".."),
+  //     pre: "code",
+  //     createJs: false,
+  //     isInterval: false,
+  //   }),
+  //   new MdCodePreviewPlugin({
+  //     cwd: path.join(process.cwd(), ".."),
+  //   })
+  // );
   conf.module.rules.push({
     test: /.md$/,
     use: [
