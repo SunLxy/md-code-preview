@@ -39,4 +39,6 @@ export interface CodeProps {
 
 export interface PreviewProps extends RenderProps, CodeProps {
   className?: string;
+  /** 是否需要代码块下方的边距  */
+  isSpacing?: boolean;
 }

@@ -23,6 +23,7 @@ import {
   MarkDownHastNodeTreeType,
   StepOneReturn,
   FilesValueItemType,
+  OtherProps,
 } from "./interface";
 export * from "./interface";
 export * from "./createElement";
@@ -111,20 +112,20 @@ export const getIntervalData = (
  * @param {string[]} lang 解析代码块的语言
  * @param {Processor} processor Processor
  * @param {any} file new VFile()赋值后的值
- * @param {boolean} isLine 是否是所属的行赋值还是数组下标进行赋值
- * @param {boolean} isPropertiesString  标签转换的属性是否直接返回字符串形式还是直接输出文件的形式
- * @param {boolean} isInterval 是否需要解析代码块以上到标题之间的内容并合并到展示组件中
+ * @param {OtherProps} otherProps  其他参数
  */
 export const stepOne = (
   child: MarkDownTreeType["children"],
   lang: string[],
   processor: Processor,
   file: any,
-  isLine: boolean = false,
-  isPropertiesString: boolean = false,
-  // 是否需要查找代码块以上到标题之间的内容并合并到渲染组件内
-  isInterval: boolean = true
+  otherProps: OtherProps = {}
 ) => {
+  const {
+    isPropertiesString = false,
+    isInterval = true,
+    isLine = false,
+  } = otherProps || {};
   /** 不需要展示的行 **/
   const ignoreRows: IgnoreRows[] = [];
   /** 行对应的代码 **/
@@ -190,17 +191,16 @@ export const stepOne = (
  * @param {MarkDownHastNodeTreeType["children"]} child 通过解析的markdown数据
  * @param {any} file new VFile()赋值后的值
  * @param {Processor} processor Processor
- * @param {boolean} isPropertiesString  标签转换的属性是否直接返回字符串形式还是直接输出文件的形式
- * @param {boolean} isInterval 是否需要解析代码块以上到标题之间的内容并合并到展示组件中
+ * @param {OtherProps} otherProps  其他参数
  */
 export const stepTwo = (
   stepOneReturn: StepOneReturn,
   child: MarkDownHastNodeTreeType["children"],
   file: any,
   processor: Processor,
-  isPropertiesString: boolean = false,
-  isInterval: boolean = true
+  otherProps: OtherProps = {}
 ) => {
+  const { isPropertiesString = false, isInterval = true } = otherProps || {};
   const { ignoreRows, filesValue } = stepOneReturn;
   let indexStr = ``;
   child.forEach((item, index) => {
@@ -331,31 +331,15 @@ export const getFileDirName = (resourcePath: string, rootContext: string) => {
  * @description:  最终的返回内容
  * @param {string} scope markdown字符串
  * @param {string} lang 解析代码块的语言
- * @param {boolean} isPropertiesString  标签转换的属性是否直接返回字符串形式还是直接输出文件的形式
- * @param {boolean} isInterval 是否需要解析代码块以上到标题之间的内容并合并到展示组件中
+ * @param {OtherProps} otherProps 其他参数
  */
 export const lastReturn = (
   scope: string,
   lang: string[] = ["jsx", "tsx"],
-  isPropertiesString: boolean = true,
-  isInterval: boolean = true
+  otherProps: OtherProps = {}
 ) => {
   const processor = getProcessor();
   const { child, file } = transformMarkdown(scope, processor);
-  const One = stepOne(
-    child.children,
-    lang,
-    processor,
-    file,
-    isPropertiesString,
-    isInterval
-  );
-  return stepTwo(
-    One,
-    child.children as any,
-    file,
-    processor,
-    isPropertiesString,
-    isInterval
-  );
+  const One = stepOne(child.children, lang, processor, file, otherProps);
+  return stepTwo(One, child.children as any, file, processor, otherProps);
 };

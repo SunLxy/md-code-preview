@@ -120,14 +120,76 @@ const PreviewCode = (props) => {
                   <div>下面是测试loader机制</div>
                   <pre></pre>
                   <Preview
+                    isSpacing={false}
                     copyNodes={item.value}
                     transform={item.transform}
                     dependencies={dependencies}
                     code={code}
                     comments={item.comments}
                   />
-                  <div>下面是测试plugin机制</div>
+                </React.Fragment>
+              );
+            }
+
+            if (
+              Object.keys(config).filter((name) => config[name] !== undefined)
+                .length === 0
+            ) {
+              return <code {...props} />;
+            }
+
+            return <React.Fragment />;
+          },
+        }}
+      />
+      <MarkdownPreview
+        style={{ padding: "15px 15px" }}
+        source={mdStr.source}
+        components={{
+          /**
+           * bgWhite 设置代码预览背景白色，否则为格子背景。
+           * noCode 不显示代码编辑器。
+           * noPreview 不显示代码预览效果。
+           * noScroll 预览区域不显示滚动条。
+           * codePen 显示 Codepen 按钮，要特别注意 包导入的问题，实例中的 import 主要用于 Codepen 使用。
+           */
+          code: ({ inline, node, ...props }) => {
+            const {
+              noPreview,
+              noScroll,
+              bgWhite,
+              noCode,
+              codePen,
+              codeSandboxOption,
+            } = props;
+
+            const line = node.position.start.line;
+            // console.log(isShowNode(mdStr.ignoreRows || [], line), node)
+            if (inline) {
+              return <code {...props} />;
+            }
+            const config = {
+              noPreview,
+              noScroll,
+              bgWhite,
+              noCode,
+              codePen,
+              codeSandboxOption,
+            };
+            if (mdStr.assets[line]) {
+              const item = mdStr.assets[line];
+              // plugin 机制 获取值
+              const pluginItem = mdAssets[line];
+              const code = (
+                <pre className={props.className}>
+                  <code {...props} />
+                </pre>
+              );
+              return (
+                <React.Fragment>
+                  <div>下面是测试plugin机制,不忽略代码块上面到标题部分</div>
                   <Preview
+                    isSpacing={false}
                     copyNodes={pluginItem.value}
                     getComponent={() => import(`@@/${pluginItem.path}`)}
                     code={code}

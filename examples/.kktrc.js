@@ -14,6 +14,7 @@ export default (conf, env, options) => {
       cwd: path.join(process.cwd(), ".."),
       pre: "code",
       createJs: false,
+      isInterval: false,
     }),
     new MdCodePreviewPlugin({
       cwd: path.join(process.cwd(), ".."),

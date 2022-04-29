@@ -35,8 +35,8 @@ export const createStr = (
   const indexStr = `
   import React from "react";
   import importCopyNodeRender from "./importCopyNodeRender"
-  ${isInterval ? `import importHeadRender from "./importHeadRender""` : ""}
-  ${isInterval ? `import importDescRender from "./importDescRender"` : ""}
+  ${isInterval ? `import importHeadRender from "./importHeadRender"` : ``}
+  ${isInterval ? `import importDescRender from "./importDescRender"` : ``}
   import importCodeRender from "./importCodeRender"
   import importBaseCodeRender from "./importBaseCodeRender"
   import copyTextToClipboard from '@uiw/copy-to-clipboard';

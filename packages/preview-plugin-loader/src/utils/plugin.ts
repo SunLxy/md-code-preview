@@ -7,7 +7,8 @@ export const markdownParsePlugin = (
   source: string,
   fileDirName: string,
   savePath: string,
-  lang: string[] = ["jsx", "tsx"]
+  lang: string[] = ["jsx", "tsx"],
+  isInterval: boolean
 ) => {
   const dirPath = path.join(savePath, fileDirName);
   // 置空文件夹
@@ -19,7 +20,7 @@ export const markdownParsePlugin = (
     lang,
     getProcessor(),
     file,
-    true
+    { isLine: true, isInterval }
   );
   let initStr = ``;
   if (Array.isArray(ignoreRows) && ignoreRows.length) {

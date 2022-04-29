@@ -21,6 +21,8 @@ export interface MdCodePreviewPluginProps {
   pre?: string;
   /** 是否直接把markdown转换成react代码输出 **/
   createJs?: boolean;
+  /** 是否需要解析代码块以上到标题之间的内容并合并到展示组件中 **/
+  isInterval?: boolean;
 }
 
 // 输出文件 默认路径去除根路径，其他的拼接起来当文件夹名称，每个文件夹下对应当前md文件所有的 代码块
@@ -37,6 +39,7 @@ class MdCodePreviewPlugin {
   lang: string[] = ["jsx", "tsx"];
   pre: string = "";
   createJs: boolean = true;
+  isInterval: boolean = true;
 
   constructor(props: MdCodePreviewPluginProps = {}) {
     this.cwd = props.cwd || path.join(process.cwd(), "");
@@ -66,6 +69,9 @@ class MdCodePreviewPlugin {
     if (Reflect.has(props, "createJs")) {
       this.createJs = Reflect.get(props, "createJs");
     }
+    if (Reflect.has(props, "isInterval")) {
+      this.isInterval = Reflect.get(props, "isInterval");
+    }
     this.getPathDeep(this.cwd);
   }
 
@@ -84,19 +90,24 @@ class MdCodePreviewPlugin {
     FS.emptyDirSync(outDir);
     if (mdStr.trim()) {
       if (this.createJs) {
-        const result = lastReturn(mdStr, this.lang);
+        const result = lastReturn(mdStr, this.lang, {
+          isInterval: this.isInterval,
+        });
         Object.entries(result).forEach(([key, value]) => {
-          FS.writeFileSync(`${outDir}/${key}.js`, value as string, {
-            encoding: "utf8",
-            flag: "w+",
-          });
+          if (value) {
+            FS.writeFileSync(`${outDir}/${key}.js`, value as string, {
+              encoding: "utf8",
+              flag: "w+",
+            });
+          }
         });
       } else {
         const initStr = markdownParsePlugin(
           mdStr,
           fileDirNames,
           this.output,
-          this.lang
+          this.lang,
+          this.isInterval
         );
         if (initStr) {
           const dirPath = path.join(this.output, fileDirNames);
