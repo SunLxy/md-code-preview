@@ -19,8 +19,8 @@ export default function App() {
       <Preview
         // getMdStr={() => import("md-code-preview/README.md")}
         // fileDirName="packages/preview-code/README.md"
-        getMdStr={() => import(`./App${lang}.md`)}
-        fileDirName={`examples/src/app/App${lang}.md`}
+        getMdStr={() => import(`md-code-preview/README${lang}.md`)}
+        fileDirName={`packages/preview-code/README${lang}.md`}
         dependencies={{ Button, React, ReactDOM, Demo }}
       />
     </React.Fragment>
