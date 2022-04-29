@@ -104,7 +104,7 @@ export const stepOne = (
   processor: Processor,
   file: any,
   isLine = false,
-  isAllString: boolean = false
+  isPropertiesString: boolean = false
 ) => {
   /** 不需要展示的行 **/
   const ignoreRows: IgnoreRows[] = [];
@@ -125,7 +125,7 @@ export const stepOne = (
         { children: [item], type: "root" } as any,
         file
       ) as any;
-      const codeStr = createElementStr(code, isAllString);
+      const codeStr = createElementStr(code, isPropertiesString);
       objs.code = codeStr;
 
       if (typeof start === "number") {
@@ -139,8 +139,8 @@ export const stepOne = (
           file
         ) as any;
 
-        const headStr = createElementStr(headNode, isAllString);
-        const descStr = createElementStr(descNode, isAllString);
+        const headStr = createElementStr(headNode, isPropertiesString);
+        const descStr = createElementStr(descNode, isPropertiesString);
         objs.head = headStr;
         objs.desc = descStr;
       }
@@ -163,7 +163,7 @@ export const stepTwo = (
   child: MarkDownHastNodeTreeType["children"],
   file: any,
   processor: Processor,
-  isAllString: boolean = false
+  isPropertiesString: boolean = false
 ) => {
   const { ignoreRows, filesValue } = stepOneReturn;
   let indexStr = ``;
@@ -183,7 +183,7 @@ export const stepTwo = (
           { children: [item], type: "root" } as any,
           file
         ) as any;
-        const nodeStr = createElementStr(Nodes, isAllString);
+        const nodeStr = createElementStr(Nodes, isPropertiesString);
         indexStr += nodeStr;
       }
     }
@@ -231,31 +231,33 @@ export const transformSymbol = (str: string) => {
 // ----------------- 标签属性 拼接字符串  --------------------
 export const getProperties = (
   properties: Record<string, unknown>,
-  isAllString: boolean = false
+  isPropertiesString: boolean = false
 ) => {
   let str = "";
   Object.entries(properties).forEach(([key, value]) => {
     // data-code
     if (key === "ariaHidden") {
-      str += isAllString
+      str += isPropertiesString
         ? ` aria-hidden="${value}" `
         : ` aria-hidden={${value}} `;
     } else if (typeof value === "function") {
-      str += isAllString
+      str += isPropertiesString
         ? ` ${key}="${value.toString()}" `
         : ` ${key}={${value.toString()}} `;
     } else if (Array.isArray(value)) {
-      str += isAllString
+      str += isPropertiesString
         ? ` ${key}="${value.join(" ")}" `
         : ` ${key}="${value.join(" ")}" `;
     } else if (Object.prototype.toString.call(value) === "[object Object]") {
-      str += isAllString
+      str += isPropertiesString
         ? ` ${key}="${JSON.stringify(value)}" `
         : ` ${key}={${JSON.stringify(value)}} `;
     } else if (typeof value === "string") {
-      str += isAllString ? ` ${key}="${value}" ` : ` ${key}={\`${value}\`}`;
+      str += isPropertiesString
+        ? ` ${key}="${value}" `
+        : ` ${key}={\`${value}\`}`;
     } else {
-      str += isAllString ? ` ${key}="${value}" ` : ` ${key}={${value}} `;
+      str += isPropertiesString ? ` ${key}="${value}" ` : ` ${key}={${value}} `;
     }
   });
   return str;
