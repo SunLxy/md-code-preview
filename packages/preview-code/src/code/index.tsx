@@ -20,32 +20,34 @@ const Code = (props: CodeProps) => {
     let domArr = [];
     let isTopBorder = true;
     if (comments && Object.keys(comments).length) {
-      if (comments.title && typeof comments.title !== "string") {
-        domArr.push(
-          <legend className="preview-title-head" key="1">
-            {comments.title}
-          </legend>
-        );
-        isTopBorder = true;
-      } else if (comments.title) {
-        domArr.push(
-          <legend ref={titleRef} className="preview-title-head" key="2" />
-        );
-        isTopBorder = true;
+      /** 判断标题 **/
+      if (comments.title) {
+        if (typeof comments.title !== "string") {
+          domArr.push(
+            <legend className="preview-title-head" key="1">
+              {comments.title}
+            </legend>
+          );
+        } else {
+          domArr.push(
+            <legend ref={titleRef} className="preview-title-head" key="2" />
+          );
+        }
       }
-      if (comments.description && typeof comments.description !== "string") {
-        domArr.push(
-          <div className="preview-title-body" key="3">
-            {" "}
-            {comments.description}{" "}
-          </div>
-        );
+      /** 判断简介说明 **/
+      if (comments.description) {
         isTopBorder = false;
-      } else if (comments.description) {
-        domArr.push(
-          <div className="preview-title-body" ref={descRef} key="4" />
-        );
-        isTopBorder = false;
+        if (typeof comments.description !== "string") {
+          domArr.push(
+            <div className="preview-title-body" key="3">
+              {comments.description}
+            </div>
+          );
+        } else {
+          domArr.push(
+            <div className="preview-title-body" ref={descRef} key="4" />
+          );
+        }
       }
     }
     return (
