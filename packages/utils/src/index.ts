@@ -286,29 +286,34 @@ export const getProperties = (
 ): string => {
   let str = "";
   Object.entries(properties).forEach(([key, value]) => {
-    // data-code
-    if (key === "ariaHidden") {
+    let newKey = key;
+
+    if (newKey === "ariaHidden") {
+      newKey = "aria-hidden";
+    } else if (newKey === "className" && isPropertiesString) {
+      newKey = "class";
+    }
+
+    if (typeof value === "function") {
       str += isPropertiesString
-        ? ` aria-hidden="${value}" `
-        : ` aria-hidden={${value}} `;
-    } else if (typeof value === "function") {
-      str += isPropertiesString
-        ? ` ${key}="${value.toString()}" `
-        : ` ${key}={${value.toString()}} `;
+        ? ` ${newKey}="${value.toString()}" `
+        : ` ${newKey}={${value.toString()}} `;
     } else if (Array.isArray(value)) {
       str += isPropertiesString
-        ? ` ${key}="${value.join(" ")}" `
-        : ` ${key}="${value.join(" ")}" `;
+        ? ` ${newKey}="${value.join(" ")}" `
+        : ` ${newKey}="${value.join(" ")}" `;
     } else if (Object.prototype.toString.call(value) === "[object Object]") {
       str += isPropertiesString
-        ? ` ${key}="${JSON.stringify(value)}" `
-        : ` ${key}={${JSON.stringify(value)}} `;
+        ? ` ${newKey}="${JSON.stringify(value)}" `
+        : ` ${newKey}={${JSON.stringify(value)}} `;
     } else if (typeof value === "string") {
       str += isPropertiesString
-        ? ` ${key}="${value}" `
-        : ` ${key}={\`${value}\`}`;
+        ? ` ${newKey}="${value}" `
+        : ` ${newKey}={\`${value}\`}`;
     } else {
-      str += isPropertiesString ? ` ${key}="${value}" ` : ` ${key}={${value}} `;
+      str += isPropertiesString
+        ? ` ${newKey}="${value}" `
+        : ` ${newKey}={${value}} `;
     }
   });
   return str;
