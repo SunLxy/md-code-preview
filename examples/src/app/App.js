@@ -10,14 +10,14 @@ export default function App() {
   console.log(lang);
   return (
     <React.Fragment>
-      <Preview2 />
-      {/* <Button
+      <Button
         onClick={() => {
           setLang(!lang ? ".as" : "");
         }}
       >
         切换语言
-      </Button> */}
+      </Button>
+      <Preview2 lang={lang} />
       {/* <Preview
         // getMdStr={() => import("md-code-preview/README.md")}
         // fileDirName="packages/preview-code/README.md"

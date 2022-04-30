@@ -5,7 +5,7 @@ const PreviewCode = (props) => {
 
   React.useEffect(() => {
     const getasr = async () => {
-      const result = await import("./../App.as.md");
+      const result = await import(`./../App${props.lang}.md`);
       const DomDefault = result.default;
       setDome(
         <React.Suspense>
@@ -14,7 +14,7 @@ const PreviewCode = (props) => {
       );
     };
     getasr();
-  }, []);
+  }, [props.lang]);
 
   return <React.Fragment>{Dome}</React.Fragment>;
 };

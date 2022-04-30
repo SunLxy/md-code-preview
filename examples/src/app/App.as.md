@@ -19,7 +19,7 @@ export default () => {
   return (
     <div>
       <Demo />
-      <button>按钮{window.a}</button>
+      <button>按钮{window.HOSTY}</button>
       <Button>按钮2</Button>
     </div>
   );
