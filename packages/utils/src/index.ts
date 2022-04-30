@@ -226,7 +226,10 @@ export const stepTwo = (
       }
     }
   });
-  return createStr(filesValue, indexStr);
+  return {
+    filesValue,
+    indexStr,
+  };
 };
 
 /**
@@ -346,5 +349,12 @@ export const lastReturn = (
   const processor = getProcessor();
   const { child, file } = transformMarkdown(scope, processor);
   const One = stepOne(child.children, lang, processor, file, otherProps);
-  return stepTwo(One, child.children as any, file, processor, otherProps);
+  const { filesValue, indexStr } = stepTwo(
+    One,
+    child.children as any,
+    file,
+    processor,
+    otherProps
+  );
+  return createStr(filesValue, indexStr);
 };

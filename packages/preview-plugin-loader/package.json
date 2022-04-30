@@ -18,6 +18,10 @@
     "watch": "tsbb watch"
   },
   "dependencies": {
+    "@babel/parser": "^7.17.10",
+    "@babel/traverse": "^7.17.10",
+    "@babel/types": "^7.17.10",
+    "@babel/generator": "^7.17.10",
     "@babel/standalone": "~7.17.6",
     "fs-extra": "~10.0.0",
     "loader-utils": "3.2.0",
