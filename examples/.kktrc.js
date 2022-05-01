@@ -11,20 +11,19 @@ export default (conf, env, options) => {
   // console.log('env:', env)
   conf = rawModules(conf, env, options);
   conf = lessModules(conf, env, options);
-  // conf.plugins
-  //   .push(
-  //     new MdCodePreviewPlugin({
-  //       cwd: path.join(process.cwd(), ".."),
-  //       pre: "code",
-  //       createJs: false,
-  //       isInterval: false,
-  //     }),
-  //     new MdCodePreviewPlugin({
-  //       cwd: path.join(process.cwd(), ".."),
-  //     })
-  //   )
+  conf.plugins.push(
+    new MdCodePreviewPlugin({
+      cwd: path.join(process.cwd(), ".."),
+      pre: "code",
+      createJs: false,
+      isInterval: false,
+    }),
+    new MdCodePreviewPlugin({
+      cwd: path.join(process.cwd(), ".."),
+    })
+  );
 
-  conf = mdCodeModulesLoader(conf);
+  // conf = mdCodeModulesLoader(conf);
 
   conf.resolve = {
     ...conf.resolve,
