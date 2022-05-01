@@ -7,7 +7,7 @@ const PreviewCode = (props) => {
     const getasr = async () => {
       const DomDefault = React.lazy(() => import(`./../App${props.lang}.md`));
       setDome(
-        <React.Suspense>
+        <React.Suspense fallback="loading...">
           <DomDefault />
         </React.Suspense>
       );
