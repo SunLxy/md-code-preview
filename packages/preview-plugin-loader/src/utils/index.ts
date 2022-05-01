@@ -296,8 +296,11 @@ const hasJsxRuntime = (() => {
   }
 })();
 
-/** 配置react代码的babel-loader */
-const getBabelLoader = () => {
+/**
+ * 配置react代码的babel-loader
+ * 直接搬 create-react-app 内的配置 (https://github.com/facebook/create-react-app/blob/f99167c014a728ec856bda14f87181d90b050813/packages/react-scripts/config/webpack.config.js#L416-L465)
+ */
+const getModulesBabelLoader = () => {
   const webpackEnv = process.env.NODE_ENV;
   const isEnvDevelopment = webpackEnv === "development";
   const isEnvProduction = webpackEnv === "production";
@@ -364,7 +367,7 @@ export const mdCodeModulesLoader = (
         ruleItem.oneOf.unshift({
           test: /.md$/,
           use: [
-            getBabelLoader(),
+            getModulesBabelLoader(),
             {
               loader: "md-code-preview-plugin-loader",
               options: { isInterval },
