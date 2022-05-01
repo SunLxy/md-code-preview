@@ -135,11 +135,7 @@ export const stepOne = (
   file: any,
   otherProps: OtherProps = {}
 ) => {
-  const {
-    isPropertiesString = false,
-    isInterval = true,
-    isLine = false,
-  } = otherProps || {};
+  const { isInterval = true, isLine = false } = otherProps || {};
   /** 不需要展示的行 **/
   const ignoreRows: IgnoreRows[] = [];
   /** 行对应的代码 **/
@@ -177,7 +173,7 @@ export const stepOne = (
         { children: [item], type: "root" } as any,
         file
       ) as any;
-      const codeStr = createElementStr(code, isPropertiesString);
+      const codeStr = createElementStr(code);
       objs.code = codeStr;
 
       if (typeof start === "number" && isInterval) {
@@ -191,8 +187,8 @@ export const stepOne = (
           file
         ) as any;
 
-        const headStr = createElementStr(headNode, isPropertiesString);
-        const descStr = createElementStr(descNode, isPropertiesString);
+        const headStr = createElementStr(headNode);
+        const descStr = createElementStr(descNode);
         objs.head = headStr;
         objs.desc = descStr;
       }
@@ -224,7 +220,7 @@ export const stepTwo = (
   processor: Processor,
   otherProps: OtherProps = {}
 ) => {
-  const { isPropertiesString = false, isInterval = true } = otherProps || {};
+  const { isInterval = true } = otherProps || {};
   const { ignoreRows, filesValue } = stepOneReturn;
   let indexStr = ``;
   child.forEach((item, index) => {
@@ -245,7 +241,7 @@ export const stepTwo = (
           { children: [item], type: "root" } as any,
           file
         ) as any;
-        const nodeStr = createElementStr(Nodes, isPropertiesString);
+        const nodeStr = createElementStr(Nodes);
         indexStr += nodeStr;
       }
     }
@@ -294,6 +290,7 @@ export const SymbolMap = new Map([
   ["=>", "&#61;&gt;"],
   ["/>", "&#47;&gt;"],
 ]);
+
 export const transformSymbol = (str: string) => {
   let newStr = "";
   str.split("").forEach((va) => {
@@ -338,21 +335,15 @@ export const styleIterator = (value: string) => {
 /**
  * @description: 标签属性 拼接字符串
  * @param {Record<string, unknown>} properties 属性对象
- * @param {boolean} isPropertiesString 标签转换的属性是否直接返回字符串形式还是直接输出文件的形式
  * @return {string}
  */
-export const getProperties = (
-  properties: Record<string, unknown>,
-  isPropertiesString: boolean = false
-): string => {
+export const getProperties = (properties: Record<string, unknown>): string => {
   let str = "";
   Object.entries(properties).forEach(([key, value]) => {
     let newKey = key;
     let newValue = value;
     if (newKey === "ariaHidden") {
       newKey = "aria-hidden";
-    } else if (newKey === "className" && isPropertiesString) {
-      newKey = "class";
     }
 
     if (newKey === "style" && typeof value === "string") {
@@ -362,25 +353,15 @@ export const getProperties = (
     if (newKey === "data-code") {
       str += ` ${newKey}={\`${stringEscape(newValue as string)}\`} `;
     } else if (typeof newValue === "function") {
-      str += isPropertiesString
-        ? ` ${newKey}="${newValue.toString()}" `
-        : ` ${newKey}={${newValue.toString()}} `;
+      str += ` ${newKey}={${newValue.toString()}} `;
     } else if (Array.isArray(newValue)) {
-      str += isPropertiesString
-        ? ` ${newKey}="${newValue.join(" ")}" `
-        : ` ${newKey}="${newValue.join(" ")}" `;
+      str += ` ${newKey}="${newValue.join(" ")}" `;
     } else if (Object.prototype.toString.call(newValue) === "[object Object]") {
-      str += isPropertiesString
-        ? ` ${newKey}="${JSON.stringify(newValue)}" `
-        : ` ${newKey}={${JSON.stringify(newValue)}} `;
+      str += ` ${newKey}={${JSON.stringify(newValue)}} `;
     } else if (typeof newValue === "string") {
-      str += isPropertiesString
-        ? ` ${newKey}="${newValue}" `
-        : ` ${newKey}={\`${newValue}\`}`;
+      str += ` ${newKey}={\`${newValue}\`}`;
     } else {
-      str += isPropertiesString
-        ? ` ${newKey}="${newValue}" `
-        : ` ${newKey}={${newValue}} `;
+      str += ` ${newKey}={${newValue}} `;
     }
   });
   return str;

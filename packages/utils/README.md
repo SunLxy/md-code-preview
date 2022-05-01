@@ -149,7 +149,6 @@ const result = transformSymbol("/>");
 /**
  * @description: 标签属性 拼接字符串
  * @param {Record<string, unknown>} properties 属性对象
- * @param {boolean} isPropertiesString 标签转换的属性是否直接返回字符串形式还是直接输出文件的形式
  * @return {string}
  */
 const result = getProperties(
@@ -183,10 +182,9 @@ const result = getFileDirName(
 /**
  * @description: 拼接标签
  * @param {MarkDownHastNodeTreeType} item 解析后的dom数据
- * @param {boolean} isPropertiesString 标签转换的属性是否直接返回字符串形式还是直接输出文件的形式
  */
 
-const result = createElementStr(item, isPropertiesString);
+const result = createElementStr(item);
 ```
 
 **createStr**

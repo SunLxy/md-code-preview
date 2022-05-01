@@ -60,8 +60,6 @@ export type MarkDownHastNodeTreeType = {
 };
 
 export type OtherProps = {
-  /** 标签转换的属性是否直接返回字符串形式还是直接输出文件的形式 **/
-  isPropertiesString?: boolean;
   /** 是否需要解析代码块以上到标题之间的内容并合并到展示组件中 **/
   isInterval?: boolean;
   /** 是否是所属的行赋值还是数组下标进行赋值 ***/
