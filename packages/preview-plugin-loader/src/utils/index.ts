@@ -2,6 +2,7 @@ import { parse } from "@babel/parser";
 import traverse from "@babel/traverse";
 import * as t from "@babel/types";
 import generate from "@babel/generator";
+import webpack from "webpack";
 export * from "./plugin";
 export * from "./loader";
 export * from "./interface";
@@ -13,6 +14,7 @@ import {
   stepOne,
   stepTwo,
 } from "md-plugin-utils";
+import getCacheIdentifier from "react-dev-utils/getCacheIdentifier";
 
 export type DepsType = Record<string, { default: string; other: string[] }>;
 export type DepNamespacesType = Record<string, string>;
@@ -209,6 +211,9 @@ export const createOtherStr = (FilesValue: FilesValueType) => {
   `;
 };
 
+/**
+ * 最终的结果返回 react 代码
+ * ***/
 export const lastReturnString = (props: {
   depsStr: string;
   indexStr: string;
@@ -228,6 +233,15 @@ export default  ()=>{
 `;
 };
 
+/**
+ * 1. 解析代码 获取需要渲染的代码块和标题简介部分
+ * 2. 对转换好的代码进行字符串化，并拼接好渲染的代码块(解析代码块的依赖，渲染的代码块不需要进行转换，只移出 import/require 引入)
+ * 3. 添加渲染代码块的组件字符串
+ * 4. 所有内容拼接成一个字符串
+ * 5. 通过babel-loader 进行转换成模块
+ * 6. 返回babel-loder 结果
+ * 7. 页面渲染
+ * ***/
 /**
  * @description:  最终的返回内容
  * @param {string} scope markdown字符串
@@ -266,4 +280,93 @@ export const lastReturn = (
   const otherStr = createOtherStr(filesValue);
   const baseStr = createBaseCodeRenderStr(codeArr);
   return lastReturnString({ depsStr, indexStr, baseStr, otherStr });
+};
+
+/** 判断是否引入 react/jsx-runtime **/
+const hasJsxRuntime = (() => {
+  if (process.env.DISABLE_NEW_JSX_TRANSFORM === "true") {
+    return false;
+  }
+
+  try {
+    require.resolve("react/jsx-runtime");
+    return true;
+  } catch (e) {
+    return false;
+  }
+})();
+
+/** 配置react代码的babel-loader */
+const getBabelLoader = () => {
+  const webpackEnv = process.env.NODE_ENV;
+  const isEnvDevelopment = webpackEnv === "development";
+  const isEnvProduction = webpackEnv === "production";
+
+  return {
+    loader: require.resolve("babel-loader"),
+    options: {
+      customize: require.resolve("babel-preset-react-app/webpack-overrides"),
+      presets: [
+        [
+          require.resolve("babel-preset-react-app"),
+          {
+            runtime: hasJsxRuntime ? "automatic" : "classic",
+          },
+        ],
+      ],
+      // @remove-on-eject-begin
+      babelrc: false,
+      configFile: false,
+      // Make sure we have a unique cache identifier, erring on the
+      // side of caution.
+      // We remove this when the user ejects because the default
+      // is sane and uses Babel options. Instead of options, we use
+      // the react-scripts and babel-preset-react-app versions.
+      cacheIdentifier: getCacheIdentifier(
+        isEnvProduction ? "production" : isEnvDevelopment && "development",
+        [
+          "babel-plugin-named-asset-import",
+          "babel-preset-react-app",
+          "react-dev-utils",
+          "react-scripts",
+        ]
+      ),
+      // // @remove-on-eject-end
+      // plugins: [
+      //   isEnvDevelopment &&
+      //   shouldUseReactRefresh &&
+      //   require.resolve('react-refresh/babel'),
+      // ].filter(Boolean),
+      // This is a feature of `babel-loader` for webpack (not Babel itself).
+      // It enables caching results in ./node_modules/.cache/babel-loader/
+      // directory for faster rebuilds.
+      cacheDirectory: true,
+      // See #6846 for context on why cacheCompression is disabled
+      cacheCompression: false,
+      compact: isEnvProduction,
+    },
+  };
+};
+
+/**
+ * 配置好markdown的loader
+ * **/
+export const mdCodeLoader = (config: webpack.Configuration) => {
+  console.log(getCacheIdentifier);
+  config.module.rules.forEach((ruleItem) => {
+    if (typeof ruleItem === "object") {
+      if (ruleItem.oneOf) {
+        ruleItem.oneOf.unshift({
+          test: /.md$/,
+          use: [
+            getBabelLoader(),
+            {
+              loader: "md-code-preview-plugin-loader",
+            },
+          ],
+        });
+      }
+    }
+  });
+  return config;
 };
