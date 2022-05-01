@@ -423,6 +423,7 @@ export const createLoaderRetuen = (
     code: string;
     deps: DepsType;
     depNamespaces: DepNamespacesType;
+    depDirects: DepNamespacesType;
   },
   otherProps: OtherProps = {}
 ) => {
@@ -438,18 +439,20 @@ export const createLoaderRetuen = (
   );
   const codeArr: string[] = [];
   const depsArr: DepsType[] = [];
+  const depDirectsArr: DepNamespacesType[] = [];
   const depNamespacesArr: DepNamespacesType[] = [];
   Object.entries(filesValue).forEach(([key, itemValue]) => {
     const { copyNode } = itemValue;
-    const { code, depNamespaces, deps } = transformCode(
+    const { code, depNamespaces, deps, depDirects } = transformCode(
       copyNode,
       `BaseCodeRenderComponent${key}`
     );
     codeArr.push(code);
     depsArr.push(deps);
     depNamespacesArr.push(depNamespaces);
+    depDirectsArr.push(depDirects);
   });
-  const depsStr = createDepsStr(depsArr, depNamespacesArr);
+  const depsStr = createDepsStr(depsArr, depNamespacesArr, depDirectsArr);
   const otherStr = createOtherStr(filesValue);
   const baseStr = createBaseCodeRenderStr(codeArr);
   return splicingString({ depsStr, indexStr, baseStr, otherStr });

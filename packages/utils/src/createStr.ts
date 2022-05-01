@@ -78,16 +78,19 @@ export const createBaseCodeRenderStr = (codeArr: string[]) => {
  * **/
 export const createDepsStr = (
   deps: DepsType[],
-  depNamespaces: DepNamespacesType[]
+  depNamespaces: DepNamespacesType[],
+  depDirects: DepNamespacesType[]
 ) => {
   let defaultStr = ``;
   let asStr = ``;
   let otherStr = ``;
-
+  let directStr = ``;
   // 为了记录是否已经创建过了
   const defaultMap = new Map<string, string>([]);
   const asMap = new Map<string, string>([]);
   const otherMap = new Map<string, string[]>([]);
+  const directMap = new Map<string, string>([]);
+
   /**
    * 1. 先创建 default 的字符串
    * 2. 再创建 as 方式的字符串
@@ -98,7 +101,7 @@ export const createDepsStr = (
       const { default: defaultValue, other } = itemValue;
       if (defaultValue && !defaultMap.has(key)) {
         defaultMap.set(key, defaultValue);
-        defaultStr += `import ${defaultValue} from "${key}"\n`;
+        defaultStr += `import ${defaultValue} from "${key}";\n`;
       }
       if (other && Array.isArray(other)) {
         const oldOtherArr = otherMap.get(key) || [];
@@ -111,9 +114,18 @@ export const createDepsStr = (
           }
         });
         if (childStr) {
-          otherStr += `import { ${childStr} } from "${key}"\n`;
+          otherStr += `import { ${childStr} } from "${key}";\n`;
         }
         otherMap.set(key, oldOtherArr);
+      }
+    });
+  });
+
+  depDirects.forEach((rowItem) => {
+    Object.entries(rowItem).forEach(([key, value]) => {
+      if (!directMap.has(key)) {
+        directStr += `import "${key}";\n`;
+        directMap.set(key, value);
       }
     });
   });
@@ -121,14 +133,15 @@ export const createDepsStr = (
   depNamespaces.forEach((rowItem) => {
     Object.entries(rowItem).forEach(([key, value]) => {
       if (!asMap.has(key)) {
-        asStr += `import ${value} from "${key}"\n`;
+        asStr += `import ${value} from "${key}";\n`;
+        asMap.set(key, value);
       }
     });
   });
 
   // 判断是否存在 React 依赖
   if (!defaultMap.has("react")) {
-    defaultStr += `import React from "react"\n`;
+    defaultStr += `import React from "react";\n`;
   }
 
   return `
@@ -137,6 +150,7 @@ export const createDepsStr = (
   ${defaultStr}  
   ${asStr}  
   ${otherStr}
+  ${directStr}
   `;
 };
 

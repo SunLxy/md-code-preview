@@ -1,205 +1,487 @@
-# React Markdown Preview
+# Alert 确认对话框
 
-<!--dividing-->
+[![Open in unpkg](https://img.shields.io/badge/Open%20in-unpkg-blue)](https://uiwjs.github.io/npm-unpkg/#/pkg/@uiw/react-alert/file/README.md)
+[![NPM Downloads](https://img.shields.io/npm/dm/@uiw/react-alert.svg?style=flat)](https://www.npmjs.com/package/@uiw/react-alert)
+[![npm version](https://img.shields.io/npm/v/@uiw/react-alert.svg?label=@uiw/react-alert)](https://npmjs.com/@uiw/react-alert)
 
-[![Build and Deploy](https://github.com/uiwjs/react-markdown-preview/actions/workflows/ci.marster.yml/badge.svg)](https://github.com/uiwjs/react-markdown-preview/actions/workflows/ci.marster.yml)
-[![jsDelivr CDN](https://data.jsdelivr.com/v1/package/npm/@uiw/react-markdown-preview/badge?style=rounded)](https://www.jsdelivr.com/package/npm/@uiw/react-markdown-preview)
-[![Downloads](https://img.shields.io/npm/dm/@uiw/react-markdown-preview.svg?style=flat)](https://www.npmjs.com/package/@uiw/react-markdown-preview)
-[![Coverage Status](https://coveralls.io/repos/github/uiwjs/react-markdown-preview/badge.svg?branch=master)](https://coveralls.io/github/uiwjs/react-markdown-preview?branch=master)
-[![npm version](https://img.shields.io/npm/v/@uiw/react-markdown-preview.svg)](https://www.npmjs.com/package/@uiw/react-markdown-preview)
-[![npm unpkg](https://img.shields.io/badge/Open%20in-unpkg-blue)](https://uiwjs.github.io/npm-unpkg/#/pkg/@uiw/react-markdown-preview/file/README.md)
+弹出对话框会在继续之前，通知用户重要信息，点击确定后异步关闭对话框。
 
-React component preview markdown text in web browser. The minimal amount of CSS to replicate the GitHub Markdown style. The current [document website](https://uiwjs.github.io/react-markdown-preview/) is converted using this react component.
-
-## Features
-
-- 🌒 Support dark-mode/night-mode. `@v4`
-- 🙆🏼‍♂️ GitHub style: The markdown content is rendered as close to the way it's rendered on GitHub as possible.
-- 🏋🏾‍♂️ Support [GFM](https://github.github.com/gfm/) (autolink literals, footnotes, strikethrough, tables, tasklists).
-- 🍭 Support automatic code block highlight.
-- 🐝 Support for defining styles via comment.
-- ⛳️ Support for [GFM footnotes](https://github.blog/changelog/2021-09-30-footnotes-now-supported-in-markdown-fields/)
-
-## Quick Start
-
-```bash
-$ npm install @uiw/react-markdown-preview --save
+```jsx
+import { Alert } from "uiw";
+// or
+import Alert from "@uiw/react-alert";
 ```
 
-## Usage Example
+## 基本用法
 
-[![Open in CodeSandbox](https://img.shields.io/badge/Open%20in-CodeSandbox-blue?logo=codesandbox)](https://codesandbox.io/embed/react-markdown-preview-co1mj?fontsize=14&hidenavigation=1&theme=dark)
+<!--rehype:bgWhite=true&codeSandbox=true&codePen=true-->
 
-```js
-import MarkdownPreview from "@uiw/react-markdown-preview";
+```jsx
+import React from "react";
+import ReactDOM from "react-dom";
+import { Alert, ButtonGroup, Button } from "uiw";
 
-const source = `
-## MarkdownPreview
-
-> todo: React component preview markdown text.
-`;
-
-function Demo() {
-  return <MarkdownPreview source={source} />;
+class Demo extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      visible1: false,
+      visible2: false,
+    };
+  }
+  onClick(type) {
+    this.setState({ [type]: !this.state[type] });
+  }
+  onClosed(type) {
+    this.setState({ [type]: false });
+  }
+  render() {
+    return (
+      <div>
+        <Alert
+          isOpen={this.state.visible1}
+          confirmText="确定按钮"
+          onClosed={this.onClosed.bind(this, "visible1")}
+          content="这个对话框只有两个个按钮，单击“确定按钮”后，此对话框将关闭。用作通知用户重要信息。"
+        />
+        <Alert
+          isOpen={this.state.visible2}
+          confirmText="确定按钮"
+          cancelText="取消按钮"
+          type="danger"
+          onConfirm={() => console.log("您点击了确定按钮！")}
+          onCancel={() => console.log("您点击了取消按钮！")}
+          onClosed={this.onClosed.bind(this, "visible2")}
+        >
+          这个对话框有两个按钮，单击 “<b>确定按钮</b>” 或 “<b>取消按钮</b>”
+          后，此对话框将关闭，触发 “<b>onConfirm</b>” 或 “<b>onCancel</b>”
+          事件。用作通知用户重要信息。
+        </Alert>
+        <ButtonGroup>
+          <Button onClick={this.onClick.bind(this, "visible1")}>
+            单个按钮确认对话框
+          </Button>
+          <Button onClick={this.onClick.bind(this, "visible2")}>
+            确认对话框
+          </Button>
+        </ButtonGroup>
+      </div>
+    );
+  }
 }
+export default Demo;
 ```
 
-### Options Props
+## 延迟关闭对话框
 
-```typescript
-import { ReactMarkdownProps } from "react-markdown";
+这里是利用 `Promise` 等它执行完成再去关闭窗口
 
-type MarkdownPreviewProps = {
-  className?: string;
-  source?: string;
-  style?: React.CSSProperties;
-  warpperElement?: HTMLDivElement;
-  pluginsFilter?: (
-    type: "rehype" | "remark",
-    plugin: PluggableList
-  ) => PluggableList;
-  onScroll?: (e: React.UIEvent<HTMLDivElement>) => void;
-  onMouseOver?: (e: React.MouseEvent<HTMLDivElement>) => void;
-} & ReactMarkdownProps;
+<!--rehype:bgWhite=true&codeSandbox=true&codePen=true-->
+
+```jsx
+import React from "react";
+import ReactDOM from "react-dom";
+import { Alert, Button } from "uiw";
+
+class Demo extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      visible: false,
+    };
+  }
+  onClick() {
+    this.setState({ visible: !this.statevisible });
+  }
+  onClosed() {
+    this.setState({ visible: false });
+  }
+  render() {
+    return (
+      <div>
+        <Alert
+          icon="delete"
+          isOpen={this.state.visible}
+          confirmText="确定按钮"
+          type="danger"
+          onConfirm={() => {
+            console.log("确定回调！, 这里是利用Promise等执行完成再去关闭窗口");
+            return new Promise((resolve, reject) => {
+              const random = Math.random();
+              console.log(
+                "测试，随机值大于 0.5 执行 resolve 事件，否则 执行 reject 触发 catch 错误",
+                random,
+                random > 0.5
+              );
+              setTimeout(random > 0.5 ? resolve : reject, 3000);
+            }).catch(() => {
+              // 可以通过下面方式，阻止弹框消失
+              // throw new Error();
+            });
+          }}
+          onClosed={this.onClosed.bind(this, "visible")}
+        >
+          这里是利用 <b>Promise</b>{" "}
+          的特性，等它执行完成后，再去关闭窗口，达到延迟关闭的效果。
+          <br />
+          <br />
+          这个测试例子，生成随机值判断是否大于 <b>0.5</b> 执行 <b>resolve</b> 事件，否则
+          执行 <b>reject</b> 触发 <b>catch</b> 错误。
+        </Alert>
+        <Button onClick={this.onClick.bind(this, "visible")}>
+          延迟关闭对话框
+        </Button>
+      </div>
+    );
+  }
+}
+export default Demo;
 ```
 
-- `source` (`string`, default: `''`)\
-   Markdown to parse
-- `className` (`string?`)\
-   Wrap the markdown in a `div` with this class name
+## 带图标的弹出框
 
-This [`ReactMarkdownProps`](https://github.com/remarkjs/react-markdown/tree/02bac837bf141cdb8face360fb88be6fa33ab194#props) details. [Upgrade `react-markdown` v6](https://github.com/remarkjs/react-markdown/blob/15b4757082cf3f32a25eba0b8ea30baf751a8b40/changelog.md#600---2021-04-15)
+通过设置 `icon` 和 `type` 参数设置带状态的弹出对话框。
 
-- `children` (`string`, default: `''`)\
-   Markdown to parse
-- `className` (`string?`)\
-   Wrap the markdown in a `div` with this class name
-- `skipHtml` (`boolean`, default: `false`)\
-   Ignore HTML in Markdown completely
-- `sourcePos` (`boolean`, default: `false`)\
-   Pass a prop to all components with a serialized position
-  (`data-sourcepos="3:1-3:13"`)
-- `rawSourcePos` (`boolean`, default: `false`)\
-   Pass a prop to all components with their [position][]
-  (`sourcePosition: {start: {line: 3, column: 1}, end:…}`)
-- `includeElementIndex` (`boolean`, default: `false`)\
-   Pass the `index` (number of elements before it) and `siblingCount` (number
-  of elements in parent) as props to all components
-- `allowedElements` (`Array.<string>`, default: `undefined`)\
-   Tag names to allow (can’t combine w/ `disallowedElements`).
-  By default all elements are allowed
-- `disallowedElements` (`Array.<string>`, default: `undefined`)\
-   Tag names to disallow (can’t combine w/ `allowedElements`).
-  By default no elements are disallowed
-- `allowElement` (`(element, index, parent) => boolean?`, optional)\
-   Function called to check if an element is allowed (when truthy) or not.
-  `allowedElements` / `disallowedElements` is used first!
-- `unwrapDisallowed` (`boolean`, default: `false`)\
-   Extract (unwrap) the children of not allowed elements.
-  By default, when `strong` is not allowed, it and it’s children is dropped,
-  but with `unwrapDisallowed` the element itself is dropped but the children
-  used
-- `linkTarget` (`string` or `(href, children, title) => string`, optional)\
-   Target to use on links (such as `_blank` for `<a target="_blank"…`)
-- `transformLinkUri` (`(href, children, title) => string`, default:
-  [`./uri-transformer.js`](https://github.com/remarkjs/react-markdown/blob/02bac837bf141cdb8face360fb88be6fa33ab194/lib/uri-transformer.js), optional)\
-   URL to use for links.
-  The default allows only `http`, `https`, `mailto`, and `tel`, and is
-  exported from this module as `uriTransformer`.
-  Pass `null` to allow all URLs.
-  See [security][]
-- `transformImageUri` (`(src, alt, title) => string`, default:
-  [`./uri-transformer.js`](https://github.com/remarkjs/react-markdown/blob/02bac837bf141cdb8face360fb88be6fa33ab194/lib/uri-transformer.js), optional)\
-   Same as `transformLinkUri` but for images
-- `components` (`Object.<string, Component>`, default: `{}`)\
-   Object mapping tag names to React components
-- `remarkPlugins`<!--rehype:style=color: red;background-color: #ffeb3b;--> (`Array.<Plugin>`, default: `[]`)\
-   List of [remark plugins](https://github.com/remarkjs/remark/blob/main/doc/plugins.md#list-of-plugins) to use.
-  See the next section for examples on how to pass options
-- `rehypePlugins`<!--rehype:style=color: red;background-color: #ffeb3b;--> (`Array.<Plugin>`, default: `[]`)\
-   List of [rehype plugins](https://github.com/rehypejs/rehype/blob/main/doc/plugins.md#list-of-plugins) to use.
-  See the next section for examples on how to pass options
+<!--rehype:bgWhite=true&codeSandbox=true&codePen=true-->
 
-## Markdown Features
+```jsx
+import React from "react";
+import ReactDOM from "react-dom";
+import { Alert, ButtonGroup, Button } from "uiw";
 
-### Supports for CSS Style
-
-Use HTML comments [`<!--rehype:xxx-->`](https://github.com/jaywcjlove/rehype-attr)<!--rehype:style=color: red;--> to let Markdown support style customization.
-
-```markdown
-## Title
-
-<!--rehype:style=display: flex; height: 230px; align-items: center; justify-content: center; font-size: 38px;-->
-
-Markdown Supports **Style**<!--rehype:style=color: red;-->
+class Demo extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      visible1: false,
+      visible2: false,
+    };
+  }
+  onClick(type) {
+    this.setState({ [type]: !this.state[type] });
+  }
+  onClosed(type) {
+    this.setState({ [type]: false });
+  }
+  render() {
+    return (
+      <div>
+        <Alert
+          isOpen={this.state.visible1}
+          confirmText="确定按钮"
+          cancelText="取消按钮"
+          icon="information"
+          type="primary"
+          onClosed={this.onClosed.bind(this, "visible1")}
+          content="这个对话框只有两个个按钮，单击“确定按钮”后，此对话框将关闭。用作通知用户重要信息。"
+        />
+        <Alert
+          isOpen={this.state.visible2}
+          confirmText="确定按钮"
+          cancelText="取消按钮"
+          icon="circle-check"
+          type="success"
+          onClosed={this.onClosed.bind(this, "visible2")}
+          content="这个对话框只有两个个按钮，单击“确定按钮”后，此对话框将关闭。用作通知用户重要信息。"
+        />
+        <Alert
+          isOpen={this.state.visible3}
+          confirmText="确定按钮"
+          cancelText="取消按钮"
+          icon="warning"
+          type="warning"
+          onClosed={this.onClosed.bind(this, "visible3")}
+          content="这个对话框只有两个个按钮，单击“确定按钮”后，此对话框将关闭。用作通知用户重要信息。"
+        />
+        <Alert
+          isOpen={this.state.visible4}
+          confirmText="确定按钮"
+          cancelText="取消按钮"
+          icon="circle-close"
+          type="danger"
+          onClosed={this.onClosed.bind(this, "visible4")}
+          content="这个对话框只有两个个按钮，单击“确定按钮”后，此对话框将关闭。用作通知用户重要信息。"
+        />
+        <Alert
+          isOpen={this.state.visible5}
+          confirmText="确定按钮"
+          cancelText="取消按钮"
+          type="light"
+          onClosed={this.onClosed.bind(this, "visible5")}
+          content="这个对话框只有两个个按钮，单击“确定按钮”后，此对话框将关闭。用作通知用户重要信息。"
+        />
+        <Alert
+          isOpen={this.state.visible6}
+          confirmText="确定按钮"
+          cancelText="取消按钮"
+          type="dark"
+          onClosed={this.onClosed.bind(this, "visible6")}
+        >
+          这个对话框有两个按钮，单击 “<b>确定按钮</b>” 或 “<b>取消按钮</b>”
+          后，此对话框将关闭，触发 “<b>onConfirm</b>” 或 “<b>onCancel</b>”
+          事件。用作通知用户重要信息。
+        </Alert>
+        <ButtonGroup>
+          <Button onClick={this.onClick.bind(this, "visible1")} type="primary">
+            主要
+          </Button>
+          <Button onClick={this.onClick.bind(this, "visible2")} type="success">
+            成功
+          </Button>
+          <Button onClick={this.onClick.bind(this, "visible3")} type="warning">
+            警告
+          </Button>
+          <Button onClick={this.onClick.bind(this, "visible4")} type="danger">
+            错误
+          </Button>
+          <Button onClick={this.onClick.bind(this, "visible5")} type="light">
+            亮按钮
+          </Button>
+          <Button onClick={this.onClick.bind(this, "visible6")} type="dark">
+            暗按钮
+          </Button>
+        </ButtonGroup>
+      </div>
+    );
+  }
+}
+export default Demo;
 ```
 
-### Support for [GFM footnotes](https://github.blog/changelog/2021-09-30-footnotes-now-supported-in-markdown-fields/)
+## 带标题的弹出框
 
-```markdown
-Here is a simple footnote[^1]. With some additional text after it.
+<!--rehype:bgWhite=true&codeSandbox=true&codePen=true-->
 
-[^1]: My reference.
+```jsx
+import React from "react";
+import ReactDOM from "react-dom";
+import { Alert, ButtonGroup, Button } from "uiw";
+
+class Demo extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      visible1: false,
+      visible2: false,
+    };
+  }
+  onClick(type) {
+    this.setState({ [type]: !this.state[type] });
+  }
+  onClosed(type) {
+    this.setState({ [type]: false });
+  }
+  render() {
+    return (
+      <div>
+        <Alert
+          title="带标题的弹出框"
+          isOpen={this.state.visible1}
+          confirmText="确定按钮"
+          cancelText="取消按钮"
+          icon="information"
+          type="primary"
+          onClosed={this.onClosed.bind(this, "visible1")}
+          content="这个对话框只有两个个按钮，单击“确定按钮”后，此对话框将关闭。用作通知用户重要信息。"
+        />
+        <Alert
+          title="带标题的弹出框"
+          isOpen={this.state.visible2}
+          confirmText="确定按钮"
+          cancelText="取消按钮"
+          type="success"
+          onClosed={this.onClosed.bind(this, "visible2")}
+          content="这个对话框只有两个个按钮，单击“确定按钮”后，此对话框将关闭。用作通知用户重要信息。"
+        />
+        <Alert
+          title="带标题的弹出框"
+          isOpen={this.state.visible3}
+          confirmText="确定按钮"
+          cancelText="取消按钮"
+          icon="warning"
+          type="warning"
+          onClosed={this.onClosed.bind(this, "visible3")}
+          content="这个对话框只有两个个按钮，单击“确定按钮”后，此对话框将关闭。用作通知用户重要信息。"
+        />
+        <Alert
+          title="带标题的弹出框"
+          isOpen={this.state.visible4}
+          confirmText="确定按钮"
+          cancelText="取消按钮"
+          icon="circle-close"
+          type="danger"
+          onClosed={this.onClosed.bind(this, "visible4")}
+          content="这个对话框只有两个个按钮，单击“确定按钮”后，此对话框将关闭。用作通知用户重要信息。"
+        />
+        <Alert
+          title="带标题的弹出框"
+          isOpen={this.state.visible5}
+          confirmText="确定按钮"
+          cancelText="取消按钮"
+          type="light"
+          onClosed={this.onClosed.bind(this, "visible5")}
+          content="这个对话框只有两个个按钮，单击“确定按钮”后，此对话框将关闭。用作通知用户重要信息。"
+        />
+        <Alert
+          title="带标题的弹出框"
+          isOpen={this.state.visible6}
+          confirmText="确定按钮"
+          cancelText="取消按钮"
+          type="dark"
+          onClosed={this.onClosed.bind(this, "visible6")}
+        >
+          这个对话框有两个按钮，单击 “<b>确定按钮</b>” 或 “<b>取消按钮</b>”
+          后，此对话框将关闭，触发 “<b>onConfirm</b>” 或 “<b>onCancel</b>”
+          事件。用作通知用户重要信息。
+        </Alert>
+        <ButtonGroup>
+          <Button onClick={this.onClick.bind(this, "visible1")} type="primary">
+            主要
+          </Button>
+          <Button onClick={this.onClick.bind(this, "visible2")} type="success">
+            成功
+          </Button>
+          <Button onClick={this.onClick.bind(this, "visible3")} type="warning">
+            警告
+          </Button>
+          <Button onClick={this.onClick.bind(this, "visible4")} type="danger">
+            错误
+          </Button>
+          <Button onClick={this.onClick.bind(this, "visible5")} type="light">
+            亮按钮
+          </Button>
+          <Button onClick={this.onClick.bind(this, "visible6")} type="dark">
+            暗按钮
+          </Button>
+        </ButtonGroup>
+      </div>
+    );
+  }
+}
+export default Demo;
 ```
 
-## Support dark-mode/night-mode
+### 自定义按钮
 
-By default, the [`dark-mode`](https://github.com/jaywcjlove/dark-mode/) is automatically switched according to the system. If you need to switch manually, just set the `data-color-mode="dark"` parameter for body.
+这个对话框有两个按钮，单击 **`确定按钮`** 或 **`取消按钮`** 后，此对话框将关闭，将不触发 ~~`onConfirm`~~ 或 ~~`onCancel`~~ 事件。因为这俩按钮是自定义按钮。你可以正对自定义按钮外面的对象定义 `className="w-alert-footer"` 将显示默认样式。
 
-```html
-<html data-color-mode="dark"></html>
+<!--rehype:bgWhite=true&codeSandbox=true&codePen=true-->
+
+```jsx
+import React from "react";
+import ReactDOM from "react-dom";
+import { Alert, ButtonGroup, Button } from "uiw";
+
+class Demo extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      visible: false,
+    };
+  }
+  onClick(type) {
+    this.setState({ visible: !this.state.visible });
+  }
+  onClosed(type) {
+    this.setState({ visible: false });
+  }
+  render() {
+    return (
+      <div>
+        <Alert
+          isOpen={this.state.visible}
+          type="danger"
+          useButton={false}
+          maskClosable={true}
+          onClose={this.onClosed.bind(this)}
+          // onClosed={this.onClosed.bind(this)}
+          content="这个对话框只有两个个按钮，单击“确定按钮”后，此对话框将关闭。用作通知用户重要信息。"
+        >
+          这个对话框有两个按钮，单击 “<b>确定按钮</b>” 或 “<b>取消按钮</b>”
+          后，此对话框将关闭，将不触发 “<del>onConfirm</del>” 或 “
+          <del>onCancel</del>” 事件。因为这俩按钮是自定义按钮。
+          <br />
+          <br />
+          <div className="w-alert-footer">
+            <Button type="danger" onClick={this.onClosed.bind(this)}>
+              确定按钮
+            </Button>
+            <Button onClick={this.onClosed.bind(this)}>取消按钮</Button>
+          </div>
+        </Alert>
+        <ButtonGroup>
+          <Button onClick={this.onClick.bind(this)}>单个按钮确认对话框</Button>
+        </ButtonGroup>
+      </div>
+    );
+  }
+}
+export default Demo;
 ```
 
-```js
-document.documentElement.setAttribute("data-color-mode", "dark");
-document.documentElement.setAttribute("data-color-mode", "light");
+### 不显示遮罩层
+
+<!--rehype:bgWhite=true&codeSandbox=true&codePen=true-->
+
+```jsx
+import React from "react";
+import ReactDOM from "react-dom";
+import { Alert, ButtonGroup, Button } from "uiw";
+
+class Demo extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      visible: false,
+    };
+  }
+  onClick(type) {
+    this.setState({ visible: !this.state.visible });
+  }
+  onClosed(type) {
+    this.setState({ visible: false });
+  }
+  render() {
+    return (
+      <div>
+        <Alert
+          isOpen={this.state.visible}
+          type="danger"
+          maskClosable={true}
+          hasBackdrop={false}
+          onClose={this.onClosed.bind(this)}
+          onClosed={this.onClosed.bind(this)}
+          content="这个对话框只有两个个按钮，单击“确定按钮”后，此对话框将关闭。用作通知用户重要信息。"
+        >
+          这个对话框有两个按钮，单击 “<b>确定按钮</b>” 或 “<b>取消按钮</b>”
+          后，此对话框将关闭，将不触发 “<del>onConfirm</del>” 或 “
+          <del>onCancel</del>” 事件。因为这俩按钮是自定义按钮。
+        </Alert>
+        <ButtonGroup>
+          <Button onClick={this.onClick.bind(this)}>单个按钮确认对话框</Button>
+        </ButtonGroup>
+      </div>
+    );
+  }
+}
+export default Demo;
 ```
 
-Inherit custom color variables by adding [`.wmde-markdown-var`](https://github.com/uiwjs/react-markdown-preview/blob/a53be1e93fb1c2327649c4a6b084adb80679affa/src/styles/markdown.less#L1-L193) selector.
+## Props
 
-## Development
+虽然类似于对 `<Modal>`，但 `<Alert>` 更具限制性，只应用于重要信息。此组件继承 [`<Modal>`](#/components/modal) 的属性，所以部分参数可以参考 `<Modal>` 组件。
 
-Runs the project in development mode.
+| 参数                                        | 说明                                                                                                                                                  | 类型             | 默认值  |
+| ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------- | ------- |
+| onCancel                                    | 取消按钮的回调函数                                                                                                                                    | Function(e)      | -       |
+| onConfirm                                   | 点击确定按钮回调                                                                                                                                      | Function(e)      | -       |
+| cancelText                                  | 取消按钮文字，                                                                                                                                        | String           | -       |
+| confirmText                                 | 确认按钮文字                                                                                                                                          | String           | `确认`  |
+| type                                        | 按钮类型跟 `<Button>` 组件的 `type` 参数一致，同时会影响按钮颜色。                                                                                    | String           | `light` |
+| icon[`<Modal>`](#/components/modal)         | 设置对话框右上角图标，，设置 `type` 将图标设置不同的颜色。当前属性为 [`<Icon>`](#/components/icon) 组件的 `type` 属性，所以可以参考该组件自定义图标。 | String/ReactNode | -       |
+| title[`<Modal>`](#/components/modal)        | 设置标题                                                                                                                                              | Function(e)      | -       |
+| useButton[`<Modal>`](#/components/modal)    | 是否使用默认按钮，如果设置 `false` 需要自定义按钮关闭                                                                                                 | Boolean          | `true`  |
+| isOpen[`<Modal>`](#/components/modal)       | 对话框是否可见                                                                                                                                        | Boolean          | `false` |
+| maskClosable[`<Modal>`](#/components/modal) | 点击遮罩层是否允许关闭                                                                                                                                | boolean          | `true`  |
 
-```bash
-# Step 1, run first,
-# listen to the component compile and output the .js file
-# listen for compilation output type .d.ts file
-# listen to the component compile and output the .css file
-npm run watch
-# Step 2, development mode, listen to compile preview website instance
-npm start
-```
-
-Builds the app for production to the build folder.
-
-```bash
-npm run build
-```
-
-The build is minified and the filenames include the hashes.
-Your app is ready to be deployed!
-
-### Alternatives
-
-If you need more features-rich Markdown Editor, you can use [@uiwjs/react-markdown-editor](https://github.com/uiwjs/react-markdown-editor)
-
-- [@uiw/react-markdown-editor](https://github.com/uiwjs/react-markdown-editor): A markdown editor with preview, implemented with React.js and TypeScript.
-- [@uiw/react-md-editor](https://github.com/uiwjs/react-md-editor): A simple markdown editor with preview, implemented with React.js and TypeScript.
-- [@uiw/react-textarea-code-editor](https://github.com/uiwjs/react-textarea-code-editor): A simple code editor with syntax highlighting.
-- [@uiw/react-codemirror](https://github.com/uiwjs/react-codemirror): CodeMirror component for React. @codemirror
-- [@uiw/react-monacoeditor](https://github.com/jaywcjlove/react-monacoeditor): Monaco Editor component for React.
-
-## Contributors
-
-As always, thanks to our amazing contributors!
-
-<a href="https://github.com/uiwjs/react-markdown-preview/graphs/contributors">
-  <img src="https://uiwjs.github.io/react-markdown-preview/CONTRIBUTORS.svg" />
-</a>
-
-Made with [action-contributors](https://github.com/jaywcjlove/github-action-contributors).
-
-## License
-
-Licensed under the MIT License.
+更多属性文档请参考 [Modal](#/components/modal)。

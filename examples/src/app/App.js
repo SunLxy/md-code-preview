@@ -1,9 +1,9 @@
 import React from "react";
-import Preview from "./Preview";
+// import Preview from "./Preview";
 import Preview2 from "./Preview/index2";
 import { Button } from "uiw";
-import ReactDOM from "react-dom/client";
-import Demo from "./Preview/Demo.tsx";
+// import ReactDOM from "react-dom/client";
+// import Demo from "./Preview/Demo.tsx";
 
 export default function App() {
   const [lang, setLang] = React.useState("");

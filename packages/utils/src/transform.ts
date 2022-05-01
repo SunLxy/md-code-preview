@@ -12,7 +12,7 @@ export const getTransformValue = (
   filename: string,
   line: number
 ) => {
-  const isReact = /import React.+from "react"/.test(str);
+  const isReact = /import React.+from ("|')react("|')/.test(str);
   // 先判断 是否引入 react
   const tran = isReact ? str : `import React from "react"\n ${str}`;
   const code = `${babelTransform(tran, `${filename}`).code}`

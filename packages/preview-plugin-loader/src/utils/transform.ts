@@ -27,6 +27,7 @@ export const getCodeStr = (content: string, funName: string) => {
 
   const deps: DepsType = {};
   const depNamespaces: DepNamespacesType = {};
+  const depDirects: DepNamespacesType = {};
 
   const getNameOrValue = (node: t.Identifier | t.StringLiteral) => {
     if (t.isIdentifier(node)) {
@@ -48,22 +49,26 @@ export const getCodeStr = (content: string, funName: string) => {
       const node = path.node;
       if (node.specifiers && Array.isArray(node.specifiers)) {
         const keys = node.source.value;
-        deps[keys] = { default: undefined, other: [] };
-        node.specifiers.forEach((item) => {
-          if (t.isImportDefaultSpecifier(item)) {
-            deps[keys].default = getNameOrValue(item.local);
-          } else if (t.isImportNamespaceSpecifier(item)) {
-            depNamespaces[keys] = getNameOrValue(item.local);
-          } else if (t.isImportSpecifier(item)) {
-            const imported = getNameOrValue(item.imported);
-            const local = getNameOrValue(item.local);
-            if (imported === local) {
-              deps[keys].other.push(imported);
-            } else {
-              deps[keys].other.push(`${imported} as ${local}`);
+        if (node.specifiers.length) {
+          deps[keys] = { default: undefined, other: [] };
+          node.specifiers.forEach((item) => {
+            if (t.isImportDefaultSpecifier(item)) {
+              deps[keys].default = getNameOrValue(item.local);
+            } else if (t.isImportNamespaceSpecifier(item)) {
+              depNamespaces[keys] = getNameOrValue(item.local);
+            } else if (t.isImportSpecifier(item)) {
+              const imported = getNameOrValue(item.imported);
+              const local = getNameOrValue(item.local);
+              if (imported === local) {
+                deps[keys].other.push(imported);
+              } else {
+                deps[keys].other.push(`${imported} as ${local}`);
+              }
             }
-          }
-        });
+          });
+        } else {
+          depDirects[keys] = keys;
+        }
       }
       // 移除
       path.remove();
@@ -82,5 +87,6 @@ export const getCodeStr = (content: string, funName: string) => {
     code: returnCode,
     deps,
     depNamespaces,
+    depDirects,
   };
 };
