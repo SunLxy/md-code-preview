@@ -27,13 +27,16 @@
   font-weight: 600;
   font-size: 18px;
 }
-.preview-title .preview-title-head h2 {
+.preview-title .preview-title-head h2,
+.preview-title .preview-title-head h1,
+.preview-title .preview-title-head h3,
+.preview-title .preview-title-head h4,
+.preview-title .preview-title-head h5,
+.preview-title .preview-title-head h6 {
   font-size: 18px;
   border-bottom: none;
   line-height: 18px;
   margin: 5px;
-  /* margin-bottom: 0px;
-  margin-top: 0px; */
 }
 .preview-title .preview-title-body {
   padding: 0px;
