@@ -146,7 +146,16 @@ export const stepOne = (
   const filesValue: FilesValueType = {};
   // 第一遍先获取 code 及其标题简介位置之类的
   child.forEach((item, index) => {
-    if (item.type === "code" && lang.includes(item.lang || "")) {
+    const isExportDefault =
+      typeof item.value === "string"
+        ? /export default/.test(item.value)
+        : false;
+
+    if (
+      item.type === "code" &&
+      lang.includes(item.lang || "") &&
+      isExportDefault
+    ) {
       const { start, end, desc, head } = isInterval
         ? getIntervalData(index, child, isLine)
         : {
