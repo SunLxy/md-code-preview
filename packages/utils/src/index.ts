@@ -142,6 +142,7 @@ export const stepOne = (
   const filesValue: FilesValueType = {};
   // 第一遍先获取 code 及其标题简介位置之类的
   child.forEach((item, index) => {
+    /** 判断代码块是否有 export default 导出，如果没有则不进行处理代码块 ***/
     const isExportDefault =
       typeof item.value === "string"
         ? /export default/.test(item.value)
