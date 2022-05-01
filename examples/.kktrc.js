@@ -3,7 +3,7 @@ import rawModules from "@kkt/raw-modules";
 import path from "path";
 import {
   MdCodePreviewPlugin,
-  mdCodeLoader,
+  mdCodeModulesLoader,
 } from "md-code-preview-plugin-loader";
 const getCacheIdentifier = require("react-dev-utils/getCacheIdentifier");
 
@@ -24,7 +24,7 @@ export default (conf, env, options) => {
   //     cwd: path.join(process.cwd(), ".."),
   //   })
   // );
-  conf = mdCodeLoader(conf);
+  conf = mdCodeModulesLoader(conf);
 
   conf.resolve = {
     ...conf.resolve,

@@ -354,7 +354,7 @@ const getBabelLoader = () => {
  * @param {boolean} isInterval 是否需要解析代码块以上到标题之间的内容并合并到展示组件中
  * @returns {webpack.Configuration}
  * **/
-export const mdCodeLoader = (
+export const mdCodeModulesLoader = (
   config: webpack.Configuration,
   isInterval: boolean = true
 ): webpack.Configuration => {
