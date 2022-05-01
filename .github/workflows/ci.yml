@@ -1,0 +1,25 @@
+name: 案例
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-uiw-admin:
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@master
+
+    - name: Setup Node
+      uses: actions/setup-node@v1
+      with:
+        node-version: 14
+
+    - run: yarn install
+    - run: yarn run build:web
+  
+    - name: Deploy
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./examples/build

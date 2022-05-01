@@ -6,6 +6,7 @@
   "scripts": {
     "prepare": "husky install",
     "build": "npm run build:code && npm run build:plugin  && npm run build:utils && npm run build:less",
+    "install": "npm run build",
     "start": "lerna exec --scope examples -- npm run start",
     "build:web": "lerna exec --scope examples -- npm run build",
     "build:code": "lerna exec --scope md-code-preview -- tsbb build",
