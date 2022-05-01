@@ -10,6 +10,7 @@ const Code = (props: CodeProps) => {
   const { code, comments = {}, copyNodes } = props;
   const [show, setShow] = React.useState(false);
   const copyRef = React.useRef<HTMLDivElement>();
+  const copyTime = React.useRef<boolean>();
   const descRef = React.useRef<HTMLDivElement>();
   const titleRef = React.useRef<HTMLLegendElement>();
   const isCopy = React.useMemo(() => {
@@ -62,6 +63,10 @@ const Code = (props: CodeProps) => {
   }, [comments]);
 
   const onCopy = () => {
+    if (copyTime.current) {
+      return;
+    }
+    copyTime.current = true;
     const classList = copyRef.current.getAttribute("class");
     copyRef.current.setAttribute(
       "class",
@@ -69,6 +74,7 @@ const Code = (props: CodeProps) => {
     );
     copyTextToClipboard(copyNodes, function () {
       setTimeout(() => {
+        copyTime.current = false;
         copyRef.current.setAttribute("class", `${classList}`);
       }, 2000);
     });
