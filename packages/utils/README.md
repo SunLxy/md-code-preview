@@ -5,6 +5,12 @@
 返回一个`Processor`，用于转换读取的`markdown`字符串
 
 ```ts
+type GetProcessorOptionsType = {
+  rehypePlugins?: PluggableList;
+  remarkPlugins?: PluggableList;
+  remarkRehypeOptions?: Options;
+};
+
 const processor = getProcessor();
 const file: any = new VFile();
 file.value = scope;

@@ -73,3 +73,6 @@ export type GetProcessorOptionsType = {
   remarkPlugins?: PluggableList;
   remarkRehypeOptions?: Options;
 };
+
+export type DepsType = Record<string, { default: string; other: string[] }>;
+export type DepNamespacesType = Record<string, string>;

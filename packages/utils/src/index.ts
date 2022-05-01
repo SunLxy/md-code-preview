@@ -13,7 +13,13 @@ import rehypeRewrite from "rehype-rewrite";
 
 import { getTransformValue } from "./transform";
 import { createElementStr } from "./createElement";
-import { createStr } from "./createStr";
+import {
+  createStr,
+  createBaseCodeRenderStr,
+  createDepsStr,
+  createOtherStr,
+  splicingString,
+} from "./createStr";
 import { rehypeRewriteHandle } from "./rewrite";
 
 import {
@@ -25,6 +31,8 @@ import {
   FilesValueItemType,
   OtherProps,
   GetProcessorOptionsType,
+  DepsType,
+  DepNamespacesType,
 } from "./interface";
 export * from "./interface";
 export * from "./createElement";
@@ -362,4 +370,53 @@ export const lastReturn = (
     otherProps
   );
   return createStr(filesValue, indexStr);
+};
+
+/**------------------ 用以直接创建生成 react文件形式的代码字符串 ---------------------**/
+/**
+ * @description:  最终的返回内容
+ * @param {string} scope markdown字符串
+ * @param {string} lang 解析代码块的语言
+ * @param {OtherProps} otherProps 其他参数
+ */
+export const createLoaderRetuen = (
+  scope: string,
+  lang: string[] = ["jsx", "tsx"],
+  transformCode: (
+    content: string,
+    funName: string
+  ) => {
+    code: string;
+    deps: DepsType;
+    depNamespaces: DepNamespacesType;
+  },
+  otherProps: OtherProps = {}
+) => {
+  const processor = getProcessor();
+  const { child, file } = transformMarkdown(scope, processor);
+  const One = stepOne(child.children, lang, processor, file, otherProps);
+  const { filesValue, indexStr } = stepTwo(
+    One,
+    child.children as any,
+    file,
+    processor,
+    otherProps
+  );
+  const codeArr: string[] = [];
+  const depsArr: DepsType[] = [];
+  const depNamespacesArr: DepNamespacesType[] = [];
+  Object.entries(filesValue).forEach(([key, itemValue]) => {
+    const { copyNode } = itemValue;
+    const { code, depNamespaces, deps } = transformCode(
+      copyNode,
+      `BaseCodeRenderComponent${key}`
+    );
+    codeArr.push(code);
+    depsArr.push(deps);
+    depNamespacesArr.push(depNamespaces);
+  });
+  const depsStr = createDepsStr(depsArr, depNamespacesArr);
+  const otherStr = createOtherStr(filesValue);
+  const baseStr = createBaseCodeRenderStr(codeArr);
+  return splicingString({ depsStr, indexStr, baseStr, otherStr });
 };

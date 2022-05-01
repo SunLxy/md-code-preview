@@ -37,3 +37,6 @@ export type CommentsType = {
   description?: any;
   [k: string]: any;
 };
+
+export type DepsType = Record<string, { default: string; other: string[] }>;
+export type DepNamespacesType = Record<string, string>;
