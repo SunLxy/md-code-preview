@@ -24,6 +24,7 @@ export default (conf, env, options) => {
   // );
 
   conf = mdCodeModulesLoader(conf);
+  conf.output = { ...conf.output, publicPath: "./" };
 
   conf.resolve = {
     ...conf.resolve,
