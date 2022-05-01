@@ -321,6 +321,7 @@ const transformStr = (str: string) => {
     return $1.toUpperCase();
   });
 };
+/** 字符串 style 转换成对象 */
 export const styleIterator = (value: string) => {
   const output: Record<string, string> = {};
   const iterator = (name: string, itemValue: any) => {
