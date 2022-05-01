@@ -350,9 +350,14 @@ const getBabelLoader = () => {
 
 /**
  * 配置好markdown的loader
+ * @param {webpack.Configuration} config webpack配置
+ * @param {boolean} isInterval 是否需要解析代码块以上到标题之间的内容并合并到展示组件中
+ * @returns {webpack.Configuration}
  * **/
-export const mdCodeLoader = (config: webpack.Configuration) => {
-  console.log(getCacheIdentifier);
+export const mdCodeLoader = (
+  config: webpack.Configuration,
+  isInterval: boolean = true
+): webpack.Configuration => {
   config.module.rules.forEach((ruleItem) => {
     if (typeof ruleItem === "object") {
       if (ruleItem.oneOf) {
@@ -362,6 +367,7 @@ export const mdCodeLoader = (config: webpack.Configuration) => {
             getBabelLoader(),
             {
               loader: "md-code-preview-plugin-loader",
+              options: { isInterval },
             },
           ],
         });
