@@ -144,6 +144,7 @@ export const stepOne = (
 
       const line = item.position.start.line;
       const objs: FilesValueItemType = {
+        value: item.value,
         copyNode: item.value,
         lang: item.lang,
         // babel 转换后的 代码，最后需要拼接到结果文件中去的
@@ -276,7 +277,6 @@ export const transformSymbol = (str: string) => {
   }
   return str;
 };
-
 /**
  * @description: 标签属性 拼接字符串
  * @param {Record<string, unknown>} properties 属性对象

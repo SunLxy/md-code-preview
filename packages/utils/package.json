@@ -5,7 +5,7 @@
   "author": "SunLxy <1011771396@qq.com>",
   "homepage": "",
   "license": "MIT",
-  "main": "dist/index.min.js",
+  "main": "dist/index.js",
   "types": "lib/index.d.ts",
   "files": [
     "lib",
@@ -13,7 +13,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "npm run types:build && npm run bundle:mini",
+    "build": "npm run types:build && npm run bundle && npm run bundle:mini",
     "types:build": "tsbb build  --disable-babel",
     "bundle": "ncc build src/index.ts --target node --filename index",
     "bundle:mini": "ncc build src/index.ts --target node --filename index --minify"

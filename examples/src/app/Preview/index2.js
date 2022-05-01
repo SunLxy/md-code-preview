@@ -5,8 +5,7 @@ const PreviewCode = (props) => {
 
   React.useEffect(() => {
     const getasr = async () => {
-      const result = await import(`./../App${props.lang}.md`);
-      const DomDefault = result.default;
+      const DomDefault = React.lazy(() => import(`./../App${props.lang}.md`));
       setDome(
         <React.Suspense>
           <DomDefault />

@@ -5,25 +5,24 @@ import {
   MdCodePreviewPlugin,
   mdCodeModulesLoader,
 } from "md-code-preview-plugin-loader";
-const getCacheIdentifier = require("react-dev-utils/getCacheIdentifier");
 
-// md-code-preview
 export default (conf, env, options) => {
   // console.log('conf:', conf)
   // console.log('env:', env)
   conf = rawModules(conf, env, options);
   conf = lessModules(conf, env, options);
-  // conf.plugins.push(
-  //   // new MdCodePreviewPlugin({
-  //   //   cwd: path.join(process.cwd(), ".."),
-  //   //   pre: "code",
-  //   //   createJs: false,
-  //   //   isInterval: false,
-  //   // }),
-  //   new MdCodePreviewPlugin({
-  //     cwd: path.join(process.cwd(), ".."),
-  //   })
-  // );
+  conf.plugins
+    .push
+    // new MdCodePreviewPlugin({
+    //   cwd: path.join(process.cwd(), ".."),
+    //   pre: "code",
+    //   createJs: false,
+    //   isInterval: false,
+    // }),
+    // new MdCodePreviewPlugin({
+    //   cwd: path.join(process.cwd(), ".."),
+    // })
+    ();
   conf = mdCodeModulesLoader(conf);
 
   conf.resolve = {
