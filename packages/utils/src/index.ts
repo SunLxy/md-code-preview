@@ -10,6 +10,7 @@ import rehypeRaw from "rehype-raw";
 import rehypeAttrs from "rehype-attr";
 import rehypePrism from "rehype-prism-plus";
 import rehypeRewrite from "rehype-rewrite";
+import style from "style-to-object";
 
 import { getTransformValue } from "./transform";
 import { createElementStr } from "./createElement";
@@ -285,11 +286,46 @@ export const SymbolMap = new Map([
   ["/>", "&#47;&gt;"],
 ]);
 export const transformSymbol = (str: string) => {
-  if (SymbolMap.get(`${str}`.trim())) {
-    return SymbolMap.get(`${str}`.trim());
-  }
-  return str;
+  let newStr = "";
+  str.split("").forEach((va) => {
+    const nw = `${va}`.trim();
+    if (SymbolMap.has(nw)) {
+      newStr += SymbolMap.get(nw);
+    } else {
+      newStr += va;
+    }
+  });
+  return newStr;
 };
+
+export const stringEscape = (str: string) => {
+  let newStr = "";
+  str.split("").forEach((itemStr) => {
+    if (itemStr === "`") {
+      newStr += `\\`;
+    }
+    newStr += itemStr;
+  });
+  return newStr;
+};
+
+const transformStr = (str: string) => {
+  const Rg = /-([a-z])/g;
+  return str.replace(Rg, function ($0, $1) {
+    return $1.toUpperCase();
+  });
+};
+export const styleIterator = (value: string) => {
+  const output: Record<string, string> = {};
+  const iterator = (name: string, itemValue: any) => {
+    const k = name.slice(0, 4) === "-ms-" ? `ms-${name.slice(4)}` : name;
+    const keys = transformStr(k);
+    output[keys] = itemValue;
+  };
+  style(value, iterator);
+  return output;
+};
+
 /**
  * @description: 标签属性 拼接字符串
  * @param {Record<string, unknown>} properties 属性对象
@@ -303,33 +339,39 @@ export const getProperties = (
   let str = "";
   Object.entries(properties).forEach(([key, value]) => {
     let newKey = key;
-
+    let newValue = value;
     if (newKey === "ariaHidden") {
       newKey = "aria-hidden";
     } else if (newKey === "className" && isPropertiesString) {
       newKey = "class";
     }
 
-    if (typeof value === "function") {
+    if (newKey === "style" && typeof value === "string") {
+      newValue = styleIterator(value);
+    }
+
+    if (newKey === "data-code") {
+      str += ` ${newKey}={\`${stringEscape(newValue as string)}\`} `;
+    } else if (typeof newValue === "function") {
       str += isPropertiesString
-        ? ` ${newKey}="${value.toString()}" `
-        : ` ${newKey}={${value.toString()}} `;
-    } else if (Array.isArray(value)) {
+        ? ` ${newKey}="${newValue.toString()}" `
+        : ` ${newKey}={${newValue.toString()}} `;
+    } else if (Array.isArray(newValue)) {
       str += isPropertiesString
-        ? ` ${newKey}="${value.join(" ")}" `
-        : ` ${newKey}="${value.join(" ")}" `;
-    } else if (Object.prototype.toString.call(value) === "[object Object]") {
+        ? ` ${newKey}="${newValue.join(" ")}" `
+        : ` ${newKey}="${newValue.join(" ")}" `;
+    } else if (Object.prototype.toString.call(newValue) === "[object Object]") {
       str += isPropertiesString
-        ? ` ${newKey}="${JSON.stringify(value)}" `
-        : ` ${newKey}={${JSON.stringify(value)}} `;
-    } else if (typeof value === "string") {
+        ? ` ${newKey}="${JSON.stringify(newValue)}" `
+        : ` ${newKey}={${JSON.stringify(newValue)}} `;
+    } else if (typeof newValue === "string") {
       str += isPropertiesString
-        ? ` ${newKey}="${value}" `
-        : ` ${newKey}={\`${value}\`}`;
+        ? ` ${newKey}="${newValue}" `
+        : ` ${newKey}={\`${newValue}\`}`;
     } else {
       str += isPropertiesString
-        ? ` ${newKey}="${value}" `
-        : ` ${newKey}={${value}} `;
+        ? ` ${newKey}="${newValue}" `
+        : ` ${newKey}={${newValue}} `;
     }
   });
   return str;

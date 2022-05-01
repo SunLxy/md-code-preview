@@ -31,7 +31,8 @@
     "unified": "~10.0.0",
     "vfile": "~5.0.0",
     "remark-rehype": "~10.1.0",
-    "@uiw/copy-to-clipboard": "^1.0.12"
+    "@uiw/copy-to-clipboard": "^1.0.12",
+    "style-to-object": "~0.3.0"
   },
   "devDependencies": {
     "@types/hast": "^2.3.4",
