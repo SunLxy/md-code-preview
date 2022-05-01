@@ -1,3 +1,6 @@
+import { PluggableList } from "unified";
+import { Options } from "remark-rehype";
+
 export type StartAndEndType = {
   column: number;
   offset: number;
@@ -63,4 +66,10 @@ export type OtherProps = {
   isInterval?: boolean;
   /** 是否是所属的行赋值还是数组下标进行赋值 ***/
   isLine?: boolean;
+};
+
+export type GetProcessorOptionsType = {
+  rehypePlugins?: PluggableList;
+  remarkPlugins?: PluggableList;
+  remarkRehypeOptions?: Options;
 };

@@ -24,6 +24,7 @@ import {
   StepOneReturn,
   FilesValueItemType,
   OtherProps,
+  GetProcessorOptionsType,
 } from "./interface";
 export * from "./interface";
 export * from "./createElement";
@@ -31,8 +32,9 @@ export * from "./createStr";
 export * from "./transform";
 export * from "./rewrite";
 
-export const getProcessor = () => {
+export const getProcessor = (options: GetProcessorOptionsType = {}) => {
   const rehypePlugins: PluggableList = [
+    ...(options.rehypePlugins || []),
     [rehypePrism, { ignoreMissing: true }],
     rehypeRaw,
     slug,
@@ -40,11 +42,14 @@ export const getProcessor = () => {
     [rehypeRewrite, { rewrite: rehypeRewriteHandle }],
     [rehypeAttrs, { properties: "attr" }],
   ];
-  const remarkPlugins = [gfm];
+  const remarkPlugins = [...(options.remarkPlugins || []), gfm];
   const processor = unified()
     .use(remarkParse)
     .use(remarkPlugins)
-    .use(remarkRehype, { allowDangerousHtml: true })
+    .use(remarkRehype, {
+      ...(options.remarkRehypeOptions || {}),
+      allowDangerousHtml: true,
+    })
     .use(rehypePlugins || []);
   return processor;
 };

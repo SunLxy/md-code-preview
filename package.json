@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "prepare": "husky install",
-    "build": "npm run build:code && npm run build:plugin  && npm run build:utils",
+    "build": "npm run build:code && npm run build:plugin  && npm run build:utils && npm run build:less",
     "start": "lerna exec --scope examples -- npm run start",
     "build:web": "lerna exec --scope examples -- npm run build",
     "build:code": "lerna exec --scope md-code-preview -- tsbb build",
@@ -13,6 +13,8 @@
     "watch:plugin": "lerna exec --scope md-code-preview-plugin-loader -- npm run watch",
     "build:plugin": "lerna exec --scope md-code-preview-plugin-loader --  npm run build",
     "build:utils": "lerna exec --scope md-plugin-utils -- npm run build",
+    "build:less": "lerna exec --scope md-code-preview -- compile-less -d src -o esm",
+    "watch:less": "lerna exec --scope md-code-preview -- compile-less -d src -o esm --watch",
     "lerna": "lerna",
     "clean": "lerna clean --yes",
     "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,html,less,md,json}'"
@@ -23,7 +25,8 @@
     "kkt": "7.1.7",
     "lint-staged": "~12.3.5",
     "prettier": "~2.5.1",
-    "husky": "~7.0.4"
+    "husky": "~7.0.4",
+    "compile-less-cli": "~1.8.11"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,html,less,md,json}": [

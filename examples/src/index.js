@@ -5,7 +5,7 @@ import ReactClient from "react-dom/client";
 import App from "./app/App";
 // import Dmode from "./.docs/packagespreview-codeREADME";
 // import Dmode2 from "./.docs/examplesREADME";
-import "./markdown.less";
+// import "./markdown.less";
 ReactClient.createRoot(document.getElementById("root")).render(
   <React.Fragment>
     <div style={{ padding: 20 }}>

@@ -1,6 +1,10 @@
 import { Element } from "hast";
 import copyTextToClipboard from "@uiw/copy-to-clipboard";
 
+/**
+ * 直接使用的 `@uiw/react-markdown-preview`里面的 (https://github.com/uiwjs/react-markdown-preview/blob/master/src/nodes/copy.ts)
+ * **/
+
 export function copyElement(str: string = ""): Element {
   return {
     type: "element",

@@ -3,6 +3,10 @@ import { getCodeString } from "rehype-rewrite";
 import { octiconLink } from "./nodes/octiconLink";
 import { copyElement } from "./nodes/copy";
 
+/**
+ * 直接使用的 `@uiw/react-markdown-preview`里面的 (https://github.com/uiwjs/react-markdown-preview/blob/ab0be5546df8d17929a75041b15440c9c32c1969/src/index.tsx#L16-L29)
+ * **/
+
 export const rehypeRewriteHandle = (
   node: ElementContent,
   index: number | null,

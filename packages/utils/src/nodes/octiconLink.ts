@@ -1,5 +1,9 @@
 import { Element } from "hast";
 
+/**
+ * 直接使用的 `@uiw/react-markdown-preview`里面的 (https://github.com/uiwjs/react-markdown-preview/blob/master/src/nodes/octiconLink.ts)
+ * **/
+
 export const octiconLink: Element = {
   type: "element",
   tagName: "svg",
