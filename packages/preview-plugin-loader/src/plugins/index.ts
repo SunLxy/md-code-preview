@@ -15,7 +15,7 @@ export interface MdCodePreviewPluginProps {
   matchRules?: string | string[];
   /** 忽略监听文件规则  默认忽略 node_modules 下所有的文件 ***/
   ignored?: any;
-  // 语言
+  /** 需要转换预览的代码块语言 **/
   lang?: string[];
   /** 文件夹前缀 **/
   pre?: string;
