@@ -49,12 +49,13 @@ export const createPluginReturn = (
     otherProps;
   const processor = getProcessor();
   const { child, file } = transformMarkdown(scope, processor);
-  const One = stepOne(child.children, lang, processor, file, otherProps);
-  const { filesValue, indexStr } = stepTwo(
-    One,
-    child.children as any,
-    file,
-    processor,
+  const hastChild = processor.runSync(child, file) as MarkDownHastNodeTreeType;
+  const One = newStepOne(child.children, lang, otherProps);
+  const { filesValue, indexStr } = newStepTwoTree(
+    hastChild.children,
+    One.ignoreRows,
+    One.filesValue,
+    false,
     otherProps
   );
   return createStr(filesValue, indexStr, isInterval, mdCodePreviewPath);
@@ -81,6 +82,7 @@ export const createLoaderRetuen = (
     hastChild.children,
     One.ignoreRows,
     One.filesValue,
+    true,
     otherProps
   );
   const codeArr: string[] = [];

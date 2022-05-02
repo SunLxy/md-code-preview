@@ -11,17 +11,19 @@ export const createElementStr = (
   isPre: number = undefined
 ) => {
   let code = "";
-  if (item.type === "root") {
+  if (item && item.type === "root") {
     code = loop(item.children, isPre);
-  } else if (item.type === "element") {
+  } else if (item && item.type === "element") {
     const result = loop(item.children, isPre);
     const TagName = item.tagName;
     const propertie = item.properties || {};
     const propertiesObj =
-      isPre === 2 ? { className: propertie.className } : propertie;
+      isPre === 2 && TagName === "code"
+        ? { className: propertie.className }
+        : propertie;
     const newProperties = getProperties(propertiesObj);
     code += `<${TagName} ${newProperties}>${result}</${TagName}>`;
-  } else if (item.type === "text" && item.value !== "\n") {
+  } else if (item && item.type === "text" && item.value !== "\n") {
     code += `${transformSymbol(item.value)}`;
   }
   return code;

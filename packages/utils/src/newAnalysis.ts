@@ -75,6 +75,52 @@ export const newStepTwoTree = (
   hastChild: MarkDownHastNodeTreeType[],
   ignoreRows: IgnoreRows[],
   filesValue: StepOneReturn["filesValue"],
+  isDeps: boolean = true,
+  otherProps: OtherProps = {}
+) => {
+  const { isInterval } = otherProps;
+  const { newTree, filesValue: newFilesValue } = getNewTree(
+    hastChild,
+    ignoreRows,
+    filesValue,
+    otherProps
+  );
+  let indexStr = ``;
+  newTree.forEach((item) => {
+    const line = item && item.position && item.position.start.line;
+    if (filesValue[line]) {
+      const properties = (item.children[0] || {}).properties || {};
+      indexStr += `<MdCodePreview 
+        copyNodes={importCopyNodeRender["${line}"]}
+        properties={${JSON.stringify(properties)}}
+        comments={{
+          title:${isInterval ? `importHeadRender["${line}"]` : `undefined`},
+          description:${
+            isInterval ? `importDescRender["${line}"]` : `undefined`
+          },
+        }}
+        ${
+          isDeps
+            ? `dependenciesArr={dependenciesObject&&dependenciesObject["${line}"]||[]}`
+            : ""
+        }
+        code={importCodeRender["${line}"]}
+        >{importBaseCodeRender["${line}"]&&importBaseCodeRender["${line}"]()}</MdCodePreview>`;
+    } else {
+      const nodeStr = createElementStr(item);
+      indexStr += nodeStr;
+    }
+  });
+  return {
+    indexStr,
+    filesValue: newFilesValue,
+  };
+};
+
+export const getNewTree = (
+  hastChild: MarkDownHastNodeTreeType[],
+  ignoreRows: IgnoreRows[],
+  filesValue: StepOneReturn["filesValue"],
   otherProps: OtherProps = {}
 ) => {
   const { isInterval } = otherProps;
@@ -120,33 +166,9 @@ export const newStepTwoTree = (
       return item;
     })
     .filter(Boolean) as MarkDownHastNodeTreeType[];
-
-  let indexStr = ``;
-  newTree.forEach((item) => {
-    const line = item && item.position && item.position.start.line;
-    if (filesValue[line]) {
-      const properties = (item.children[0] || {}).properties || {};
-      indexStr += `<MdCodePreview 
-        copyNodes={importCopyNodeRender["${line}"]}
-        properties={${JSON.stringify(properties)}}
-        comments={{
-          title:${isInterval ? `importHeadRender["${line}"]` : `undefined`},
-          description:${
-            isInterval ? `importDescRender["${line}"]` : `undefined`
-          },
-        }}
-        dependenciesArr={dependenciesObject&&dependenciesObject["${line}"]||[]}
-        code={importCodeRender["${line}"]}
-        >{importBaseCodeRender["${line}"]&&importBaseCodeRender["${line}"]()}</MdCodePreview>`;
-    } else {
-      const nodeStr = createElementStr(item);
-      indexStr += nodeStr;
-    }
-  });
-
   return {
-    indexStr,
     filesValue,
+    newTree,
   };
 };
 

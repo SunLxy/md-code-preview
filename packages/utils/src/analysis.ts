@@ -5,7 +5,6 @@
 import { Processor } from "unified";
 import { getTransformValue } from "./transform";
 import { createElementStr } from "./createElement";
-import { transformCode } from ".";
 import {
   MarkDownTreeType,
   IgnoreRows,
@@ -31,7 +30,7 @@ export const stepOne = (
   file: any,
   otherProps: OtherProps = {}
 ) => {
-  const { isInterval = true, isLine = false, isDeps = true } = otherProps || {};
+  const { isInterval = true, isLine = false } = otherProps || {};
   /** 不需要展示的行 **/
   const ignoreRows: IgnoreRows[] = [];
   /** 行对应的代码 **/
@@ -66,13 +65,6 @@ export const stepOne = (
         // babel 转换后的 代码，最后需要拼接到结果文件中去的
         transform: getTransformValue(item.value, `${index}.${item.lang}`, line),
       };
-
-      if (isDeps) {
-        objs.dependencies = transformCode(
-          item.value,
-          `BaseCodeRenderComponent${isLine ? line : index}`
-        );
-      }
 
       const code = processor.runSync(
         { children: [item], type: "root" } as any,
