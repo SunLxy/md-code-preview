@@ -4,7 +4,7 @@ import webpack from "webpack";
 import chokidar from "chokidar";
 import { markdownParsePlugin } from "../utils";
 import anymatch from "anymatch";
-import { lastReturn, getFileDirName } from "md-plugin-utils";
+import { createPluginReturn, getFileDirName } from "md-plugin-utils";
 
 export interface MdCodePreviewPluginProps {
   /** 监听的根目录 默认：path.join(process.cwd(), "") */
@@ -90,7 +90,7 @@ class MdCodePreviewPlugin {
     FS.emptyDirSync(outDir);
     if (mdStr.trim()) {
       if (this.createJs) {
-        const result = lastReturn(mdStr, this.lang, {
+        const result = createPluginReturn(mdStr, this.lang, {
           isInterval: this.isInterval,
         });
         Object.entries(result).forEach(([key, value]) => {

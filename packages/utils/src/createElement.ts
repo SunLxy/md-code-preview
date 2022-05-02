@@ -1,3 +1,6 @@
+/*
+ * @Description: 拼接标签
+ */
 import { transformSymbol, getProperties, MarkDownHastNodeTreeType } from ".";
 /**
  * @description: 拼接标签

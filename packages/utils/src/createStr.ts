@@ -1,3 +1,6 @@
+/*
+ * @Description: 创建拼接输出字符串
+ */
 import { FilesValueType } from ".";
 import { DepsType, DepNamespacesType } from "./interface";
 

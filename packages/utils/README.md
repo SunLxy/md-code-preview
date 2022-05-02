@@ -223,7 +223,7 @@ const result = getTransformValue(
 );
 ```
 
-**lastReturn**
+**createPluginReturn**
 
 最终的返回内容(适合 plugin 形式，直接生成文件)
 
