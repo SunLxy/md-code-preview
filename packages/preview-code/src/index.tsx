@@ -19,7 +19,6 @@ const Preview = (props: PreviewProps) => {
     dependenciesArr,
     ...rest
   } = props;
-  console.log(props);
   return (
     <fieldset
       className={`preview-fieldset ${
