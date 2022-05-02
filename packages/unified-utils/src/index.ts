@@ -5,7 +5,6 @@ import { VFile } from "vfile";
 import { unified, PluggableList, Processor } from "unified";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
-
 import gfm from "remark-gfm";
 import slug from "rehype-slug";
 import headings from "rehype-autolink-headings";
@@ -15,6 +14,7 @@ import rehypePrism from "rehype-prism-plus";
 import rehypeRewrite from "rehype-rewrite";
 import { rehypeRewriteHandle } from "./rewrite";
 import { MarkDownTreeType, GetProcessorOptionsType } from "./interface";
+export * from "./interface";
 export const getProcessor = (options: GetProcessorOptionsType = {}) => {
   const rehypePlugins: PluggableList = [
     ...(options.rehypePlugins || []),

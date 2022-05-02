@@ -1,4 +1,3 @@
-import { transformMarkdown, getProcessor } from "./unified";
 import { stepTwo, stepOne } from "./analysis";
 import {
   createStr,
@@ -8,15 +7,14 @@ import {
   splicingString,
 } from "./createStr";
 import { OtherProps, DepsType, DepNamespacesType } from "./interface";
+import { getProcessor, transformMarkdown } from "md-unified-utils";
 export * from "./interface";
 export * from "./createElement";
 export * from "./createStr";
 export * from "./transform";
-export * from "./rewrite";
 export * from "./createPropertie";
-export * from "./unified";
 export * from "./analysis";
-
+export { getProcessor, transformMarkdown };
 /**
  * @description: 获取文件夹名称
  * @param {string} resourcePath  文件的绝对路径
