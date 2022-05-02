@@ -32,10 +32,10 @@ const PreviewCode = (props) => {
   // 使用plugin机制获取资源，再进行加载相应的案例组件
   React.useEffect(() => {
     const getAssset = async () => {
-      // const assets = require(`@@/code-${fileDirName}/assets.js`);
-      // if (assets && assets.default) {
-      //   setmdAssets(assets.default);
-      // }
+      const assets = require(`@@/code-${fileDirName}/assets.js`);
+      if (assets && assets.default) {
+        setmdAssets(assets.default);
+      }
     };
     getAssset();
   }, [fileDirName]);
@@ -113,7 +113,6 @@ const PreviewCode = (props) => {
               );
               return (
                 <React.Fragment>
-                  <div>下面是测试plugin机制,不忽略代码块上面到标题部分</div>
                   <Preview
                     isSpacing={false}
                     copyNodes={pluginItem.value}
