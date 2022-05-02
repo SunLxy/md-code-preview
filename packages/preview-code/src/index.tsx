@@ -15,9 +15,11 @@ const Preview = (props: PreviewProps) => {
     className = "",
     isSpacing = true,
     copyNodes = "",
+    properties,
+    dependenciesArr,
     ...rest
   } = props;
-
+  console.log(props);
   return (
     <fieldset
       className={`preview-fieldset ${

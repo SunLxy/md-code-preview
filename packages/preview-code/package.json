@@ -14,8 +14,10 @@
     "esm"
   ],
   "scripts": {
-    "build": "tsbb build",
-    "watch": "tsbb watch"
+    "build": "tsbb build & npm run build:less",
+    "build:less": "compile-less -d src -o esm",
+    "watch:less": "compile-less -d src -o esm --watch",
+    "watch": "tsbb watch & npm run watch:less"
   },
   "peerDependencies": {
     "react": ">=17.x",

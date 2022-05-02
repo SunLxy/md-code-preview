@@ -18,6 +18,7 @@ export interface RenderProps {
   getComponent?: () =>
     | Promise<{ default: React.ComponentType<any> }>
     | React.ReactNode;
+  children?: React.ReactNode;
 }
 
 export type CommentsType = {
@@ -41,4 +42,8 @@ export interface PreviewProps extends RenderProps, CodeProps {
   className?: string;
   /** 是否需要代码块下方的边距  */
   isSpacing?: boolean;
+  /** 通过 <!--rehype:bgWhite=true&codeSandbox=true&codePen=true--> 传递的参数 **/
+  properties?: Record<string, unknown>;
+  /** 当前code块，依赖的包名称  **/
+  dependenciesArr?: string[];
 }

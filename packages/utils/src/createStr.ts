@@ -11,7 +11,8 @@ export const createStr = (
   otherObj: FilesValueType,
   indexStrs: string,
   // 是否需要查找代码块以上到标题之间的内容并合并到渲染组件内
-  isInterval: boolean = true
+  isInterval: boolean = true,
+  mdCodePreviewPath: string = "md-code-preview"
 ) => {
   let codeStr = ``;
   let headStr = ``;
@@ -45,7 +46,7 @@ export const createStr = (
   import importCodeRender from "./importCodeRender"
   import importBaseCodeRender from "./importBaseCodeRender"
   import copyTextToClipboard from '@uiw/copy-to-clipboard';
-  import MdCodePreview from "md-code-preview"
+  import MdCodePreview from "${mdCodePreviewPath}"
   export default ()=>{
     return <div className="wmde-markdown wmde-markdown-color">
     ${indexStrs}
@@ -82,7 +83,8 @@ export const createBaseCodeRenderStr = (codeArr: string[]) => {
 export const createDepsStr = (
   deps: DepsType[],
   depNamespaces: DepNamespacesType[],
-  depDirects: DepNamespacesType[]
+  depDirects: DepNamespacesType[],
+  mdCodePreviewPath: string = "md-code-preview"
 ) => {
   let defaultStr = ``;
   let asStr = ``;
@@ -148,7 +150,7 @@ export const createDepsStr = (
   }
 
   return `
-  import MdCodePreview from "md-code-preview"
+  import MdCodePreview from "${mdCodePreviewPath}"
   import copyTextToClipboard from '@uiw/copy-to-clipboard';
   ${defaultStr}  
   ${asStr}  
@@ -200,12 +202,14 @@ export const splicingString = (props: {
   indexStr: string;
   baseStr: string;
   otherStr: string;
+  depsNameStr: string;
 }) => {
-  const { depsStr, indexStr, baseStr, otherStr } = props;
+  const { depsStr, indexStr, baseStr, otherStr, depsNameStr } = props;
   return `
-${depsStr};\n
-${baseStr};\n
-${otherStr};\n
+${depsStr}
+${baseStr}
+${otherStr}
+${depsNameStr};\n
 export default  ()=>{
   return <div className="wmde-markdown wmde-markdown-color">
     ${indexStr}

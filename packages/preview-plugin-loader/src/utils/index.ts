@@ -1,10 +1,8 @@
 import webpack from "webpack";
 export * from "./plugin";
 export * from "./interface";
-export * from "./transform";
 import { OtherProps, createLoaderRetuen } from "md-plugin-utils";
 import getCacheIdentifier from "react-dev-utils/getCacheIdentifier";
-import { getCodeStr } from "./transform";
 
 /**
  * 1. 解析代码 获取需要渲染的代码块和标题简介部分
@@ -26,7 +24,7 @@ export const lastReturn = (
   lang: string[] = ["jsx", "tsx"],
   otherProps: OtherProps = {}
 ) => {
-  return createLoaderRetuen(scope, lang, getCodeStr, otherProps);
+  return createLoaderRetuen(scope, lang, otherProps);
 };
 
 /** 判断是否引入 react/jsx-runtime **/

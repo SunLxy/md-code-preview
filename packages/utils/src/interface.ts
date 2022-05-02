@@ -23,8 +23,14 @@ export type FilesValueItemType = {
   code?: string;
   copyNode?: string;
   lang?: string;
-  headTree?: any;
-  descTree?: any;
+  dependencies?: {
+    code: string;
+    deps: DepsType;
+    depNamespaces: DepNamespacesType;
+    depDirects: DepNamespacesType;
+    /** 这个代码块多少依赖包名 ***/
+    depsName: string[];
+  };
 };
 
 export type FilesValueType = Record<number, FilesValueItemType>;
@@ -62,6 +68,9 @@ export type OtherProps = {
   isInterval?: boolean;
   /** 是否是所属的行赋值还是数组下标进行赋值 ***/
   isLine?: boolean;
+  /** 是否需要传递依赖数据 **/
+  isDeps?: boolean;
+  mdCodePreviewPath?: string;
 };
 
 export type DepsType = Record<string, { default: string; other: string[] }>;

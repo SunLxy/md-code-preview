@@ -1,61 +1,59 @@
-测试 语言
+## 基本用法
 
-## 这个是一个按钮 语言
-
-按钮有类型：主按钮、次按钮、虚线按钮、文本按钮和链接按钮
-
-> 按钮有类型：主按钮、次按钮、虚线按钮、文本按钮和链接按钮
+<!--rehype:bgWhite=true&codeSandbox=true&codePen=true-->
 
 ```jsx
-/**
- * @title: 基础按钮组件
- * @description: 按钮有类型：主按钮、次按钮、虚线按钮、文本按钮和链接按钮
- */
-import { Button } from "uiw";
 import React from "react";
-import Demo from "@/app/Preview/Demo.tsx";
-export default () => {
-  window.HOSTY = 123243;
-  return (
-    <div>
-      <Demo />
-      <button>按钮{window.HOSTY}</button>
-      <Button>按钮2</Button>
-    </div>
-  );
-};
-```
+import ReactDOM from "react-dom";
+import { Alert, ButtonGroup, Button } from "uiw";
 
-```js
-export default () => {
-  return <div>233</div>;
-};
-```
-
-```ts
-interface A {
-  s: string;
+class Demo extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      visible1: false,
+      visible2: false,
+    };
+  }
+  onClick(type) {
+    this.setState({ [type]: !this.state[type] });
+  }
+  onClosed(type) {
+    this.setState({ [type]: false });
+  }
+  render() {
+    return (
+      <div>
+        <Alert
+          isOpen={this.state.visible1}
+          confirmText="确定按钮"
+          onClosed={this.onClosed.bind(this, "visible1")}
+          content="这个对话框只有两个个按钮，单击“确定按钮”后，此对话框将关闭。用作通知用户重要信息。"
+        />
+        <Alert
+          isOpen={this.state.visible2}
+          confirmText="确定按钮"
+          cancelText="取消按钮"
+          type="danger"
+          onConfirm={() => console.log("您点击了确定按钮！")}
+          onCancel={() => console.log("您点击了取消按钮！")}
+          onClosed={this.onClosed.bind(this, "visible2")}
+        >
+          这个对话框有两个按钮，单击 “<b>确定按钮</b>” 或 “<b>取消按钮</b>”
+          后，此对话框将关闭，触发 “<b>onConfirm</b>” 或 “<b>onCancel</b>”
+          事件。用作通知用户重要信息。
+        </Alert>
+        <ButtonGroup>
+          <Button onClick={this.onClick.bind(this, "visible1")}>
+            单个按钮确认对话框
+          </Button>
+          <Button onClick={this.onClick.bind(this, "visible2")}>
+            确认对话框
+          </Button>
+        </ButtonGroup>
+      </div>
+    );
+  }
 }
-```
-
-```tsx
-/**
- * @title: 普通的tsx文件解析
- * @description:  按钮有类型：主按钮、次按钮、虚线按钮、文本按钮和链接按钮
- */
-interface A {
-  s: string;
-}
-import Demo from "@/app/Preview/Demo.tsx";
-const Com = (props: A) => {
-  window.HOSTY = 322;
-
-  return (
-    <div>
-      <div>呵呵呵呵呵呵呵{window.HOSTY}</div>
-      <Demo />
-    </div>
-  );
-};
-export default Com;
+export default Demo;
 ```

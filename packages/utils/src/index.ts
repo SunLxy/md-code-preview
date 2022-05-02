@@ -6,7 +6,12 @@ import {
   createOtherStr,
   splicingString,
 } from "./createStr";
-import { OtherProps, DepsType, DepNamespacesType } from "./interface";
+import {
+  OtherProps,
+  DepsType,
+  DepNamespacesType,
+  MarkDownHastNodeTreeType,
+} from "./interface";
 import { getProcessor, transformMarkdown } from "md-unified-utils";
 export * from "./interface";
 export * from "./createElement";
@@ -14,6 +19,7 @@ export * from "./createStr";
 export * from "./transform";
 export * from "./createPropertie";
 export * from "./analysis";
+import { newStepTwoTree, newStepOne } from "./newAnalysis";
 export { getProcessor, transformMarkdown };
 /**
  * @description: 获取文件夹名称
@@ -39,6 +45,8 @@ export const createPluginReturn = (
   lang: string[] = ["jsx", "tsx"],
   otherProps: OtherProps = {}
 ) => {
+  const { mdCodePreviewPath = "md-code-preview", isInterval = true } =
+    otherProps;
   const processor = getProcessor();
   const { child, file } = transformMarkdown(scope, processor);
   const One = stepOne(child.children, lang, processor, file, otherProps);
@@ -49,7 +57,7 @@ export const createPluginReturn = (
     processor,
     otherProps
   );
-  return createStr(filesValue, indexStr);
+  return createStr(filesValue, indexStr, isInterval, mdCodePreviewPath);
 };
 
 /**------------------ 用以直接创建生成 react文件形式的代码字符串 ---------------------**/
@@ -62,44 +70,46 @@ export const createPluginReturn = (
 export const createLoaderRetuen = (
   scope: string,
   lang: string[] = ["jsx", "tsx"],
-  transformCode: (
-    content: string,
-    funName: string
-  ) => {
-    code: string;
-    deps: DepsType;
-    depNamespaces: DepNamespacesType;
-    depDirects: DepNamespacesType;
-  },
   otherProps: OtherProps = {}
 ) => {
+  const { mdCodePreviewPath = "md-code-preview" } = otherProps;
   const processor = getProcessor();
   const { child, file } = transformMarkdown(scope, processor);
-  const One = stepOne(child.children, lang, processor, file, otherProps);
-  const { filesValue, indexStr } = stepTwo(
-    One,
-    child.children as any,
-    file,
-    processor,
+  const One = newStepOne(child.children, lang, otherProps);
+  const hastChild = processor.runSync(child, file) as MarkDownHastNodeTreeType;
+  const { filesValue, indexStr } = newStepTwoTree(
+    hastChild.children,
+    One.ignoreRows,
+    One.filesValue,
     otherProps
   );
   const codeArr: string[] = [];
   const depsArr: DepsType[] = [];
   const depDirectsArr: DepNamespacesType[] = [];
   const depNamespacesArr: DepNamespacesType[] = [];
+  let depsNameStr = ``;
   Object.entries(filesValue).forEach(([key, itemValue]) => {
-    const { copyNode } = itemValue;
-    const { code, depNamespaces, deps, depDirects } = transformCode(
-      copyNode,
-      `BaseCodeRenderComponent${key}`
-    );
+    const { dependencies } = itemValue;
+    const { code, depNamespaces, deps, depDirects, depsName } = dependencies;
     codeArr.push(code);
     depsArr.push(deps);
     depNamespacesArr.push(depNamespaces);
     depDirectsArr.push(depDirects);
+    depsNameStr += `${key}:${JSON.stringify(depsName)},`;
   });
-  const depsStr = createDepsStr(depsArr, depNamespacesArr, depDirectsArr);
+  const depsStr = createDepsStr(
+    depsArr,
+    depNamespacesArr,
+    depDirectsArr,
+    mdCodePreviewPath
+  );
   const otherStr = createOtherStr(filesValue);
   const baseStr = createBaseCodeRenderStr(codeArr);
-  return splicingString({ depsStr, indexStr, baseStr, otherStr });
+  return splicingString({
+    depsStr,
+    indexStr,
+    baseStr,
+    otherStr,
+    depsNameStr: `const dependenciesObject={${depsNameStr}}`,
+  });
 };

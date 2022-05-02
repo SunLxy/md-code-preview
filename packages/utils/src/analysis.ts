@@ -5,6 +5,7 @@
 import { Processor } from "unified";
 import { getTransformValue } from "./transform";
 import { createElementStr } from "./createElement";
+import { transformCode } from ".";
 import {
   MarkDownTreeType,
   IgnoreRows,
@@ -30,7 +31,7 @@ export const stepOne = (
   file: any,
   otherProps: OtherProps = {}
 ) => {
-  const { isInterval = true, isLine = false } = otherProps || {};
+  const { isInterval = true, isLine = false, isDeps = true } = otherProps || {};
   /** 不需要展示的行 **/
   const ignoreRows: IgnoreRows[] = [];
   /** 行对应的代码 **/
@@ -49,7 +50,7 @@ export const stepOne = (
       isExportDefault
     ) {
       const { start, end, desc, head } = isInterval
-        ? getIntervalData(index, child, isLine)
+        ? getIntervalData(index, child)
         : {
             start: undefined,
             end: undefined,
@@ -65,6 +66,14 @@ export const stepOne = (
         // babel 转换后的 代码，最后需要拼接到结果文件中去的
         transform: getTransformValue(item.value, `${index}.${item.lang}`, line),
       };
+
+      if (isDeps) {
+        objs.dependencies = transformCode(
+          item.value,
+          `BaseCodeRenderComponent${isLine ? line : index}`
+        );
+      }
+
       const code = processor.runSync(
         { children: [item], type: "root" } as any,
         file
@@ -181,7 +190,7 @@ export const isShowNode = (
 export const getIntervalData = (
   endIndex: number,
   child: MarkDownTreeType["children"],
-  isLine: boolean
+  isLine: boolean = true
 ) => {
   // 结束的下标
   // 到第一个heading结束

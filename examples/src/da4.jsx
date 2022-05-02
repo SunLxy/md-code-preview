@@ -1,56 +1,57 @@
 import MdCodePreview from "md-code-preview";
 import copyTextToClipboard from "@uiw/copy-to-clipboard";
 import React from "react";
-import Demo from "@/app/Preview/Demo.tsx";
 
-import { Button } from "uiw";
+import { Alert } from "uiw";
 
 const BaseCodeRenderComponent4 = () => {
-  /**
-   * @title: 基础按钮组件
-   * @description: 按钮有类型：主按钮、次按钮、虚线按钮、文本按钮和链接按钮
-   */
-  const ComponentBaseCodeRenderComponent4 = () => {
-    window.HOSTY = 123243;
+  class Demo extends React.Component {
+    render() {
+      return (
+        <div>
+          <Alert
+            confirmText="确定按钮"
+            content="这个对话框只有两个个按钮，单击“确定按钮”后，此对话框将关闭。用作通知用户重要信息。"
+          />
+        </div>
+      );
+    }
+  }
+  const DOMS = () => {
+    return <div>ewewwewwe</div>;
+  };
+
+  return <DOMS />;
+};
+
+const importCopyNodeRender = {
+  4: `import React from 'react';
+import { Alert,} from 'uiw';
+
+class Demo extends React.Component {
+  render() {
     return (
       <div>
-        <Demo />
-        <button>按钮{window.a}</button>
-        <Button>按钮2</Button>
+        <Alert
+          confirmText="确定按钮"
+          content="这个对话框只有两个个按钮，单击“确定按钮”后，此对话框将关闭。用作通知用户重要信息。"
+        />
       </div>
-    );
-  };
-  return <ComponentBaseCodeRenderComponent4 />;
-};
-const importCopyNodeRender = {
-  4: `/**
- * @title: 基础按钮组件
- * @description: 按钮有类型：主按钮、次按钮、虚线按钮、文本按钮和链接按钮
- */
-import { Button } from "uiw";
-import React from "react";
-import Demo from "@/app/Preview/Demo.tsx";
-export default () => {
-  window.HOSTY = 123243;
-  return (
-    <div>
-      <Demo />
-      <button>按钮{window.a}</button>
-      <Button>按钮2</Button>
-    </div>
-  );
-};`,
+    )
+  }
+}
+export default Demo;`,
 };
 
 const importHeadRender = {
   4: (
     <React.Fragment>
-      <h2 id={`张三-语言哈哈哈`}>
+      <h2 id={`基本用法`}>
         <a
           className={`anchor`}
           aria-hidden={`true`}
           tabIndex={-1}
-          href={`#张三-语言哈哈哈`}
+          href={`#基本用法`}
         >
           <svg
             className={`octicon octicon-link`}
@@ -66,91 +67,56 @@ const importHeadRender = {
             ></path>
           </svg>
         </a>
-        张三 语言哈哈哈
+        基本用法
       </h2>
     </React.Fragment>
   ),
 };
 
-const importDescRender = {
-  4: (
-    <React.Fragment>
-      <p>动画名称</p>
-      <blockquote>
-        <ol>
-          <li>测试没人</li>
-        </ol>
-      </blockquote>
-    </React.Fragment>
-  ),
-};
+const importDescRender = {};
 
 const importCodeRender = {
   4: (
     <React.Fragment>
-      <pre className="language-jsx">
+      <pre className="language-jsx" data-type={`rehyp`}>
         <code className="language-jsx code-highlight">
-          <span className="code-line">
-            <span className="token comment">/**</span>
-          </span>
-          <span className="code-line">
-            <span className="token comment"> * @title: 基础按钮组件</span>
-          </span>
-          <span className="code-line">
-            <span className="token comment">
-              {" "}
-              * @description:
-              按钮有类型：主按钮、次按钮、虚线按钮、文本按钮和链接按钮
-            </span>
-          </span>
-          <span className="code-line">
-            <span className="token comment"> */</span>
-          </span>
-          <span className="code-line">
-            <span className="token keyword module">import</span>{" "}
-            <span className="token imports">
-              <span className="token punctuation">&#123;</span>{" "}
-              <span className="token maybe-class-name">Button</span>{" "}
-              <span className="token punctuation">&#125;</span>
-            </span>{" "}
-            <span className="token keyword module">from</span>{" "}
-            <span className="token string">"uiw"</span>
-            <span className="token punctuation">;</span>
-          </span>
           <span className="code-line">
             <span className="token keyword module">import</span>{" "}
             <span className="token imports">
               <span className="token maybe-class-name">React</span>
             </span>{" "}
             <span className="token keyword module">from</span>{" "}
-            <span className="token string">"react"</span>
+            <span className="token string">'react'</span>
             <span className="token punctuation">;</span>
           </span>
           <span className="code-line">
             <span className="token keyword module">import</span>{" "}
             <span className="token imports">
-              <span className="token maybe-class-name">Demo</span>
+              <span className="token punctuation">&#123;</span>{" "}
+              <span className="token maybe-class-name">Alert</span>
+              <span className="token punctuation">,</span>
+              <span className="token punctuation">&#125;</span>
             </span>{" "}
             <span className="token keyword module">from</span>{" "}
-            <span className="token string">"@/app/Preview/Demo.tsx"</span>
+            <span className="token string">'uiw'</span>
             <span className="token punctuation">;</span>
           </span>
+          <span className="code-line"></span>
           <span className="code-line">
-            <span className="token keyword module">export</span>{" "}
-            <span className="token keyword module">default</span>{" "}
-            <span className="token punctuation">(</span>
-            <span className="token punctuation">)</span>{" "}
-            <span className="token arrow operator">&#61;&gt;</span>{" "}
+            <span className="token keyword">class</span>{" "}
+            <span className="token class-name">Demo</span>{" "}
+            <span className="token keyword">extends</span>{" "}
+            <span className="token class-name">
+              React<span className="token punctuation">.</span>Component
+            </span>{" "}
             <span className="token punctuation">&#123;</span>
           </span>
           <span className="code-line">
             {" "}
-            <span className="token dom variable">window</span>
-            <span className="token punctuation">.</span>
-            <span className="token constant">HOSTY</span>{" "}
-            <span className="token operator">&#61;</span>{" "}
-            <span className="token number">123243</span>
-            <span className="token punctuation">;</span>
+            <span className="token function">render</span>
+            <span className="token punctuation">(</span>
+            <span className="token punctuation">)</span>{" "}
+            <span className="token punctuation">&#123;</span>
           </span>
           <span className="code-line">
             {" "}
@@ -172,9 +138,37 @@ const importCodeRender = {
             <span className="token tag">
               <span className="token tag">
                 <span className="token punctuation">&lt;</span>
-                <span className="token class-name">Demo</span>
-              </span>{" "}
-              <span className="token punctuation">&#47;&gt;</span>
+                <span className="token class-name">Alert</span>
+              </span>
+            </span>
+          </span>
+          <span className="code-line">
+            <span className="token tag">
+              {" "}
+              <span className="token attr-name">confirmText</span>
+              <span className="token attr-value">
+                <span className="token punctuation attr-equals">&#61;</span>
+                <span className="token punctuation">"</span>确定按钮
+                <span className="token punctuation">"</span>
+              </span>
+            </span>
+          </span>
+          <span className="code-line">
+            <span className="token tag">
+              {" "}
+              <span className="token attr-name">content</span>
+              <span className="token attr-value">
+                <span className="token punctuation attr-equals">&#61;</span>
+                <span className="token punctuation">"</span>
+                这个对话框只有两个个按钮，单击“确定按钮”后，此对话框将关闭。用作通知用户重要信息。
+                <span className="token punctuation">"</span>
+              </span>
+            </span>
+          </span>
+          <span className="code-line">
+            <span className="token tag">
+              {" "}
+              <span className="token punctuation">/&gt;</span>
             </span>
             <span className="token plain-text"></span>
           </span>
@@ -182,48 +176,7 @@ const importCodeRender = {
             <span className="token plain-text"> </span>
             <span className="token tag">
               <span className="token tag">
-                <span className="token punctuation">&lt;</span>button
-              </span>
-              <span className="token punctuation">&gt;</span>
-            </span>
-            <span className="token plain-text">按钮</span>
-            <span className="token punctuation">&#123;</span>
-            <span className="token dom variable">window</span>
-            <span className="token punctuation">.</span>
-            <span className="token property-access">a</span>
-            <span className="token punctuation">&#125;</span>
-            <span className="token tag">
-              <span className="token tag">
-                <span className="token punctuation">&lt;&#47;</span>button
-              </span>
-              <span className="token punctuation">&gt;</span>
-            </span>
-            <span className="token plain-text"></span>
-          </span>
-          <span className="code-line">
-            <span className="token plain-text"> </span>
-            <span className="token tag">
-              <span className="token tag">
-                <span className="token punctuation">&lt;</span>
-                <span className="token class-name">Button</span>
-              </span>
-              <span className="token punctuation">&gt;</span>
-            </span>
-            <span className="token plain-text">按钮2</span>
-            <span className="token tag">
-              <span className="token tag">
-                <span className="token punctuation">&lt;&#47;</span>
-                <span className="token class-name">Button</span>
-              </span>
-              <span className="token punctuation">&gt;</span>
-            </span>
-            <span className="token plain-text"></span>
-          </span>
-          <span className="code-line">
-            <span className="token plain-text"> </span>
-            <span className="token tag">
-              <span className="token tag">
-                <span className="token punctuation">&lt;&#47;</span>div
+                <span className="token punctuation">&lt;/</span>div
               </span>
               <span className="token punctuation">&gt;</span>
             </span>
@@ -231,43 +184,22 @@ const importCodeRender = {
           <span className="code-line">
             {" "}
             <span className="token punctuation">)</span>
-            <span className="token punctuation">;</span>
+          </span>
+          <span className="code-line">
+            {" "}
+            <span className="token punctuation">&#125;</span>
           </span>
           <span className="code-line">
             <span className="token punctuation">&#125;</span>
+          </span>
+          <span className="code-line">
+            <span className="token keyword module">export</span>{" "}
+            <span className="token keyword module">default</span>{" "}
+            <span className="token maybe-class-name">Demo</span>
             <span className="token punctuation">;</span>
           </span>
         </code>
-        <div
-          onClick={function (e) {
-            var t = e.currentTarget || e.target;
-            t.classList.add("active"),
-              Zp(t.dataset.code, function () {
-                setTimeout(function () {
-                  t.classList.remove("active");
-                }, 2e3);
-              });
-          }}
-          data-code={`/**
- * @title: 基础按钮组件
- * @description: 按钮有类型：主按钮、次按钮、虚线按钮、文本按钮和链接按钮
- */
-import { Button } from "uiw";
-import React from "react";
-import Demo from "@/app/Preview/Demo.tsx";
-export default () => {
-  window.HOSTY = 123243;
-  return (
-    <div>
-      <Demo />
-      <button>按钮{window.a}</button>
-      <Button>按钮2</Button>
-    </div>
-  );
-};
-`}
-          className={`copied`}
-        >
+        <div className={`copied`}>
           <svg
             className={`octicon-copy`}
             aria-hidden={`true`}
@@ -308,21 +240,27 @@ const importBaseCodeRender = {
   4: BaseCodeRenderComponent4,
 };
 
+const dependenciesObject = { 4: ["react", "uiw"] };
+
 export default () => {
   return (
     <div className="wmde-markdown wmde-markdown-color">
-      <p>
-        Use an example of <code>Markdown</code>.
-      </p>
       <MdCodePreview
         copyNodes={importCopyNodeRender["4"]}
+        properties={{
+          className: ["language-jsx", "code-highlight"],
+          bgWhite: true,
+          codeSandbox: true,
+          codePen: true,
+        }}
         comments={{
           title: importHeadRender["4"],
           description: importDescRender["4"],
         }}
+        dependencies={(dependenciesObject && dependenciesObject["4"]) || []}
         code={importCodeRender["4"]}
       >
-        {importBaseCodeRender["4"] && importBaseCodeRender["4"]()}
+        {BaseCodeRenderComponent4()}
       </MdCodePreview>
     </div>
   );
