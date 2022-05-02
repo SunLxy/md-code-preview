@@ -24,7 +24,9 @@ export default (conf, env, options) => {
   // );
 
   conf = mdCodeModulesLoader(conf);
-  conf.output = { ...conf.output, publicPath: "./" };
+  if (process.env.NODE_ENV === "production") {
+    conf.output = { ...conf.output, publicPath: "./" };
+  }
 
   conf.resolve = {
     ...conf.resolve,

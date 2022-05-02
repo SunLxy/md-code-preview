@@ -1,22 +1,23 @@
 import React from "react";
-// import Preview from "./Preview";
 import Preview2 from "./Preview/index2";
 import { Button } from "uiw";
-// import ReactDOM from "react-dom/client";
-// import Demo from "./Preview/Demo.tsx";
+import language from "@/language.json";
 
 export default function App() {
   const [lang, setLang] = React.useState("");
-  console.log(lang);
   return (
     <React.Fragment>
-      <Button
-        onClick={() => {
-          setLang(!lang ? ".as" : "");
-        }}
-      >
-        切换语言
-      </Button>
+      {Object.entries(language).map(([_, item]) => {
+        return (
+          <Button
+            type={lang === item.value ? "primary" : "light"}
+            key={_}
+            onClick={() => setLang(`${item.value}`)}
+          >
+            {item.label}
+          </Button>
+        );
+      })}
       <Preview2 lang={lang} />
       {/* <Preview
         // getMdStr={() => import("md-code-preview/README.md")}

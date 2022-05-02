@@ -19,7 +19,7 @@ export default () => {
   return (
     <div>
       <Demo />
-      <button>按钮{window.a}</button>
+      <button>按钮{window.HOSTY}</button>
       <Button>按钮2</Button>
     </div>
   );
@@ -52,7 +52,7 @@ const Com = (props: A) => {
 
   return (
     <div>
-      <div>呵呵呵呵呵呵呵</div>
+      <div>呵呵呵呵呵呵呵{window.HOSTY}</div>
       <Demo />
     </div>
   );
