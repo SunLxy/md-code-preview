@@ -70,6 +70,7 @@ export type OtherProps = {
   isLine?: boolean;
   /** 是否需要传递依赖数据 **/
   isDeps?: boolean;
+  /** 预览组件地址 **/
   mdCodePreviewPath?: string;
 };
 

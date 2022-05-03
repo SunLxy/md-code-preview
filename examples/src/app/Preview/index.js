@@ -116,7 +116,7 @@ const PreviewCode = (props) => {
                   <Preview
                     isSpacing={false}
                     copyNodes={pluginItem.value}
-                    getComponent={() => import(`@@/${pluginItem.path}`)}
+                    component={() => import(`@@/${pluginItem.path}`)}
                     code={code}
                     comments={pluginItem.comments}
                   />

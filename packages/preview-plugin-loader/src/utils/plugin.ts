@@ -14,20 +14,22 @@ export const markdownParsePlugin = (
   fileDirName: string,
   savePath: string,
   lang: string[] = ["jsx", "tsx"],
-  isInterval: boolean
+  isInterval: boolean,
+  mdCodePreviewPath: string = "md-code-preview"
 ) => {
   const dirPath = path.join(savePath, fileDirName);
+  const others = { isInterval, isDeps: false, mdCodePreviewPath };
   // 置空文件夹
   FS.emptyDirSync(dirPath);
   const processor = getProcessor();
   const { file, child } = transformMarkdown(source, processor);
-  const One = newStepOne(child.children, lang, { isInterval, isDeps: false });
+  const One = newStepOne(child.children, lang, others);
   const hastChild = processor.runSync(child, file) as MarkDownHastNodeTreeType;
   const { filesValue } = getNewTree(
     hastChild.children,
     One.ignoreRows,
     One.filesValue,
-    { isInterval }
+    others
   );
   const { ignoreRows } = One;
   let initStr = ``;

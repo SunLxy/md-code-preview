@@ -23,6 +23,8 @@ export interface MdCodePreviewPluginProps {
   createJs?: boolean;
   /** 是否需要解析代码块以上到标题之间的内容并合并到展示组件中 **/
   isInterval?: boolean;
+  /** 组件预览地址 默认 "md-code-preview" 包名称 **/
+  mdCodePreviewPath?: string;
 }
 
 // 输出文件 默认路径去除根路径，其他的拼接起来当文件夹名称，每个文件夹下对应当前md文件所有的 代码块
@@ -40,6 +42,7 @@ class MdCodePreviewPlugin {
   pre: string = "";
   createJs: boolean = true;
   isInterval: boolean = true;
+  mdCodePreviewPath = "md-code-preview";
 
   constructor(props: MdCodePreviewPluginProps = {}) {
     this.cwd = props.cwd || path.join(process.cwd(), "");
@@ -72,6 +75,10 @@ class MdCodePreviewPlugin {
     if (Reflect.has(props, "isInterval")) {
       this.isInterval = Reflect.get(props, "isInterval");
     }
+    if (Reflect.has(props, "mdCodePreviewPath") && props.mdCodePreviewPath) {
+      this.mdCodePreviewPath = Reflect.get(props, "mdCodePreviewPath");
+    }
+
     this.getPathDeep(this.cwd);
   }
 
@@ -92,6 +99,7 @@ class MdCodePreviewPlugin {
       if (this.createJs) {
         const result = createPluginReturn(mdStr, this.lang, {
           isInterval: this.isInterval,
+          mdCodePreviewPath: this.mdCodePreviewPath,
         });
         Object.entries(result).forEach(([key, value]) => {
           if (value) {
@@ -107,7 +115,8 @@ class MdCodePreviewPlugin {
           fileDirNames,
           this.output,
           this.lang,
-          this.isInterval
+          this.isInterval,
+          this.mdCodePreviewPath
         );
         if (initStr) {
           const dirPath = path.join(this.output, fileDirNames);
