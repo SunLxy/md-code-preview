@@ -1,0 +1,1 @@
+{"version":3,"file":"static/js/1261.b38a6948.chunk.js","mappings":"gIAEA","sources":[".docs/examplesREADME/importCodeRender.js"],"sourcesContent":["import React from \"react\";\nimport copyTextToClipboard from '@uiw/copy-to-clipboard';\nexport default {}"],"names":[],"sourceRoot":""}
