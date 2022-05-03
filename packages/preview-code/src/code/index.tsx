@@ -11,8 +11,6 @@ const Code = (props: CodeProps) => {
   const [show, setShow] = React.useState(false);
   const copyRef = React.useRef<HTMLDivElement>();
   const copyTime = React.useRef<boolean>();
-  const descRef = React.useRef<HTMLDivElement>();
-  const titleRef = React.useRef<HTMLLegendElement>();
   const isCopy = React.useMemo(() => {
     return !!copyNodes;
   }, [copyNodes]);
@@ -23,32 +21,20 @@ const Code = (props: CodeProps) => {
     if (comments && Object.keys(comments).length) {
       /** 判断标题 **/
       if (comments.title) {
-        if (typeof comments.title !== "string") {
-          domArr.push(
-            <legend className="preview-title-head" key="1">
-              {comments.title}
-            </legend>
-          );
-        } else {
-          domArr.push(
-            <legend ref={titleRef} className="preview-title-head" key="2" />
-          );
-        }
+        domArr.push(
+          <legend className="preview-title-head" key="1">
+            {comments.title}
+          </legend>
+        );
       }
       /** 判断简介说明 **/
       if (comments.description) {
         isTopBorder = false;
-        if (typeof comments.description !== "string") {
-          domArr.push(
-            <div className="preview-title-body" key="3">
-              {comments.description}
-            </div>
-          );
-        } else {
-          domArr.push(
-            <div className="preview-title-body" ref={descRef} key="4" />
-          );
-        }
+        domArr.push(
+          <div className="preview-title-body" key="3">
+            {comments.description}
+          </div>
+        );
       }
     }
     return (
@@ -95,19 +81,6 @@ const Code = (props: CodeProps) => {
     }
     return <React.Fragment />;
   }, [isCopy, copyNodes]);
-
-  React.useEffect(() => {
-    if (descRef.current) {
-      if (comments.description && typeof comments.description === "string") {
-        descRef.current.innerHTML = comments.description;
-      }
-    }
-    if (titleRef.current) {
-      if (comments.title && typeof comments.title === "string") {
-        titleRef.current.innerHTML = comments.title;
-      }
-    }
-  }, [descRef.current, titleRef.current, JSON.stringify(comments)]);
 
   return (
     <React.Fragment>

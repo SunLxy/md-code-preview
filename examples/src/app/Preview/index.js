@@ -7,11 +7,7 @@ export const getFileDirName = (resourcePath) => {
 };
 
 const PreviewCode = (props) => {
-  const [mdStr, setMdStr] = React.useState({
-    source: "",
-    assets: {},
-    ignoreRows: [],
-  });
+  const [mdStr, setMdStr] = React.useState("");
   const [mdAssets, setmdAssets] = React.useState({});
   const fileDirName = React.useMemo(() => {
     return getFileDirName(props.fileDirName);
@@ -21,9 +17,7 @@ const PreviewCode = (props) => {
     const getMds = async () => {
       const result = await props.getMdStr();
       if (result && result.default) {
-        setMdStr({
-          source: result.default,
-        });
+        setMdStr(result.default);
       }
     };
     getMds();
@@ -58,7 +52,7 @@ const PreviewCode = (props) => {
   const checkNode = ({ node, ...rest }) => {
     const line = node.position.start.line;
     const TagName = node.tagName;
-    if (isShowNode(mdStr.ignoreRows || [], line)) {
+    if (isShowNode(mdAssets.ignoreRows || [], line)) {
       return null;
     }
     return <TagName {...rest} />;
@@ -68,11 +62,11 @@ const PreviewCode = (props) => {
     <React.Fragment>
       <MarkdownPreview
         style={{ padding: "15px 15px" }}
-        source={mdStr.source}
+        source={mdStr}
         components={{
-          // p: checkNode,
-          // h2: checkNode,
-          // blockquote: checkNode,
+          p: checkNode,
+          h2: checkNode,
+          blockquote: checkNode,
           /**
            * bgWhite 设置代码预览背景白色，否则为格子背景。
            * noCode 不显示代码编辑器。
@@ -91,7 +85,6 @@ const PreviewCode = (props) => {
             } = props;
 
             const line = node.position.start.line;
-            // console.log(isShowNode(mdStr.ignoreRows || [], line), node)
             if (inline) {
               return <code {...props} />;
             }
