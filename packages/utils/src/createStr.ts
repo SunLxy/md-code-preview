@@ -40,6 +40,7 @@ export const createStr = (
 
   const indexStr = `
   import React from "react";
+  import "md-code-preview/lib/styles/markdown.less"
   import importCopyNodeRender from "./importCopyNodeRender"
   ${isInterval ? `import importHeadRender from "./importHeadRender"` : ``}
   ${isInterval ? `import importDescRender from "./importDescRender"` : ``}
@@ -150,6 +151,7 @@ export const createDepsStr = (
   }
 
   return `
+  import "md-code-preview/lib/styles/markdown.less"
   import MdCodePreview from "${mdCodePreviewPath}"
   import copyTextToClipboard from '@uiw/copy-to-clipboard';
   ${defaultStr}  
