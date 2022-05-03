@@ -1,6 +1,12 @@
 import FS from "fs-extra";
 import path from "path";
-import { stepOne, getProcessor, transformMarkdown } from "md-plugin-utils";
+import {
+  getProcessor,
+  transformMarkdown,
+  getNewTree,
+  newStepOne,
+  MarkDownHastNodeTreeType,
+} from "md-plugin-utils";
 
 // plugin 中转换
 export const markdownParsePlugin = (
@@ -15,13 +21,15 @@ export const markdownParsePlugin = (
   FS.emptyDirSync(dirPath);
   const processor = getProcessor();
   const { file, child } = transformMarkdown(source, processor);
-  const { filesValue, ignoreRows } = stepOne(
-    child.children,
-    lang,
-    getProcessor(),
-    file,
-    { isLine: true, isInterval }
+  const One = newStepOne(child.children, lang, { isInterval, isDeps: false });
+  const hastChild = processor.runSync(child, file) as MarkDownHastNodeTreeType;
+  const { filesValue } = getNewTree(
+    hastChild.children,
+    One.ignoreRows,
+    One.filesValue,
+    { isInterval }
   );
+  const { ignoreRows } = One;
   let initStr = ``;
   if (Array.isArray(ignoreRows) && ignoreRows.length) {
     initStr += `ignoreRows:${JSON.stringify(ignoreRows)},\n`;
@@ -29,7 +37,6 @@ export const markdownParsePlugin = (
   Object.entries(filesValue).forEach(([key, item]) => {
     const { copyNode, head, desc, lang } = item;
     const filename = `${key}.${lang}`;
-
     initStr += `
       ${key}:{
         filename:\`${filename}\`,

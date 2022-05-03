@@ -1,4 +1,3 @@
-import { stepTwo, stepOne } from "./analysis";
 import {
   createStr,
   createBaseCodeRenderStr,
@@ -18,7 +17,7 @@ export * from "./createElement";
 export * from "./createStr";
 export * from "./transform";
 export * from "./createPropertie";
-export * from "./analysis";
+export * from "./newAnalysis";
 import { newStepTwoTree, newStepOne } from "./newAnalysis";
 export { getProcessor, transformMarkdown };
 /**

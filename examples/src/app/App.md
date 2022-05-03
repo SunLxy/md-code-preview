@@ -6,7 +6,7 @@
 
 弹出对话框会在继续之前，通知用户重要信息，点击确定后异步关闭对话框。
 
-```jsx
+```js
 import { Alert } from "uiw";
 // or
 import Alert from "@uiw/react-alert";

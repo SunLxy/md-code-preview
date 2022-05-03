@@ -17,7 +17,7 @@ import {
 
 /**
  * @description: 根据  child.children 找到 code 代码块及其上面到head之间的位置
- * @param {MarkDownHastNodeTreeType["children"]} child 通过解析的markdown数据
+ * @param {MarkDownTreeType["children"]} child 通过解析的markdown数据
  * @param {string[]} lang 解析代码块的语言
  * @param {OtherProps} otherProps  其他参数
  */
@@ -43,8 +43,16 @@ export const newStepOne = (
       lang.includes(item.lang || "") &&
       isExportDefault
     ) {
-      const start = isInterval ? getNewIntervalData(index, child) : undefined;
+      /** 判断代码块是否有 export default 导出，如果没有则不进行处理代码块 ***/
       const line = item.position.start.line;
+      const result = transformCode(
+        item.value,
+        `BaseCodeRenderComponent${line}`
+      );
+      if (!result.isDefault) {
+        return;
+      }
+      const start = isInterval ? getNewIntervalData(index, child) : undefined;
       const objs: FilesValueItemType = {
         value: item.value,
         copyNode: item.value,
@@ -53,10 +61,7 @@ export const newStepOne = (
         transform: getTransformValue(item.value, `${line}.${item.lang}`, line),
       };
       if (isDeps) {
-        objs.dependencies = transformCode(
-          item.value,
-          `BaseCodeRenderComponent${line}`
-        );
+        objs.dependencies = { ...result };
       }
       if (typeof start === "number" && isInterval) {
         ignoreRows.push({ start, end: line });

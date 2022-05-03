@@ -1,6 +1,6 @@
 import React from "react";
 import Preview2 from "./Preview/index2";
-import Preview from "./Preview";
+// import Preview from "./Preview";
 import { Button } from "uiw";
 import language from "@/language.json";
 // import ReactDOM from "react-dom/client";

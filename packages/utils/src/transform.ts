@@ -36,32 +36,49 @@ export const getTransformValue = (
   }`;
 };
 
+export const getAst = (content: string) => {
+  try {
+    const ast = parse(content, {
+      // 在严格模式下解析并允许模块声明
+      sourceType: "module",
+      plugins: [
+        "jsx",
+        "typescript",
+        "classProperties",
+        "dynamicImport",
+        "exportDefaultFrom",
+        "exportNamespaceFrom",
+        "functionBind",
+        "nullishCoalescingOperator",
+        "objectRestSpread",
+        "optionalChaining",
+        "decorators-legacy",
+      ],
+    });
+    return ast;
+  } catch (err) {
+    console.log(
+      `不需要渲染效果的代码块中请勿出现"export default"，防止解析代码块出现变量名重复报错。\n`,
+      err
+    );
+    process.exit(1);
+  }
+};
+
 // 引入 babel 插件
 // 对代码块进行解析，获取import依赖，删除import ，拼接成一个方法字符串
 export const transformCode = (content: string, funName: string) => {
-  const ast = parse(content, {
-    // 在严格模式下解析并允许模块声明
-    sourceType: "module",
-    plugins: [
-      "jsx",
-      "typescript",
-      "classProperties",
-      "dynamicImport",
-      "exportDefaultFrom",
-      "exportNamespaceFrom",
-      "functionBind",
-      "nullishCoalescingOperator",
-      "objectRestSpread",
-      "optionalChaining",
-      "decorators-legacy",
-    ],
-  });
-
+  const ast = getAst(content);
+  if (!ast) {
+    return {
+      isDefault: false,
+    };
+  }
   const deps: DepsType = {};
   const depNamespaces: DepNamespacesType = {};
   const depDirects: DepNamespacesType = {};
   const depArrs: Map<string, string> = new Map([]);
-
+  let isDefault = false;
   const getNameOrValue = (node: t.Identifier | t.StringLiteral) => {
     if (t.isIdentifier(node)) {
       return node.name;
@@ -70,6 +87,7 @@ export const transformCode = (content: string, funName: string) => {
     }
     return node;
   };
+  let returnCode = ``;
   /**
    * 1. 获取 import 依赖项
    * 2. 删除 import
@@ -107,16 +125,19 @@ export const transformCode = (content: string, funName: string) => {
       // 移除
       path.remove();
     },
+    ExportDefaultDeclaration: (path) => {
+      isDefault = true;
+    },
   });
   const code = generate(ast, {}, content).code;
   const newCode = code.replace("export default", `const Component${funName} =`);
+  returnCode = `
+    const ${funName} = ()=>{
+      ${newCode}
+      return <Component${funName} />
+    }
+    `;
 
-  const returnCode = `
-  const ${funName} = ()=>{
-    ${newCode}
-    return <Component${funName} />
-  }
-  `;
   return {
     /** 转换好的 function 方法 **/
     code: returnCode,
@@ -128,5 +149,6 @@ export const transformCode = (content: string, funName: string) => {
     depDirects,
     /** 这个代码块多少依赖包名 ***/
     depsName: Array.from(depArrs.keys()),
+    isDefault,
   };
 };

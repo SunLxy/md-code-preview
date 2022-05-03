@@ -18,9 +18,9 @@ export default (conf, env, options) => {
   //   //   createJs: false,
   //   //   isInterval: false,
   //   // }),
-  //   new MdCodePreviewPlugin({
-  //     cwd: path.join(process.cwd(), ".."),
-  //   })
+  //   // new MdCodePreviewPlugin({
+  //   //   cwd: path.join(process.cwd(), ".."),
+  //   // })
   // );
 
   conf = mdCodeModulesLoader(conf);

@@ -24,12 +24,12 @@ export type FilesValueItemType = {
   copyNode?: string;
   lang?: string;
   dependencies?: {
-    code: string;
-    deps: DepsType;
-    depNamespaces: DepNamespacesType;
-    depDirects: DepNamespacesType;
+    code?: string;
+    deps?: DepsType;
+    depNamespaces?: DepNamespacesType;
+    depDirects?: DepNamespacesType;
     /** 这个代码块多少依赖包名 ***/
-    depsName: string[];
+    depsName?: string[];
   };
 };
 

@@ -104,7 +104,13 @@ const getModulesBabelLoader = () => {
  * **/
 export const mdCodeModulesLoader = (
   config: webpack.Configuration,
-  isInterval: boolean = true
+  other: Record<
+    string,
+    {
+      lang?: string[];
+      isInterval?: boolean;
+    }
+  >
 ): webpack.Configuration => {
   config.module.rules.forEach((ruleItem) => {
     if (typeof ruleItem === "object") {
@@ -115,7 +121,7 @@ export const mdCodeModulesLoader = (
             getModulesBabelLoader(),
             {
               loader: "md-code-preview-plugin-loader",
-              options: { isInterval },
+              options: other || {},
             },
           ],
         });
