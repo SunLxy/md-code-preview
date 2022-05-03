@@ -109,6 +109,7 @@ export const mdCodeModulesLoader = (
     {
       lang?: string[];
       isInterval?: boolean;
+      mdCodePreviewPath?: string;
     }
   >
 ): webpack.Configuration => {

@@ -22,8 +22,9 @@ export default (conf, env, options) => {
   //     cwd: path.join(process.cwd(), ".."),
   //   })
   // );
-
-  conf = mdCodeModulesLoader(conf);
+  conf = mdCodeModulesLoader(conf, {
+    mdCodePreviewPath: "@/components/markdown",
+  });
   if (process.env.NODE_ENV === "production") {
     conf.output = { ...conf.output, publicPath: "./" };
   }

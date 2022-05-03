@@ -93,7 +93,8 @@ export const newStepTwoTree = (
   newTree.forEach((item) => {
     const line = item && item.position && item.position.start.line;
     if (filesValue[line]) {
-      const properties = (item.children[0] || {}).properties || {};
+      const { className, ...properties } =
+        (item.children[0] || {}).properties || {};
       indexStr += `<MdCodePreview 
         copyNodes={importCopyNodeRender["${line}"]}
         properties={${JSON.stringify(properties)}}
