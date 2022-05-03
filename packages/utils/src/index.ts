@@ -54,7 +54,6 @@ export const createPluginReturn = (
     hastChild.children,
     One.ignoreRows,
     One.filesValue,
-    false,
     otherProps
   );
   return createStr(filesValue, indexStr, isInterval, mdCodePreviewPath);
@@ -81,14 +80,12 @@ export const createLoaderRetuen = (
     hastChild.children,
     One.ignoreRows,
     One.filesValue,
-    true,
     otherProps
   );
   const codeArr: string[] = [];
   const depsArr: DepsType[] = [];
   const depDirectsArr: DepNamespacesType[] = [];
   const depNamespacesArr: DepNamespacesType[] = [];
-  let depsNameStr = ``;
   Object.entries(filesValue).forEach(([key, itemValue]) => {
     const { dependencies } = itemValue;
     const { code, depNamespaces, deps, depDirects, depsName } = dependencies;
@@ -96,7 +93,6 @@ export const createLoaderRetuen = (
     depsArr.push(deps);
     depNamespacesArr.push(depNamespaces);
     depDirectsArr.push(depDirects);
-    depsNameStr += `${key}:${JSON.stringify(depsName)},`;
   });
   const depsStr = createDepsStr(
     depsArr,
@@ -111,6 +107,5 @@ export const createLoaderRetuen = (
     indexStr,
     baseStr,
     otherStr,
-    depsNameStr: `const dependenciesObject={${depsNameStr}}`,
   });
 };

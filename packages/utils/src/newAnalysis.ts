@@ -80,7 +80,6 @@ export const newStepTwoTree = (
   hastChild: MarkDownHastNodeTreeType[],
   ignoreRows: IgnoreRows[],
   filesValue: StepOneReturn["filesValue"],
-  isDeps: boolean = true,
   otherProps: OtherProps = {}
 ) => {
   const { isInterval } = otherProps;
@@ -104,11 +103,6 @@ export const newStepTwoTree = (
             isInterval ? `importDescRender["${line}"]` : `undefined`
           },
         }}
-        ${
-          isDeps
-            ? `dependenciesArr={dependenciesObject&&dependenciesObject["${line}"]||[]}`
-            : ""
-        }
         code={importCodeRender["${line}"]}
         >{importBaseCodeRender["${line}"]&&importBaseCodeRender["${line}"]()}</MdCodePreview>`;
     } else {

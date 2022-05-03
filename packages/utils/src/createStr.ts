@@ -204,14 +204,12 @@ export const splicingString = (props: {
   indexStr: string;
   baseStr: string;
   otherStr: string;
-  depsNameStr: string;
 }) => {
-  const { depsStr, indexStr, baseStr, otherStr, depsNameStr } = props;
+  const { depsStr, indexStr, baseStr, otherStr } = props;
   return `
 ${depsStr}
 ${baseStr}
 ${otherStr}
-${depsNameStr};\n
 export default  ()=>{
   return <div className="wmde-markdown wmde-markdown-color">
     ${indexStr}
