@@ -1,4 +1,5 @@
 export * from "md-unified-utils";
+import { GetProcessorOptionsType } from ".";
 export type StartAndEndType = {
   column: number;
   offset: number;
@@ -72,6 +73,7 @@ export type OtherProps = {
   isDeps?: boolean;
   /** 预览组件地址 **/
   mdCodePreviewPath?: string;
+  options?: GetProcessorOptionsType;
 };
 
 export type DepsType = Record<string, { default: string; other: string[] }>;

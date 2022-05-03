@@ -4,7 +4,11 @@ import webpack from "webpack";
 import chokidar from "chokidar";
 import { markdownParsePlugin } from "../utils";
 import anymatch from "anymatch";
-import { createPluginReturn, getFileDirName } from "md-plugin-utils";
+import {
+  createPluginReturn,
+  getFileDirName,
+  GetProcessorOptionsType,
+} from "md-plugin-utils";
 
 export interface MdCodePreviewPluginProps {
   /** 监听的根目录 默认：path.join(process.cwd(), "") */
@@ -15,16 +19,19 @@ export interface MdCodePreviewPluginProps {
   matchRules?: string | string[];
   /** 忽略监听文件规则  默认忽略 node_modules 下所有的文件 ***/
   ignored?: any;
-  /** 需要转换预览的代码块语言 **/
-  lang?: string[];
   /** 文件夹前缀 **/
   pre?: string;
   /** 是否直接把markdown转换成react代码输出 **/
   createJs?: boolean;
+  /***  以下参数为 markdown 转换工具需要的参数 ****/
+  /** 需要转换预览的代码块语言 **/
+  lang?: string[];
   /** 是否需要解析代码块以上到标题之间的内容并合并到展示组件中 **/
   isInterval?: boolean;
   /** 组件预览地址 默认 "md-code-preview" 包名称 **/
   mdCodePreviewPath?: string;
+  /** markdown 转换代码 参数 ***/
+  options?: GetProcessorOptionsType;
 }
 
 // 输出文件 默认路径去除根路径，其他的拼接起来当文件夹名称，每个文件夹下对应当前md文件所有的 代码块
@@ -43,6 +50,7 @@ class MdCodePreviewPlugin {
   createJs: boolean = true;
   isInterval: boolean = true;
   mdCodePreviewPath = "md-code-preview";
+  options: GetProcessorOptionsType = {};
 
   constructor(props: MdCodePreviewPluginProps = {}) {
     this.cwd = props.cwd || path.join(process.cwd(), "");
@@ -75,6 +83,9 @@ class MdCodePreviewPlugin {
     if (Reflect.has(props, "isInterval")) {
       this.isInterval = Reflect.get(props, "isInterval");
     }
+    if (Reflect.has(props, "options")) {
+      this.options = Reflect.get(props, "options") || {};
+    }
     if (Reflect.has(props, "mdCodePreviewPath") && props.mdCodePreviewPath) {
       this.mdCodePreviewPath = Reflect.get(props, "mdCodePreviewPath");
     }
@@ -100,6 +111,7 @@ class MdCodePreviewPlugin {
         const result = createPluginReturn(mdStr, this.lang, {
           isInterval: this.isInterval,
           mdCodePreviewPath: this.mdCodePreviewPath,
+          options: this.options,
         });
         Object.entries(result).forEach(([key, value]) => {
           if (value) {
@@ -116,7 +128,8 @@ class MdCodePreviewPlugin {
           this.output,
           this.lang,
           this.isInterval,
-          this.mdCodePreviewPath
+          this.mdCodePreviewPath,
+          this.options
         );
         if (initStr) {
           const dirPath = path.join(this.output, fileDirNames);

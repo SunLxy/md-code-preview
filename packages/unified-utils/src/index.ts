@@ -15,6 +15,7 @@ import rehypeRewrite from "rehype-rewrite";
 import { rehypeRewriteHandle } from "./rewrite";
 import { MarkDownTreeType, GetProcessorOptionsType } from "./interface";
 export * from "./interface";
+
 export const getProcessor = (options: GetProcessorOptionsType = {}) => {
   const rehypePlugins: PluggableList = [
     ...(options.rehypePlugins || []),

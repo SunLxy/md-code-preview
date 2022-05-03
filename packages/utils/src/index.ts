@@ -44,9 +44,12 @@ export const createPluginReturn = (
   lang: string[] = ["jsx", "tsx"],
   otherProps: OtherProps = {}
 ) => {
-  const { mdCodePreviewPath = "md-code-preview", isInterval = true } =
-    otherProps;
-  const processor = getProcessor();
+  const {
+    mdCodePreviewPath = "md-code-preview",
+    isInterval = true,
+    options = {},
+  } = otherProps;
+  const processor = getProcessor(options);
   const { child, file } = transformMarkdown(scope, processor);
   const hastChild = processor.runSync(child, file) as MarkDownHastNodeTreeType;
   const One = newStepOne(child.children, lang, otherProps);
@@ -71,8 +74,8 @@ export const createLoaderRetuen = (
   lang: string[] = ["jsx", "tsx"],
   otherProps: OtherProps = {}
 ) => {
-  const { mdCodePreviewPath = "md-code-preview" } = otherProps;
-  const processor = getProcessor();
+  const { mdCodePreviewPath = "md-code-preview", options = {} } = otherProps;
+  const processor = getProcessor(options);
   const { child, file } = transformMarkdown(scope, processor);
   const One = newStepOne(child.children, lang, otherProps);
   const hastChild = processor.runSync(child, file) as MarkDownHastNodeTreeType;
