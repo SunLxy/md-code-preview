@@ -7,9 +7,13 @@ export default function (source: string) {
   const isInterval = Reflect.has(options || {}, "isInterval")
     ? Reflect.get(options || {}, "isInterval")
     : true;
+  const mdCodePreviewPath = Reflect.has(options || {}, "mdCodePreviewPath")
+    ? Reflect.get(options || {}, "mdCodePreviewPath")
+    : "md-code-preview";
 
   const results = lastReturn(source, options.lang || ["jsx", "tsx"], {
     isInterval,
+    mdCodePreviewPath,
   });
   return results;
 }
