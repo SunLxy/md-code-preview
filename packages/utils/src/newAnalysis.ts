@@ -96,14 +96,23 @@ export const newStepTwoTree = (
     otherProps
   );
   let indexStr = ``;
-  newTree.forEach((item) => {
+  newTree.forEach((item, index) => {
     const line = item && item.position && item.position.start.line;
     if (filesValue[line]) {
-      if (startLine === line) {
+      if (index === 0) {
         indexStr += `<div className="preview-fieldset-list">`;
+      } else {
+        const preItem = newTree[index - 1];
+        const preLine =
+          preItem && preItem.position && preItem.position.start.line;
+        if (!filesValue[preLine]) {
+          indexStr += `<div className="preview-fieldset-list">`;
+        }
       }
+
       const { className, ...properties } =
         (item.children[0] || {}).properties || {};
+
       indexStr += `<MdCodePreview 
         copyNodes={importCopyNodeRender["${line}"]}
         properties={${JSON.stringify(properties)}}
@@ -115,8 +124,16 @@ export const newStepTwoTree = (
         }}
         code={importCodeRender["${line}"]}
         >{importBaseCodeRender["${line}"]&&importBaseCodeRender["${line}"]()}</MdCodePreview>`;
-      if (endLine === line) {
+
+      const preItem = newTree[index + 1];
+      if (!preItem) {
         indexStr += `</div>`;
+      } else {
+        const preLine =
+          preItem && preItem.position && preItem.position.start.line;
+        if (!filesValue[preLine]) {
+          indexStr += `</div>`;
+        }
       }
     } else {
       const nodeStr = createElementStr(item);
@@ -135,15 +152,21 @@ export const getNewTree = (
   filesValue: StepOneReturn["filesValue"],
   otherProps: OtherProps = {}
 ) => {
+  const newHastChild = hastChild.filter((item) => {
+    if (item.type === "text" && item.value.replace(/\n/g, "") === "") {
+      return false;
+    }
+    return item;
+  });
   const { isInterval } = otherProps;
   const newIgnoreRows = ignoreRows.map(({ start, end }) => {
-    const startIndex = hastChild.findIndex(
+    const startIndex = newHastChild.findIndex(
       (item) => item.position && item.position.start.line === start
     );
-    const endIndex = hastChild.findIndex(
+    const endIndex = newHastChild.findIndex(
       (item) => item.position && item.position.start.line === end
     );
-    const space = hastChild.filter(
+    const space = newHastChild.filter(
       (item) =>
         item.position &&
         item.position.start.line < end &&
@@ -163,7 +186,7 @@ export const getNewTree = (
     return findx;
   };
   /** 生成新的渲染树 **/
-  const newTree = hastChild
+  const newTree = newHastChild
     .map((item, index) => {
       const line = item && item.position && item.position.start.line;
       if (isInterval && checkHide(index)) {

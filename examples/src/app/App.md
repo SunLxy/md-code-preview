@@ -248,6 +248,12 @@ class Demo extends React.Component {
 export default Demo;
 ```
 
+```js
+import { Alert } from "uiw";
+// or
+import Alert from "@uiw/react-alert";
+```
+
 ## 带标题的弹出框
 
 <!--rehype:bgWhite=true&codeSandbox=true&codePen=true-->
