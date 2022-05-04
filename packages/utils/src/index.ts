@@ -91,7 +91,7 @@ export const createLoaderRetuen = (
   const depNamespacesArr: DepNamespacesType[] = [];
   Object.entries(filesValue).forEach(([key, itemValue]) => {
     const { dependencies } = itemValue;
-    const { code, depNamespaces, deps, depDirects, depsName } = dependencies;
+    const { code, depNamespaces, deps, depDirects } = dependencies;
     codeArr.push(code);
     depsArr.push(deps);
     depNamespacesArr.push(depNamespaces);

@@ -29,8 +29,6 @@ export type FilesValueItemType = {
     deps?: DepsType;
     depNamespaces?: DepNamespacesType;
     depDirects?: DepNamespacesType;
-    /** 这个代码块多少依赖包名 ***/
-    depsName?: string[];
   };
 };
 
