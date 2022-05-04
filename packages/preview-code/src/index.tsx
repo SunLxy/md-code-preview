@@ -20,14 +20,14 @@ const Preview = (props: PreviewProps) => {
     ...rest
   } = props;
   return (
-    <fieldset
+    <div
       className={`preview-fieldset ${
         (isSpacing && "preview-fieldset-warp") || ""
       } ${className}`}
     >
       <Render {...rest} />
       <Code code={code} comments={comments} copyNodes={copyNodes} />
-    </fieldset>
+    </div>
   );
 };
 export default Preview;

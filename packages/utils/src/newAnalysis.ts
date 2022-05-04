@@ -82,6 +82,12 @@ export const newStepTwoTree = (
   filesValue: StepOneReturn["filesValue"],
   otherProps: OtherProps = {}
 ) => {
+  const sorts = Object.keys(filesValue)
+    .map((value) => Number(value))
+    .sort((a, b) => a - b);
+  const startLine = sorts[0];
+  const endLine = sorts.length > 0 ? sorts[sorts.length - 1] : sorts[0];
+
   const { isInterval } = otherProps;
   const { newTree, filesValue: newFilesValue } = getNewTree(
     hastChild,
@@ -93,6 +99,9 @@ export const newStepTwoTree = (
   newTree.forEach((item) => {
     const line = item && item.position && item.position.start.line;
     if (filesValue[line]) {
+      if (startLine === line) {
+        indexStr += `<div className="preview-fieldset-list">`;
+      }
       const { className, ...properties } =
         (item.children[0] || {}).properties || {};
       indexStr += `<MdCodePreview 
@@ -106,6 +115,9 @@ export const newStepTwoTree = (
         }}
         code={importCodeRender["${line}"]}
         >{importBaseCodeRender["${line}"]&&importBaseCodeRender["${line}"]()}</MdCodePreview>`;
+      if (endLine === line) {
+        indexStr += `</div>`;
+      }
     } else {
       const nodeStr = createElementStr(item);
       indexStr += nodeStr;
