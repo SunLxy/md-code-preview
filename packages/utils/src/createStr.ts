@@ -151,7 +151,6 @@ export const createDepsStr = (
   }
 
   return `
-  import "md-code-preview/lib/styles/markdown.less"
   import MdCodePreview from "${mdCodePreviewPath}"
   import copyTextToClipboard from '@uiw/copy-to-clipboard';
   ${defaultStr}  
