@@ -29,10 +29,13 @@ export interface CodeProps {
   comments?: CommentsType;
   /** 代码块字符串 **/
   copyNodes?: string;
+  /** codePen参数 **/
   codePenOptions?: CodePenOption & {
     includeModule?: string[];
   };
+  /** codeSandbox参数 **/
   codeSandboxOptions?: CodeSandboxProps;
+  /** stackBlitz参数 **/
   stackBlitzOptions?: StackBlitzProps;
 }
 
@@ -42,6 +45,4 @@ export interface PreviewProps extends RenderProps, CodeProps {
   isSpacing?: boolean;
   /** 通过 <!--rehype:bgWhite=true&codeSandbox=true&codePen=true--> 传递的参数 **/
   properties?: Record<string, unknown>;
-  /** 当前code块，依赖的包名称  **/
-  dependenciesArr?: string[];
 }

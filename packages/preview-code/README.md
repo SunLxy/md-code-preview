@@ -1,61 +1,79 @@
-Use an example of `Markdown`.
+# 效果渲染
 
-## 这个是一个按钮
-
-按钮有类型：主按钮、次按钮、虚线按钮、文本按钮和链接按钮
-
-> 按钮有类型：主按钮、次按钮、虚线按钮、文本按钮和链接按钮
-
-```jsx
-/**
- * @title: 基础按钮组件
- * @description: 按钮有类型：主按钮、次按钮、虚线按钮、文本按钮和链接按钮
- */
-import { Button } from "uiw";
-import React from "react";
-import Demo from "@/app/Preview/Demo.tsx";
-export default () => {
-  window.HOSTY = 123243;
-  return (
-    <div>
-      <Demo />
-      <button>按钮{window.a}</button>
-      <Button>按钮2</Button>
-    </div>
-  );
-};
+```bash
+ npm i md-code-preview
 ```
 
-```js
-export default () => {
-  return <div>233</div>;
-};
-```
+## 类型参数
 
 ```ts
-interface A {
-  s: string;
+import React from "react";
+import { CodePenOption } from "@uiw/react-codepen";
+import { CodeSandboxProps } from "@uiw/react-codesandbox";
+import { StackBlitzProps } from "@uiw/react-stackblitz";
+
+export interface RenderProps {
+  previewBodyClassName?: string;
+  /**
+   * 通过 import() 的方式引入组件，可以直接返回一个组件
+   * **/
+  component?: () =>
+    | Promise<{ default: React.ComponentType<any> }>
+    | React.ReactNode;
+  children?: React.ReactNode;
+}
+
+export type CommentsType = {
+  /** 标题 **/
+  title?: React.ReactNode;
+  /** 简介 **/
+  description?: React.ReactNode;
+  [k: string]: React.ReactNode;
+};
+
+export interface CodeProps {
+  /** 原始 代码块 渲染**/
+  code?: React.ReactNode;
+  /** 解析出的 标题和 简介部分 **/
+  comments?: CommentsType;
+  /** 代码块字符串 **/
+  copyNodes?: string;
+  /** codePen参数 **/
+  codePenOptions?: CodePenOption & {
+    includeModule?: string[];
+  };
+  /** codeSandbox参数 **/
+  codeSandboxOptions?: CodeSandboxProps;
+  /** stackBlitz参数 **/
+  stackBlitzOptions?: StackBlitzProps;
+}
+
+export interface PreviewProps extends RenderProps, CodeProps {
+  className?: string;
+  /** 是否需要代码块下方的边距  */
+  isSpacing?: boolean;
+  /** 通过 <!--rehype:bgWhite=true&codeSandbox=true&codePen=true--> 传递的参数 **/
+  properties?: Record<string, unknown>;
 }
 ```
 
-```tsx
-/**
- * @title: 普通的tsx文件解析
- * @description:  按钮有类型：主按钮、次按钮、虚线按钮、文本按钮和链接按钮
- */
-interface A {
-  s: string;
-}
-import Demo from "@/app/Preview/Demo.tsx";
-const Com = (props: A) => {
-  window.HOSTY = 322;
+## 实例
 
+```tsx
+import Preview from "md-code-preview";
+export default () => {
   return (
-    <div>
-      <div>呵呵呵呵呵呵呵</div>
-      <Demo />
-    </div>
+    <Preview
+      copyNodes={`export default ()=>{return <div>3333</div>}`}
+      properties={{}}
+      comments={{
+        title: <h1>标题</h1>,
+        description: <p>简介部分</p>,
+      }}
+      code={<div>展开隐藏部分的代码展示</div>}
+    >
+      预览效果
+    </Preview>
   );
 };
-export default Com;
 ```
