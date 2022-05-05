@@ -19,6 +19,7 @@ import {
  * @description: 根据  child.children 找到 code 代码块及其上面到head之间的位置
  * @param {MarkDownTreeType["children"]} child 通过解析的markdown数据
  * @param {string[]} lang 解析代码块的语言
+ * @param {MarkDownHastNodeTreeType[]} hastChild 解析转换后的标签树
  * @param {OtherProps} otherProps  其他参数
  */
 export const newStepOne = (
@@ -80,7 +81,13 @@ export const newStepOne = (
   };
 };
 
-/** 获取新的渲染树 */
+/**
+ * @description: 解析转换后的标签树，进行标签拼接字符串
+ * @param {MarkDownHastNodeTreeType[]} hastChild 解析转换后的标签树
+ * @param {IgnoreRows[]} ignoreRows 忽略的数据
+ * @param {StepOneReturn["filesValue"]} filesValue 行对应的代码数据
+ * @param {OtherProps} otherProps  其他参数
+ */
 export const newStepTwoTree = (
   hastChild: MarkDownHastNodeTreeType[],
   ignoreRows: IgnoreRows[],

@@ -1,5 +1,46 @@
 # markdown 文件转换工具
 
+## 主要方法
+
+**createPluginReturn**
+
+`plugin`里面使用时最终的返回内容
+
+```ts
+/**
+ * @description:  最终的返回内容
+ * @param {string} scope markdown字符串
+ * @param {string} lang 解析代码块的语言
+ * @param {OtherProps} otherProps 其他参数
+ */
+const result = createPluginReturn("markdown 内容", ["tsx"], {});
+
+/**返回字段
+ *   importCodeRender: string
+ *   importHeadRender: string
+ *   importDescRender: string
+ *   importCopyNodeRender: string
+ *   importBaseCodeRender: string
+ *   index: string
+ * */
+```
+
+**createLoaderRetuen**
+
+`loader`使用，最终的返回内容
+
+```ts
+/**
+ * @description:  最终的返回内容
+ * @param {string} scope markdown字符串
+ * @param {string} lang 解析代码块的语言
+ * @param {OtherProps} otherProps 其他参数
+ */
+const result = createLoaderRetuen("markdown 内容", ["tsx"], {});
+
+/**返回结果类型 string  **/
+```
+
 **getProcessor**
 
 返回一个`Processor`，用于转换读取的`markdown`字符串
@@ -10,6 +51,7 @@ type GetProcessorOptionsType = {
   remarkPlugins?: PluggableList;
   remarkRehypeOptions?: Options;
 };
+type processor = (v?: GetProcessorOptionsType) => Processor;
 
 const processor = getProcessor();
 const file: any = new VFile();
@@ -27,212 +69,92 @@ const processor = getProcessor();
 const { file, child } = transformMarkdown(scope, processor);
 ```
 
-**getIntervalData**
+**newStepOne**
 
-解析代码块以上到标题之间的内容并合并到展示组件中
+根据 `child.children` 找到 `code` 代码块及其上面到 head 之间的位置
 
 ```ts
 /**
- * @description: 解析代码块以上到标题之间的内容并合并到展示组件中
- * @param {number} endIndex 当前数组的下标
+ * @description: 根据  child.children 找到 code 代码块及其上面到head之间的位置
  * @param {MarkDownTreeType["children"]} child 通过解析的markdown数据
- * @param {boolean} isLine  是否是所属的行赋值还是数组下标进行赋值
- */
-const { start, end, desc, head } = getIntervalData(endIndex, child, isLine);
-/**
- * start 开始位置
- * end 结束位置
- * desc 简介部分
- * head 标题
- * **/
-```
-
-**stepOne**
-
-根据 child.children 找到 code 代码块及其上面到 head 之间的位置
-
-```ts
-const processor = getProcessor();
-// scope 是 markdown字符串
-const { file, child } = transformMarkdown(scope, processor);
-/**
- * @description: 根据  child.children 找到 code 代码块及其上面到head之间的位置
- * @param {MarkDownHastNodeTreeType["children"]} child 通过解析的markdown数据
  * @param {string[]} lang 解析代码块的语言
- * @param {Processor} processor Processor
- * @param {any} file new VFile()赋值后的值
+ * @param {MarkDownHastNodeTreeType[]} hastChild 解析转换后的标签树
  * @param {OtherProps} otherProps  其他参数
  */
-const { ignoreRows, filesValue } = stepOne(
-  child.children,
-  lang,
-  processor,
-  file,
+  const processor = getProcessor({});
+  const { child, file } = transformMarkdown(scope, processor);
+  const hastChild = processor.runSync(child, file) as MarkDownHastNodeTreeType;
+  const {ignoreRows，filesValue} = newStepOne(child.children, lang, hastChild.children,{});
+/** 返回结果
+ *  ignoreRows: IgnoreRows[] 忽略数据;
+ *  filesValue: FilesValueType 行对应的代码数据;
+ * */
+
+```
+
+**newStepTwoTree**
+
+解析转换后的标签树，进行标签拼接字符串
+
+```ts
+/**
+ * @description: 解析转换后的标签树，进行标签拼接字符串
+ * @param {MarkDownHastNodeTreeType[]} hastChild 解析转换后的标签树
+ * @param {IgnoreRows[]} ignoreRows 忽略的数据
+ * @param {StepOneReturn["filesValue"]} filesValue 行对应的代码数据
+ * @param {OtherProps} otherProps  其他参数
+ */
+
+const processor = getProcessor({});
+const { child, file } = transformMarkdown(scope, processor);
+const hastChild = processor.runSync(child, file) as MarkDownHastNodeTreeType;
+const One = newStepOne(child.children, lang, hastChild.children, {});
+const { filesValue, indexStr } = newStepTwoTree(
+  hastChild.children,
+  One.ignoreRows,
+  One.filesValue,
   {}
 );
-/**
- * ignoreRows 需要忽略的行或数组下标位置
- * filesValue code预览 需要的数据
- * **/
+/** 返回结果
+ *  indexStr: string 主体代码字符串;
+ *  filesValue: FilesValueType 行对应的代码数据;
+ * */
 ```
 
-**stepTwo**
+## 其他方法
 
-查询转转换为 dom 之后的位置
+**createDepsStr**
 
-```ts
-const processor = getProcessor();
-// scope 是 markdown字符串
-const { file, child } = transformMarkdown(scope, processor);
-/**
- * @description: 根据  child.children 找到 code 代码块及其上面到head之间的位置
- * @param {MarkDownHastNodeTreeType["children"]} child 通过解析的markdown数据
- * @param {string[]} lang 解析代码块的语言
- * @param {Processor} processor Processor
- * @param {any} file new VFile()赋值后的值
- * @param {OtherProps} otherProps  其他参数
- */
-const One = stepOne(child.children, lang, processor, file, {});
-/**
- * @description: 查询转转换为dom之后的位置
- * @param {StepOneReturn} stepOneReturn 第一步的返回值
- * @param {MarkDownHastNodeTreeType["children"]} child 通过解析的markdown数据
- * @param {any} file new VFile()赋值后的值
- * @param {Processor} processor Processor
- * @param {OtherProps} otherProps  其他参数
- */
-const { filesValue, indexStr } = stepTwo(
-  One,
-  child.children as any,
-  file,
-  processor,
-  {}
-);
-/**
- * filesValue code预览 需要的数据
- * indexStr 主代码字符串
- * **/
-```
+拼接依赖字符串
 
-**isShowNode**
+**createOtherStr**
 
-判断是否需要展示
+拼接标题/简介/复制 code/code 渲染/渲染组件的名称 字符串
 
-```ts
-/**
- * @description: 判断是否需要展示
- * @param {IgnoreRows} ignoreRows 忽略的对象
- * @param {number} index 当前位置下标
- * @return {boolean}
- */
-const isshow = isShowNode(ignoreRows, index);
-```
+**splicingString**
 
-**transformSymbol**
+`loader`最终返回使用，拼接整个最终返回的代码字符串
 
-替换 特殊符号
+**createBaseCodeRenderStr**
 
-```ts
-/**
- * @description: 替换 特殊符号
- * @param {string} str 字符串
- * @return {string}
- */
-const result = transformSymbol("/>");
-```
-
-**getProperties**
-
-标签属性 拼接字符串
-
-```ts
-/**
- * @description: 标签属性 拼接字符串
- * @param {Record<string, unknown>} properties 属性对象
- * @return {string}
- */
-const result = getProperties(
-  { className: "ads", style: { color: "red" } },
-  false
-);
-```
-
-**getFileDirName**
-
-获取文件夹名称
-
-```ts
-/**
- * @description: 获取文件夹名称
- * @param {string} resourcePath  文件的绝对路径
- * @param {string} rootContext 项目的根目录绝对路径
- */
-const result = getFileDirName(
-  "/user/dom/a/packages/utils/README.md",
-  "/user/dom/a"
-);
-/** 返回  ----> /packages/utils/README.md */
-```
-
-**createElementStr**
-
-拼接标签
-
-```ts
-/**
- * @description: 拼接标签
- * @param {MarkDownHastNodeTreeType} item 解析后的dom数据
- */
-
-const result = createElementStr(item);
-```
+拼接代码块预览字符串
 
 **createStr**
 
-创建最后输出的字符串
+`plugin`最终返回使用，拼接整个最终返回的代码字符串
 
-```ts
-/**
- * @description:  创建最后输出的字符串
- * @param {FilesValueType} otherObj markdown字符串
- * @param {string} indexStrs 主体代码
- * @param {boolean} isInterval 是否需要查找代码块以上到标题之间的内容并合并到渲染组件内
- */
-const result = createStr(filesValue, "<div>测试代码</div>");
-```
+**getProperties**
 
-**babelTransform**
+把所有属性对象转换成字符串
 
-代码转换
+**createElementStr**
 
-```ts
-const result = babelTransform(
-  `import React from "react";\n export default ()=>{return <div>测试</div>}`,
-  "filename.js"
-);
-```
+拼接标签字符串
+
+**transformCode**
+
+使用 babel 进行代码块解析，获取使用`import`引用的依赖包和名称
 
 **getTransformValue**
 
-通过`babelTransform`转换代码，再次进行转换，变成一个变量的形式
-
-```ts
-const result = getTransformValue(
-  `import React from "react";\n export default ()=>{return <div>测试</div>}`,
-  "filename.js"
-);
-```
-
-**createPluginReturn**
-
-最终的返回内容(适合 plugin 形式，直接生成文件)
-
-```ts
-/**
- * @description:  最终的返回内容
- * @param {string} scope markdown字符串
- * @param {string} lang 解析代码块的语言
- * @param {OtherProps} otherProps 其他参数
- */
-const lastReturn = ("最终的返回内容", ["jsx", "tsx"], {});
-```
+根据代码块解析，并返回解析后的代码字符串，进行替换拼接成一个方法，
