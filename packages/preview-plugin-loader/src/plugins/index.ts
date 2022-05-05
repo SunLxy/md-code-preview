@@ -8,7 +8,7 @@ import {
   createPluginReturn,
   getFileDirName,
   GetProcessorOptionsType,
-} from "md-plugin-utils";
+} from "md-plugin-loader-utils";
 
 export interface MdCodePreviewPluginProps {
   /** 监听的根目录 默认：path.join(process.cwd(), "") */

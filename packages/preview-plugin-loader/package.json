@@ -22,7 +22,7 @@
     "chokidar": "^3.5.3",
     "fs-extra": "~10.0.0",
     "loader-utils": "~3.2.0",
-    "md-plugin-utils": "~1.0.0"
+    "md-plugin-loader-utils": "~1.0.0"
   },
   "devDependencies": {
     "@types/anymatch": "^3.0.0",

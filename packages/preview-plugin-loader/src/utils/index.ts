@@ -1,7 +1,7 @@
 import webpack from "webpack";
 export * from "./plugin";
 export * from "./interface";
-import { OtherProps, createLoaderRetuen } from "md-plugin-utils";
+import { OtherProps, createLoaderRetuen } from "md-plugin-loader-utils";
 import getCacheIdentifier from "react-dev-utils/getCacheIdentifier";
 
 /**

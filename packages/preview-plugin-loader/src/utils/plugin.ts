@@ -7,7 +7,7 @@ import {
   newStepOne,
   MarkDownHastNodeTreeType,
   GetProcessorOptionsType,
-} from "md-plugin-utils";
+} from "md-plugin-loader-utils";
 
 // plugin 中转换
 export const markdownParsePlugin = (
