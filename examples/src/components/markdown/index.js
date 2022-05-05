@@ -18,12 +18,7 @@ export default (props) => {
         content: props.copyNodes,
       },
       "index.js": {
-        content: `
-        import React from "react";
-        import ReactClient from "react-dom/client";
-        import App from "./app";
-        ReactClient.createRoot(document.getElementById("root")).render(<App />);
-        `,
+        content: ` import React from "react";\nimport ReactClient from "react-dom/client";\nimport App from "./app";\nReactClient.createRoot(document.getElementById("root")).render(<App />);`,
       },
       "index.html": {
         content: `<div id="root"></div>`,
@@ -36,9 +31,10 @@ export default (props) => {
     title: "uiw v4.7.2 - demo",
     html: `<div id="root"></div>`,
     css_external: "https://unpkg.com/uiw@4.7.2/dist/uiw.min.css",
-    js: `
-    ${props.copyNodes.replace("export default", "const App_Render = ")}
-    ReactDOM.createRoot(document.getElementById("root")).render(<App_Render />);
+    js: `${props.copyNodes.replace(
+      "export default",
+      "const App_Render = "
+    )}\nReactDOM.createRoot(document.getElementById("root")).render(<App_Render />);
     `,
     js_external:
       "https://unpkg.com/react@18.x/umd/react.development.js;https://unpkg.com/react-dom@18.x/umd/react-dom.development.js;https://unpkg.com/uiw@4.7.2/dist/uiw.min.js;https://unpkg.com/@uiw/codepen-require-polyfill@1.0.12/index.js",
@@ -59,11 +55,7 @@ export default (props) => {
     files: {
       "app.js": props.copyNodes,
       "index.html": `<div id="root"></div>`,
-      "index.js": `
-        import React from "react";
-        import ReactClient from "react-dom/client";
-        import App from "./app";
-        ReactClient.createRoot(document.getElementById("root")).render(<App />);
+      "index.js": `import React from "react";\nimport ReactClient from "react-dom/client";\nimport App from "./app";\nReactClient.createRoot(document.getElementById("root")).render(<App />);
       `,
     },
   };
