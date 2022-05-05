@@ -10,8 +10,6 @@ import { DepsType, DepNamespacesType } from "./interface";
 export const createStr = (
   otherObj: FilesValueType,
   indexStrs: string,
-  // 是否需要查找代码块以上到标题之间的内容并合并到渲染组件内
-  isInterval: boolean = true,
   mdCodePreviewPath: string = "md-code-preview"
 ) => {
   let codeStr = ``;
@@ -42,8 +40,8 @@ export const createStr = (
   import React from "react";
   import "md-code-preview/lib/styles/markdown.less"
   import importCopyNodeRender from "./importCopyNodeRender"
-  ${isInterval ? `import importHeadRender from "./importHeadRender"` : ``}
-  ${isInterval ? `import importDescRender from "./importDescRender"` : ``}
+  import importHeadRender from "./importHeadRender"
+  import importDescRender from "./importDescRender"
   import importCodeRender from "./importCodeRender"
   import importBaseCodeRender from "./importBaseCodeRender"
   import copyTextToClipboard from '@uiw/copy-to-clipboard';
@@ -57,12 +55,8 @@ export const createStr = (
 
   return {
     importCodeRender: `import React from "react";\nimport copyTextToClipboard from '@uiw/copy-to-clipboard';\nexport default {${codeStr}}`,
-    importHeadRender: isInterval
-      ? `import React from "react";\nexport default {${headStr}}`
-      : "",
-    importDescRender: isInterval
-      ? `import React from "react";\nexport default {${descStr}}`
-      : "",
+    importHeadRender: `import React from "react";\nexport default {${headStr}}`,
+    importDescRender: `import React from "react";\nexport default {${descStr}}`,
     importCopyNodeRender: `export default {${copyNodeStr}}`,
     importBaseCodeRender: `export default {${transformStr}}`,
     index: indexStr,

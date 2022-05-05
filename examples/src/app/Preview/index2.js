@@ -1,5 +1,5 @@
 import React from "react";
-import Dom from "./../App.as.md";
+// import Dom from "./../App.as.md";
 const PreviewCode = (props) => {
   const [Dome, setDome] = React.useState(<React.Fragment />);
 

@@ -44,11 +44,7 @@ export const createPluginReturn = (
   lang: string[] = ["jsx", "tsx"],
   otherProps: OtherProps = {}
 ) => {
-  const {
-    mdCodePreviewPath = "md-code-preview",
-    isInterval = true,
-    options = {},
-  } = otherProps;
+  const { mdCodePreviewPath = "md-code-preview", options = {} } = otherProps;
   const processor = getProcessor(options);
   const { child, file } = transformMarkdown(scope, processor);
   const hastChild = processor.runSync(child, file) as MarkDownHastNodeTreeType;
@@ -59,7 +55,7 @@ export const createPluginReturn = (
     One.filesValue,
     otherProps
   );
-  return createStr(filesValue, indexStr, isInterval, mdCodePreviewPath);
+  return createStr(filesValue, indexStr, mdCodePreviewPath);
 };
 
 /**------------------ 用以直接创建生成 react文件形式的代码字符串 ---------------------**/

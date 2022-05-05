@@ -24,6 +24,7 @@ export default (conf, env, options) => {
   // );
   conf = mdCodeModulesLoader(conf, {
     mdCodePreviewPath: "@/components/markdown",
+    isInterval: false,
   });
   if (process.env.NODE_ENV === "production") {
     conf.output = { ...conf.output, publicPath: "./" };

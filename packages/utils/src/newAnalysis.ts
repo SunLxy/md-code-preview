@@ -54,13 +54,9 @@ export const newStepOne = (
         return;
       }
       /** 获取行内参数  **/
-      const newInterval = getCheckIgnore(line, hastChild);
-      const isNewInterval =
-        newInterval !== undefined ? isInterval && newInterval : isInterval;
+      const newInterval = getCheckIgnore(line, hastChild, isInterval);
       /**  获取开始行  ***/
-      const start = isNewInterval
-        ? getNewIntervalData(index, child)
-        : undefined;
+      const start = newInterval ? getNewIntervalData(index, child) : undefined;
       const objs: FilesValueItemType = {
         value: item.value,
         copyNode: item.value,
@@ -71,12 +67,13 @@ export const newStepOne = (
       if (isDeps) {
         objs.dependencies = { ...result };
       }
-      if (typeof start === "number" && isNewInterval) {
+      if (typeof start === "number" && newInterval) {
         ignoreRows.push({ start, end: line });
       }
       filesValue[line] = objs;
     }
   });
+
   return {
     ignoreRows,
     filesValue,
@@ -104,48 +101,60 @@ export const newStepTwoTree = (
       /** 去除 className 属性,其他的传递组件中 */
       const { className, ...properties } =
         (item.children[0] || {}).properties || {};
-      const isCurrentIsInterval = Reflect.has(properties || {}, "isInterval")
+      /** 从属性中获取 isInterval 值 **/
+      const currentIsInterval = Reflect.has(properties || {}, "isInterval")
         ? Reflect.get(properties || {}, "isInterval")
         : undefined;
-      /** 判断 加 外层包裹 **/
-      if (index === 0 && isInterval) {
+      /** 当前code是否需要进行处理标题和简介 **/
+      const newCurrentIsInterval =
+        currentIsInterval !== undefined ? currentIsInterval : isInterval;
+
+      if (index === 0 && newCurrentIsInterval) {
         indexStr += `<div className="preview-fieldset-list">`;
-      } else if (isInterval) {
+      } else if (newCurrentIsInterval) {
+        /** 获取上一个对象 **/
         const preItem = newTree[index - 1];
         const preLine =
           preItem && preItem.position && preItem.position.start.line;
-        const newInterval = getCheckIgnore(preLine, newTree);
-        if (isCurrentIsInterval === false) {
-          indexStr += `<div className="preview-fieldset-list preview-fieldset-list-item">`;
-        } else if (newInterval === false || !filesValue[preLine]) {
+        const preInterval = getCheckIgnore(preLine, newTree, undefined);
+        if (
+          (preInterval === undefined && !filesValue[preLine]) ||
+          preInterval === false
+        ) {
+          indexStr += `<div className="preview-fieldset-list">`;
+        } else if (newCurrentIsInterval && !preInterval) {
           indexStr += `<div className="preview-fieldset-list">`;
         }
       }
+
       indexStr += `<MdCodePreview 
         copyNodes={importCopyNodeRender["${line}"]}
         properties={${JSON.stringify(properties)}}
         comments={{
-          title:${isInterval ? `importHeadRender["${line}"]` : `undefined`},
+          title:${
+            newCurrentIsInterval ? `importHeadRender["${line}"]` : `undefined`
+          },
           description:${
-            isInterval ? `importDescRender["${line}"]` : `undefined`
+            newCurrentIsInterval ? `importDescRender["${line}"]` : `undefined`
           },
         }}
         code={importCodeRender["${line}"]}
         >{importBaseCodeRender["${line}"]&&importBaseCodeRender["${line}"]()}</MdCodePreview>`;
 
-      /** 判断 加 外层包裹 **/
-      const nextItem = newTree[index + 1];
-      if (!nextItem && isInterval) {
-        indexStr += `</div>`;
-      } else if (isInterval) {
-        const nextLine =
-          nextItem && nextItem.position && nextItem.position.start.line;
-        const newInterval = getCheckIgnore(nextLine, newTree);
-        if (
-          isCurrentIsInterval === false ||
-          newInterval === false ||
-          !filesValue[nextLine]
-        ) {
+      if (newCurrentIsInterval) {
+        /** 获取下一个对象 **/
+        const nextItem = newTree[index + 1];
+        if (nextItem) {
+          const nextLine =
+            nextItem && nextItem.position && nextItem.position.start.line;
+          const nextInterval = getCheckIgnore(nextLine, newTree, undefined);
+          if (
+            (nextInterval === undefined && !filesValue[nextLine]) ||
+            nextInterval === false
+          ) {
+            indexStr += `</div>`;
+          }
+        } else {
           indexStr += `</div>`;
         }
       }
@@ -173,7 +182,6 @@ export const getNewTree = (
     }
     return item;
   });
-  const { isInterval } = otherProps;
   /** 获取新的忽略的数组下标 **/
   const newIgnoreRows = ignoreRows.map(({ start, end }) => {
     const startIndex = newHastChild.findIndex(
@@ -206,7 +214,7 @@ export const getNewTree = (
   const newTree = newHastChild
     .map((item, index) => {
       const line = item && item.position && item.position.start.line;
-      if (isInterval && checkHide(index)) {
+      if (checkHide(index)) {
         return false;
       } else if (filesValue[line]) {
         const result = checkEnd(index);
@@ -258,7 +266,8 @@ export const getNewIntervalData = (
 /** 获取属性，判断是否需要忽略标题和简介部分 ***/
 export const getCheckIgnore = (
   line: number,
-  hastChild: MarkDownHastNodeTreeType[]
+  hastChild: MarkDownHastNodeTreeType[],
+  isInterval: any
 ) => {
   const item = hastChild.find(
     (item) => item.position && item.position.start.line === line
@@ -269,5 +278,5 @@ export const getCheckIgnore = (
       return Reflect.get(properties, "isInterval");
     }
   }
-  return undefined;
+  return isInterval;
 };
