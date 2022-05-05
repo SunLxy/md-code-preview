@@ -16,7 +16,9 @@ const Preview = (props: PreviewProps) => {
     isSpacing = true,
     copyNodes = "",
     properties,
-    dependenciesArr,
+    codePenOptions,
+    CodeSandboxOptions,
+    StackBlitzOptions,
     ...rest
   } = props;
   return (
@@ -26,7 +28,14 @@ const Preview = (props: PreviewProps) => {
       } ${className}`}
     >
       <Render {...rest} />
-      <Code code={code} comments={comments} copyNodes={copyNodes} />
+      <Code
+        codePenOptions={codePenOptions}
+        CodeSandboxOptions={CodeSandboxOptions}
+        StackBlitzOptions={StackBlitzOptions}
+        code={code}
+        comments={comments}
+        copyNodes={copyNodes}
+      />
     </div>
   );
 };

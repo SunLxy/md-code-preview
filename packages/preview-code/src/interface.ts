@@ -1,4 +1,7 @@
 import React from "react";
+import { CodePenOption } from "@uiw/react-codepen";
+import { CodeSandboxProps } from "@uiw/react-codesandbox";
+import { StackBlitzProps } from "@uiw/react-stackblitz";
 
 export interface RenderProps {
   previewBodyClassName?: string;
@@ -26,6 +29,9 @@ export interface CodeProps {
   comments?: CommentsType;
   /** 代码块字符串 **/
   copyNodes?: string;
+  codePenOptions?: CodePenOption;
+  CodeSandboxOptions?: CodeSandboxProps;
+  StackBlitzOptions?: StackBlitzProps;
 }
 
 export interface PreviewProps extends RenderProps, CodeProps {

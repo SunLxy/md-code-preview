@@ -55,8 +55,24 @@
   justify-content: center;
   align-items: center;
 }
+.preview-button .preview-button-ccs {
+  margin-right: 30px;
+}
+.preview-button .preview-button-ccs button {
+  border: none;
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  opacity: 0.5;
+  padding-left: 0;
+  padding-right: 0;
+}
+.preview-button .preview-button-ccs button:hover {
+  opacity: 1;
+}
+
 .preview-button-span {
-  margin-right: 20px;
+  margin-right: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
