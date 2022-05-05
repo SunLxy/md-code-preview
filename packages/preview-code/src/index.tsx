@@ -17,8 +17,8 @@ const Preview = (props: PreviewProps) => {
     copyNodes = "",
     properties,
     codePenOptions,
-    CodeSandboxOptions,
-    StackBlitzOptions,
+    codeSandboxOptions,
+    stackBlitzOptions,
     ...rest
   } = props;
   return (
@@ -30,8 +30,8 @@ const Preview = (props: PreviewProps) => {
       <Render {...rest} />
       <Code
         codePenOptions={codePenOptions}
-        CodeSandboxOptions={CodeSandboxOptions}
-        StackBlitzOptions={StackBlitzOptions}
+        codeSandboxOptions={codeSandboxOptions}
+        stackBlitzOptions={stackBlitzOptions}
         code={code}
         comments={comments}
         copyNodes={copyNodes}

@@ -29,9 +29,11 @@ export interface CodeProps {
   comments?: CommentsType;
   /** 代码块字符串 **/
   copyNodes?: string;
-  codePenOptions?: CodePenOption;
-  CodeSandboxOptions?: CodeSandboxProps;
-  StackBlitzOptions?: StackBlitzProps;
+  codePenOptions?: CodePenOption & {
+    includeModule?: string[];
+  };
+  codeSandboxOptions?: CodeSandboxProps;
+  stackBlitzOptions?: StackBlitzProps;
 }
 
 export interface PreviewProps extends RenderProps, CodeProps {

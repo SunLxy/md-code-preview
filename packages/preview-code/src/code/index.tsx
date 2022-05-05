@@ -12,17 +12,17 @@ const Code = (props: CodeProps) => {
     comments = {},
     copyNodes,
     codePenOptions,
-    CodeSandboxOptions,
-    StackBlitzOptions,
+    codeSandboxOptions,
+    stackBlitzOptions,
   } = props;
   const [show, setShow] = React.useState(false);
   return (
     <React.Fragment>
       <Head comments={comments} />
       <div className="preview-button">
-        <Codesandbox {...CodeSandboxOptions} />
-        <Codepen {...codePenOptions} />
-        <Stackblitz {...StackBlitzOptions} />
+        {codeSandboxOptions && <Codesandbox {...codeSandboxOptions} />}
+        {codePenOptions && <Codepen {...codePenOptions} />}
+        {stackBlitzOptions && <Stackblitz {...stackBlitzOptions} />}
         <Copy copyNodes={copyNodes} />
         <ShowHide show={show} onClick={setShow} />
       </div>
