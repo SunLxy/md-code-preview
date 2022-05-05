@@ -82,12 +82,6 @@ export const newStepTwoTree = (
   filesValue: StepOneReturn["filesValue"],
   otherProps: OtherProps = {}
 ) => {
-  const sorts = Object.keys(filesValue)
-    .map((value) => Number(value))
-    .sort((a, b) => a - b);
-  const startLine = sorts[0];
-  const endLine = sorts.length > 0 ? sorts[sorts.length - 1] : sorts[0];
-
   const { isInterval } = otherProps;
   const { newTree, filesValue: newFilesValue } = getNewTree(
     hastChild,
