@@ -58,10 +58,9 @@ export const newStepOne = (
       const isNewInterval =
         newInterval !== undefined ? isInterval && newInterval : isInterval;
       /**  获取开始行  ***/
-      const start =
-        isInterval && isNewInterval
-          ? getNewIntervalData(index, child)
-          : undefined;
+      const start = isNewInterval
+        ? getNewIntervalData(index, child)
+        : undefined;
       const objs: FilesValueItemType = {
         value: item.value,
         copyNode: item.value,
@@ -72,7 +71,7 @@ export const newStepOne = (
       if (isDeps) {
         objs.dependencies = { ...result };
       }
-      if (typeof start === "number" && isInterval) {
+      if (typeof start === "number" && isNewInterval) {
         ignoreRows.push({ start, end: line });
       }
       filesValue[line] = objs;
