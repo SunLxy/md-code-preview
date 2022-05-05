@@ -52,6 +52,7 @@ export const newStepOne = (
       if (!result.isDefault) {
         return;
       }
+      /**  获取开始行  ***/
       const start = isInterval ? getNewIntervalData(index, child) : undefined;
       const objs: FilesValueItemType = {
         value: item.value,
@@ -93,6 +94,7 @@ export const newStepTwoTree = (
   newTree.forEach((item, index) => {
     const line = item && item.position && item.position.start.line;
     if (filesValue[line]) {
+      /** 判断 加 外层包裹 **/
       if (index === 0) {
         indexStr += `<div className="preview-fieldset-list">`;
       } else {
@@ -103,7 +105,7 @@ export const newStepTwoTree = (
           indexStr += `<div className="preview-fieldset-list">`;
         }
       }
-
+      /** 去除 className 属性,其他的传递组件中 */
       const { className, ...properties } =
         (item.children[0] || {}).properties || {};
 
@@ -119,6 +121,7 @@ export const newStepTwoTree = (
         code={importCodeRender["${line}"]}
         >{importBaseCodeRender["${line}"]&&importBaseCodeRender["${line}"]()}</MdCodePreview>`;
 
+      /** 判断 加 外层包裹 **/
       const preItem = newTree[index + 1];
       if (!preItem) {
         indexStr += `</div>`;
@@ -146,6 +149,7 @@ export const getNewTree = (
   filesValue: StepOneReturn["filesValue"],
   otherProps: OtherProps = {}
 ) => {
+  /** 去除换行符 **/
   const newHastChild = hastChild.filter((item) => {
     if (item.type === "text" && item.value.replace(/\n/g, "") === "") {
       return false;
@@ -153,6 +157,7 @@ export const getNewTree = (
     return item;
   });
   const { isInterval } = otherProps;
+  /** 获取新的忽略的数组下标 **/
   const newIgnoreRows = ignoreRows.map(({ start, end }) => {
     const startIndex = newHastChild.findIndex(
       (item) => item.position && item.position.start.line === start
@@ -168,13 +173,14 @@ export const getNewTree = (
     );
     return { start: startIndex, end: endIndex, space };
   });
+  /** 判断当前数组下标是否隐藏 **/
   const checkHide = (index: number) => {
     const findx = newIgnoreRows.findIndex(
       ({ start, end }) => index >= start && index < end
     );
     return findx >= 0;
   };
-
+  /** 判断当前数组下标是否是需要预览的code代码块 **/
   const checkEnd = (index: number) => {
     const findx = newIgnoreRows.find(({ end }) => index === end);
     return findx;
