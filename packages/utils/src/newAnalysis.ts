@@ -24,6 +24,7 @@ import {
 export const newStepOne = (
   child: MarkDownTreeType["children"],
   lang: string[],
+  hastChild: MarkDownHastNodeTreeType[],
   otherProps: OtherProps = {}
 ) => {
   const { isInterval = true, isDeps = true } = otherProps || {};
@@ -52,8 +53,15 @@ export const newStepOne = (
       if (!result.isDefault) {
         return;
       }
+      /** 获取行内参数  **/
+      const newInterval = getCheckIgnore(line, hastChild);
+      const isNewInterval =
+        newInterval !== undefined ? isInterval && newInterval : isInterval;
       /**  获取开始行  ***/
-      const start = isInterval ? getNewIntervalData(index, child) : undefined;
+      const start =
+        isInterval && isNewInterval
+          ? getNewIntervalData(index, child)
+          : undefined;
       const objs: FilesValueItemType = {
         value: item.value,
         copyNode: item.value,
@@ -83,7 +91,7 @@ export const newStepTwoTree = (
   filesValue: StepOneReturn["filesValue"],
   otherProps: OtherProps = {}
 ) => {
-  const { isInterval } = otherProps;
+  const { isInterval = true } = otherProps;
   const { newTree, filesValue: newFilesValue } = getNewTree(
     hastChild,
     ignoreRows,
@@ -94,21 +102,26 @@ export const newStepTwoTree = (
   newTree.forEach((item, index) => {
     const line = item && item.position && item.position.start.line;
     if (filesValue[line]) {
-      /** 判断 加 外层包裹 **/
-      if (index === 0) {
-        indexStr += `<div className="preview-fieldset-list">`;
-      } else {
-        const preItem = newTree[index - 1];
-        const preLine =
-          preItem && preItem.position && preItem.position.start.line;
-        if (!filesValue[preLine]) {
-          indexStr += `<div className="preview-fieldset-list">`;
-        }
-      }
       /** 去除 className 属性,其他的传递组件中 */
       const { className, ...properties } =
         (item.children[0] || {}).properties || {};
-
+      const isCurrentIsInterval = Reflect.has(properties || {}, "isInterval")
+        ? Reflect.get(properties || {}, "isInterval")
+        : undefined;
+      /** 判断 加 外层包裹 **/
+      if (index === 0 && isInterval) {
+        indexStr += `<div className="preview-fieldset-list">`;
+      } else if (isInterval) {
+        const preItem = newTree[index - 1];
+        const preLine =
+          preItem && preItem.position && preItem.position.start.line;
+        const newInterval = getCheckIgnore(preLine, newTree);
+        if (isCurrentIsInterval === false) {
+          indexStr += `<div className="preview-fieldset-list preview-fieldset-list-item">`;
+        } else if (newInterval === false || !filesValue[preLine]) {
+          indexStr += `<div className="preview-fieldset-list">`;
+        }
+      }
       indexStr += `<MdCodePreview 
         copyNodes={importCopyNodeRender["${line}"]}
         properties={${JSON.stringify(properties)}}
@@ -122,13 +135,18 @@ export const newStepTwoTree = (
         >{importBaseCodeRender["${line}"]&&importBaseCodeRender["${line}"]()}</MdCodePreview>`;
 
       /** 判断 加 外层包裹 **/
-      const preItem = newTree[index + 1];
-      if (!preItem) {
+      const nextItem = newTree[index + 1];
+      if (!nextItem && isInterval) {
         indexStr += `</div>`;
-      } else {
-        const preLine =
-          preItem && preItem.position && preItem.position.start.line;
-        if (!filesValue[preLine]) {
+      } else if (isInterval) {
+        const nextLine =
+          nextItem && nextItem.position && nextItem.position.start.line;
+        const newInterval = getCheckIgnore(nextLine, newTree);
+        if (
+          isCurrentIsInterval === false ||
+          newInterval === false ||
+          !filesValue[nextLine]
+        ) {
           indexStr += `</div>`;
         }
       }
@@ -236,4 +254,21 @@ export const getNewIntervalData = (
   };
   loop();
   return start;
+};
+
+/** 获取属性，判断是否需要忽略标题和简介部分 ***/
+export const getCheckIgnore = (
+  line: number,
+  hastChild: MarkDownHastNodeTreeType[]
+) => {
+  const item = hastChild.find(
+    (item) => item.position && item.position.start.line === line
+  );
+  if (item && Array.isArray(item.children)) {
+    const properties = (item.children[0] || {}).properties || {};
+    if (Reflect.has(properties, "isInterval")) {
+      return Reflect.get(properties, "isInterval");
+    }
+  }
+  return undefined;
 };

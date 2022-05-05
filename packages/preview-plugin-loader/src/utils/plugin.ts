@@ -25,8 +25,8 @@ export const markdownParsePlugin = (
   FS.emptyDirSync(dirPath);
   const processor = getProcessor();
   const { file, child } = transformMarkdown(source, processor);
-  const One = newStepOne(child.children, lang, others);
   const hastChild = processor.runSync(child, file) as MarkDownHastNodeTreeType;
+  const One = newStepOne(child.children, lang, hastChild.children, others);
   const { filesValue } = getNewTree(
     hastChild.children,
     One.ignoreRows,

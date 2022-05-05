@@ -76,7 +76,7 @@ export default Demo;
 
 这里是利用 `Promise` 等它执行完成再去关闭窗口
 
-<!--rehype:bgWhite=true&codeSandbox=true&codePen=true-->
+<!--rehype:bgWhite=true&codeSandbox=true&codePen=true&isInterval=false-->
 
 ```jsx
 import React from "react";
