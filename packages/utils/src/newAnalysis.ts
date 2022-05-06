@@ -161,7 +161,7 @@ export const newStepTwoTree = (
       }
 
       const itemDepNames = isDeps ? filesValue[line].dependencies.depsName : [];
-      const config = getConfig(properties, {
+      const { optionsStr } = getConfig(properties, {
         ...codePenOptions,
         title: filesValue[line].title,
         code: filesValue[line].copyNode,
@@ -180,7 +180,7 @@ export const newStepTwoTree = (
           },
         }}
         code={importCodeRender["${line}"]}
-        ${config}
+        ${optionsStr}
         >{importBaseCodeRender["${line}"]&&importBaseCodeRender["${line}"]()}</MdCodePreview>`;
 
       if (newCurrentIsInterval) {

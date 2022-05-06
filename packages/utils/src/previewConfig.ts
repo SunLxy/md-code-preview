@@ -35,7 +35,7 @@ export const getCodeSandboxConfig = (
       },
     },
   };
-  return JSON.stringify(CodeSandboxOptions);
+  return CodeSandboxOptions;
 };
 
 /**
@@ -62,7 +62,7 @@ export const getCodePanConfig = (
     `,
     js_external: js,
   };
-  return JSON.stringify(codePenOptions);
+  return codePenOptions;
 };
 
 /**
@@ -99,7 +99,7 @@ export const getStackBlitzConfig = (
       `,
     },
   };
-  return JSON.stringify(stackBlitzOptions);
+  return stackBlitzOptions;
 };
 
 export const getConfig = (
@@ -111,26 +111,28 @@ export const getConfig = (
   const isCodeSandbox = Reflect.get(properties || {}, "codeSandbox");
   const isStackBlitz = Reflect.get(properties || {}, "stackBlitz");
   let optionsStr = ``;
+  let optionsObj: Record<string, unknown> = {};
   if (isCodePan) {
-    optionsStr += ` codePenOptions={${getCodePanConfig(code, title, {
+    const result = getCodePanConfig(code, title, {
       css,
       js,
       includeModule,
-    })}} \n`;
+    });
+    optionsObj["codePenOptions"] = result;
+    optionsStr += ` codePenOptions={${JSON.stringify(result)}} \n`;
   }
   if (isCodeSandbox) {
-    optionsStr += ` codeSandboxOptions={${getCodeSandboxConfig(
-      code,
-      title,
-      dependencies
-    )}} \n`;
+    const result = getCodeSandboxConfig(code, title, dependencies);
+    optionsObj["codeSandboxOptions"] = result;
+    optionsStr += ` codeSandboxOptions={${JSON.stringify(result)}} \n`;
   }
   if (isStackBlitz) {
-    optionsStr += ` stackBlitzOptions={${getStackBlitzConfig(
-      code,
-      title,
-      dependencies
-    )}} \n`;
+    const result = getStackBlitzConfig(code, title, dependencies);
+    optionsObj["stackBlitzOptions"] = result;
+    optionsStr += ` stackBlitzOptions={${JSON.stringify(result)}} \n`;
   }
-  return optionsStr;
+  return {
+    optionsStr,
+    optionsObj,
+  };
 };

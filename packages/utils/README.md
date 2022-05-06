@@ -121,6 +121,28 @@ const { filesValue, indexStr } = newStepTwoTree(
  * */
 ```
 
+**getConfig**
+
+获取第三方预览参数配置
+
+```ts
+// codepen 配置参数
+const codePenOptions = {};
+const config = getConfig(
+  { codePen: true, codeSandbox: true, stackBlitz: false },
+  {
+    ...codePenOptions,
+    title: "标题",
+    code: "代码块字符串",
+    dependencies: ["react", "react-dom", "uiw"],
+  }
+);
+/** 返回值
+ * optionsStr: string;
+ * optionsObj: Record<string, unknown>;
+ * **/
+```
+
 ## 其他方法
 
 **createDepsStr**
