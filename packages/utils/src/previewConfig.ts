@@ -4,7 +4,11 @@ import { GetConfigOptions } from ".";
  * @param {string} code 代码块字符串
  * @param {string} dependencies 依赖包
  */
-export const getCodeSandboxConfig = (code: string, dependencies: string[]) => {
+export const getCodeSandboxConfig = (
+  code: string,
+  title: string = "",
+  dependencies: string[]
+) => {
   const newDependencies: Record<string, string> = {};
   dependencies.forEach((dep) => {
     newDependencies[dep] = "latest";
@@ -16,6 +20,7 @@ export const getCodeSandboxConfig = (code: string, dependencies: string[]) => {
     files: {
       "package.json": {
         content: {
+          name: title,
           dependencies: newDependencies,
         },
       },
@@ -23,7 +28,7 @@ export const getCodeSandboxConfig = (code: string, dependencies: string[]) => {
         content: code,
       },
       "index.js": {
-        content: ` import React from "react";\nimport ReactClient from "react-dom/client";\nimport App from "./app";\nReactClient.createRoot(document.getElementById("root")).render(<App />);`,
+        content: `import React from "react";\nimport ReactClient from "react-dom/client";\nimport App from "./app";\nReactClient.createRoot(document.getElementById("root")).render(<App />);`,
       },
       "index.html": {
         content: `<div id="root"></div>`,
@@ -116,6 +121,7 @@ export const getConfig = (
   if (isCodeSandbox) {
     optionsStr += ` codeSandboxOptions={${getCodeSandboxConfig(
       code,
+      title,
       dependencies
     )}} \n`;
   }
