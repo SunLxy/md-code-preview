@@ -4,7 +4,7 @@
 
 import { getTransformValue } from "./transform";
 import { createElementStr, loop } from "./createElement";
-import { transformCode } from ".";
+import { transformCode, getConfig } from ".";
 import {
   MarkDownTreeType,
   IgnoreRows,
@@ -57,11 +57,14 @@ export const newStepOne = (
       /** 获取行内参数  **/
       const newInterval = getCheckIgnore(line, hastChild, isInterval);
       /**  获取开始行  ***/
-      const start = newInterval ? getNewIntervalData(index, child) : undefined;
+      const { start, title } = newInterval
+        ? getNewIntervalData(index, child)
+        : { start: undefined, title: "demo" };
       const objs: FilesValueItemType = {
         value: item.value,
         copyNode: item.value,
         lang: item.lang,
+        title: title,
         // babel 转换后的 代码，最后需要拼接到结果文件中去的
         transform: getTransformValue(item.value, `${line}.${item.lang}`, line),
       };
@@ -94,7 +97,7 @@ export const newStepTwoTree = (
   filesValue: StepOneReturn["filesValue"],
   otherProps: OtherProps = {}
 ) => {
-  const { isInterval = true } = otherProps;
+  const { isInterval = true, isDeps = true, codePenOptions = {} } = otherProps;
   const { newTree, filesValue: newFilesValue } = getNewTree(
     hastChild,
     ignoreRows,
@@ -157,6 +160,14 @@ export const newStepTwoTree = (
         }
       }
 
+      const itemDepNames = isDeps ? filesValue[line].dependencies.depsName : [];
+      const config = getConfig(properties, {
+        ...codePenOptions,
+        title: filesValue[line].title,
+        code: filesValue[line].copyNode,
+        dependencies: itemDepNames,
+      });
+
       indexStr += `<MdCodePreview 
         copyNodes={importCopyNodeRender["${line}"]}
         properties={${JSON.stringify(properties)}}
@@ -169,6 +180,7 @@ export const newStepTwoTree = (
           },
         }}
         code={importCodeRender["${line}"]}
+        ${config}
         >{importBaseCodeRender["${line}"]&&importBaseCodeRender["${line}"]()}</MdCodePreview>`;
 
       if (newCurrentIsInterval) {
@@ -278,11 +290,14 @@ export const getNewIntervalData = (
   // 结束的下标
   // 到第一个heading结束
   let current = endIndex - 1;
+  let title = "";
   let start;
   const loop = () => {
     const item = child[current];
     if (item && item.type === "heading") {
       start = item.position.start.line;
+      title =
+        (Array.isArray(item.children) && item.children[0]?.value) || "demo";
       current = -1;
     } else if (item && item.type === "code") {
       current = -1;
@@ -294,7 +309,10 @@ export const getNewIntervalData = (
     }
   };
   loop();
-  return start;
+  return {
+    start,
+    title,
+  };
 };
 
 /**

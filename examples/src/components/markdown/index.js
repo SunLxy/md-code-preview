@@ -64,8 +64,8 @@ export default (props) => {
   return (
     <MdCodePreview
       {...props}
-      codePenOptions={codePenOptions}
-      codeSandboxOptions={CodeSandboxOptions}
+      // codePenOptions={codePenOptions}
+      // codeSandboxOptions={CodeSandboxOptions}
       // stackBlitzOptions={stackBlitzOptions}
     />
   );

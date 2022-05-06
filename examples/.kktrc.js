@@ -6,6 +6,12 @@ import {
   mdCodeModulesLoader,
 } from "md-code-preview-plugin-loader";
 
+const codePenOptions = {
+  css: "https://unpkg.com/uiw@4.7.2/dist/uiw.min.css",
+  js: "https://unpkg.com/react@18.x/umd/react.development.js;https://unpkg.com/react-dom@18.x/umd/react-dom.development.js;https://unpkg.com/uiw@4.7.2/dist/uiw.min.js;https://unpkg.com/@uiw/codepen-require-polyfill@1.0.12/index.js",
+  includeModule: ["uiw"],
+};
+
 export default (conf, env, options) => {
   // console.log('conf:', conf)
   // console.log('env:', env)
@@ -21,11 +27,13 @@ export default (conf, env, options) => {
     new MdCodePreviewPlugin({
       cwd: path.join(process.cwd(), ".."),
       isInterval: false,
+      codePenOptions,
     })
   );
   conf = mdCodeModulesLoader(conf, {
     mdCodePreviewPath: "@/components/markdown",
     isInterval: false,
+    codePenOptions,
   });
   if (process.env.NODE_ENV === "production") {
     conf.output = { ...conf.output, publicPath: "./" };

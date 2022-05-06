@@ -148,5 +148,7 @@ export const transformCode = (content: string, funName: string) => {
     /** 直接import 'demo' 导入  ***/
     depDirects,
     isDefault,
+    /** 这个代码块多少依赖包名 ***/
+    depsName: Array.from(depArrs.keys()),
   };
 };

@@ -10,10 +10,13 @@ export default function (source: string) {
   const mdCodePreviewPath = Reflect.has(options || {}, "mdCodePreviewPath")
     ? Reflect.get(options || {}, "mdCodePreviewPath")
     : "md-code-preview";
-
+  const codePenOptions = Reflect.has(options || {}, "codePenOptions")
+    ? Reflect.get(options || {}, "codePenOptions")
+    : {};
   const results = lastReturn(source, options.lang || ["jsx", "tsx"], {
     isInterval,
     mdCodePreviewPath,
+    codePenOptions,
   });
   return results;
 }

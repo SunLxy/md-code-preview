@@ -8,6 +8,7 @@ import {
   createPluginReturn,
   getFileDirName,
   GetProcessorOptionsType,
+  OtherProps,
 } from "md-plugin-loader-utils";
 
 export interface MdCodePreviewPluginProps {
@@ -32,6 +33,8 @@ export interface MdCodePreviewPluginProps {
   mdCodePreviewPath?: string;
   /** markdown 转换代码 参数 ***/
   options?: GetProcessorOptionsType;
+  /** codepen 配置参数 **/
+  codePenOptions?: OtherProps["codePenOptions"];
 }
 
 // 输出文件 默认路径去除根路径，其他的拼接起来当文件夹名称，每个文件夹下对应当前md文件所有的 代码块
@@ -51,6 +54,7 @@ class MdCodePreviewPlugin {
   isInterval: boolean = true;
   mdCodePreviewPath = "md-code-preview";
   options: GetProcessorOptionsType = {};
+  codePenOptions: OtherProps["codePenOptions"] = {};
 
   constructor(props: MdCodePreviewPluginProps = {}) {
     this.cwd = props.cwd || path.join(process.cwd(), "");
@@ -89,7 +93,9 @@ class MdCodePreviewPlugin {
     if (Reflect.has(props, "mdCodePreviewPath") && props.mdCodePreviewPath) {
       this.mdCodePreviewPath = Reflect.get(props, "mdCodePreviewPath");
     }
-
+    if (Reflect.has(props, "codePenOptions") && props.codePenOptions) {
+      this.codePenOptions = Reflect.get(props, "codePenOptions");
+    }
     this.getPathDeep(this.cwd);
   }
 
@@ -112,6 +118,7 @@ class MdCodePreviewPlugin {
           isInterval: this.isInterval,
           mdCodePreviewPath: this.mdCodePreviewPath,
           options: this.options,
+          codePenOptions: this.codePenOptions,
         });
         Object.entries(result).forEach(([key, value]) => {
           if (value) {
@@ -129,7 +136,8 @@ class MdCodePreviewPlugin {
           this.lang,
           this.isInterval,
           this.mdCodePreviewPath,
-          this.options
+          this.options,
+          this.codePenOptions
         );
         if (initStr) {
           const dirPath = path.join(this.output, fileDirNames);

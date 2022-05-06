@@ -23,12 +23,14 @@ export type FilesValueItemType = {
   head?: string;
   code?: string;
   copyNode?: string;
+  title?: string;
   lang?: string;
   dependencies?: {
     code?: string;
     deps?: DepsType;
     depNamespaces?: DepNamespacesType;
     depDirects?: DepNamespacesType;
+    depsName?: string[];
   };
 };
 
@@ -72,7 +74,24 @@ export type OtherProps = {
   /** 预览组件地址 **/
   mdCodePreviewPath?: string;
   options?: GetProcessorOptionsType;
+  codePenOptions?: {
+    /** 设置 codepen 需要的参数-- css 样式文件引用 **/
+    css?: string;
+    /** 设置 codepen 需要的参数--- 浏览器中预览需要的 umd 包 **/
+    js?: string;
+    /**设置 codepen 需要的参数--- 需要代码块中排除注释的包引用 **/
+    includeModule?: string[];
+  };
 };
 
 export type DepsType = Record<string, { default: string; other: string[] }>;
 export type DepNamespacesType = Record<string, string>;
+
+export interface GetConfigOptions {
+  code?: string;
+  title?: string;
+  css?: string;
+  js?: string;
+  includeModule?: string[];
+  dependencies?: string[];
+}

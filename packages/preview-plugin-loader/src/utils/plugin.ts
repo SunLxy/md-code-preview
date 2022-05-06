@@ -7,6 +7,7 @@ import {
   newStepOne,
   MarkDownHastNodeTreeType,
   GetProcessorOptionsType,
+  OtherProps,
 } from "md-plugin-loader-utils";
 
 // plugin 中转换
@@ -17,10 +18,17 @@ export const markdownParsePlugin = (
   lang: string[] = ["jsx", "tsx"],
   isInterval: boolean,
   mdCodePreviewPath: string = "md-code-preview",
-  options: GetProcessorOptionsType = {}
+  options: GetProcessorOptionsType = {},
+  codePenOptions: OtherProps["codePenOptions"] = {}
 ) => {
   const dirPath = path.join(savePath, fileDirName);
-  const others = { isInterval, isDeps: false, mdCodePreviewPath, options };
+  const others = {
+    isInterval,
+    isDeps: false,
+    mdCodePreviewPath,
+    options,
+    codePenOptions,
+  };
   // 置空文件夹
   FS.emptyDirSync(dirPath);
   const processor = getProcessor();

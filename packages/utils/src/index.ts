@@ -18,6 +18,7 @@ export * from "./createStr";
 export * from "./transform";
 export * from "./createPropertie";
 export * from "./newAnalysis";
+export * from "./previewConfig";
 import { newStepTwoTree, newStepOne } from "./newAnalysis";
 export { getProcessor, transformMarkdown };
 /**
