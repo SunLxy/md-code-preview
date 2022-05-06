@@ -18,6 +18,7 @@
     "bundle": "ncc build src/index.ts --target node --filename index"
   },
   "dependencies": {
+    "@uiw/copy-to-clipboard": "^1.0.12",
     "remark-parse": "~10.0.1",
     "rehype-attr": "~2.0.8",
     "rehype-autolink-headings": "~6.1.1",

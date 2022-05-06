@@ -24,7 +24,6 @@
     "@babel/generator": "^7.17.10",
     "@babel/standalone": "~7.17.6",
     "md-unified-utils": "1.0.0",
-    "@uiw/copy-to-clipboard": "^1.0.12",
     "style-to-object": "~0.3.0"
   },
   "devDependencies": {
