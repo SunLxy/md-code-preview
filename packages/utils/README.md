@@ -158,3 +158,15 @@ const { filesValue, indexStr } = newStepTwoTree(
 **getTransformValue**
 
 根据代码块解析，并返回解析后的代码字符串，进行替换拼接成一个方法，
+
+**getNewTree**
+
+获取过滤忽略后最新的标签树
+
+**getFileDirName**
+
+根据路径转换拼接名称
+
+**babelTransform**
+
+把代码块移出`import`引入,并转换代码成 es5

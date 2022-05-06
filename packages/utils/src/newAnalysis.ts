@@ -98,8 +98,7 @@ export const newStepTwoTree = (
   const { newTree, filesValue: newFilesValue } = getNewTree(
     hastChild,
     ignoreRows,
-    filesValue,
-    otherProps
+    filesValue
   );
   let indexStr = ``;
   newTree.forEach((item, index) => {
@@ -117,20 +116,44 @@ export const newStepTwoTree = (
         currentIsInterval !== undefined ? currentIsInterval : isInterval;
 
       if (index === 0 && newCurrentIsInterval) {
-        indexStr += `<div className="preview-fieldset-list">`;
+        indexStr += `<div className="preview-fieldset-list-9">`;
       } else if (newCurrentIsInterval) {
         /** 获取上一个对象 **/
         const preItem = newTree[index - 1];
         const preLine =
           preItem && preItem.position && preItem.position.start.line;
         const preInterval = getCheckIgnore(preLine, newTree, undefined);
-        if (
-          (preInterval === undefined && !filesValue[preLine]) ||
-          preInterval === false
-        ) {
-          indexStr += `<div className="preview-fieldset-list">`;
-        } else if (newCurrentIsInterval && !preInterval) {
-          indexStr += `<div className="preview-fieldset-list">`;
+        /** 当默认是false的时候
+         * 1. 上一个为默认值时(false),当前有 加
+         * 2. 上一个为true 的时候，不加
+         * ***/
+        if (!isInterval) {
+          if (preInterval === true) {
+            // 不加
+          } else if (!preInterval) {
+            // 加
+            indexStr += `<div className="preview-fieldset-list">`;
+          }
+        }
+        /** 当默认是true的时候
+         * 1. 当上一个是默认的(true) 不加
+         * 2. 当上一个是 false 的时候 加
+         * 3. 当上一个是 undefined 并且上一个不是渲染块  加
+         * 4. 当上一个是 undefined 并且是一个渲染块 ，不加
+         * ***/
+        if (isInterval) {
+          if (
+            preInterval ||
+            (preInterval === undefined && filesValue[preLine])
+          ) {
+            // 不加
+          } else if (
+            preInterval === false ||
+            (preInterval === undefined && !filesValue[preLine])
+          ) {
+            // 加
+            indexStr += `<div className="preview-fieldset-list">`;
+          }
         }
       }
 
@@ -175,12 +198,16 @@ export const newStepTwoTree = (
     filesValue: newFilesValue,
   };
 };
-
+/**
+ * @description: 获取最新的渲染的标签树
+ * @param {MarkDownHastNodeTreeType[]} hastChild 解析转换后的标签树
+ * @param {IgnoreRows[]} ignoreRows 忽略的数据
+ * @param {StepOneReturn["filesValue"]} filesValue 行对应的代码数据
+ */
 export const getNewTree = (
   hastChild: MarkDownHastNodeTreeType[],
   ignoreRows: IgnoreRows[],
-  filesValue: StepOneReturn["filesValue"],
-  otherProps: OtherProps = {}
+  filesValue: StepOneReturn["filesValue"]
 ) => {
   /** 去除换行符 **/
   const newHastChild = hastChild.filter((item) => {
@@ -270,11 +297,16 @@ export const getNewIntervalData = (
   return start;
 };
 
-/** 获取属性，判断是否需要忽略标题和简介部分 ***/
+/**
+ * @description: 获取属性，判断是否需要忽略标题和简介部分
+ * @param {number} line
+ * @param {MarkDownHastNodeTreeType[]} hastChild
+ * @param {boolean|undefined} isInterval
+ */
 export const getCheckIgnore = (
   line: number,
   hastChild: MarkDownHastNodeTreeType[],
-  isInterval: any
+  isInterval: boolean | undefined
 ) => {
   const item = hastChild.find(
     (item) => item.position && item.position.start.line === line

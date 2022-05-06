@@ -30,8 +30,7 @@ export const markdownParsePlugin = (
   const { filesValue } = getNewTree(
     hastChild.children,
     One.ignoreRows,
-    One.filesValue,
-    others
+    One.filesValue
   );
   const { ignoreRows } = One;
   let initStr = ``;
