@@ -5,7 +5,9 @@ const PreviewCode = (props) => {
 
   React.useEffect(() => {
     const getasr = async () => {
-      const DomDefault = React.lazy(() => import(`./../App${props.lang}.md`));
+      const DomDefault = React.lazy(() =>
+        import(`@uiw/react-layout/README${props.lang}.md`)
+      );
       setDome(
         <React.Suspense fallback="loading...">
           <DomDefault />

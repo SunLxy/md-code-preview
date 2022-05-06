@@ -3,8 +3,8 @@
     "label": "中文",
     "value": ""
   },
-  "as": {
+  "zh": {
     "label": "其他",
-    "value": ".as"
+    "value": "-zh"
   }
 }
