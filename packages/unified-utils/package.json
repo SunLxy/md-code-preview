@@ -1,7 +1,7 @@
 {
   "name": "md-unified-utils",
   "version": "1.0.0",
-  "description": "",
+  "description": "markdown 文件字符串转换标签树,这个包只是为了解决需要使用import引入照成的问题",
   "author": "SunLxy <1011771396@qq.com>",
   "homepage": "",
   "license": "MIT",

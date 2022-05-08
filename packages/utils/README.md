@@ -1,10 +1,10 @@
-# markdown 文件转换工具
+# markdown 文件字符串转换成 react 代码工具
 
 ## 主要方法
 
 **createPluginReturn**
 
-`plugin`里面使用时最终的返回内容
+`plugin`里面使用时最终的返回内容，react 代码字符串
 
 ```ts
 /**
@@ -27,7 +27,7 @@ const result = createPluginReturn("markdown 内容", ["tsx"], {});
 
 **createLoaderRetuen**
 
-`loader`使用，最终的返回内容
+`loader`使用，最终的返回内容，react 代码字符串
 
 ```ts
 /**
@@ -61,7 +61,7 @@ const child = processor.parse(file);
 
 **transformMarkdown**
 
-用于转换读取的`markdown`字符串
+用于转换读取的`markdown`字符串，转换成标签类型树
 
 ```ts
 const processor = getProcessor();
@@ -71,14 +71,14 @@ const { file, child } = transformMarkdown(scope, processor);
 
 **newStepOne**
 
-根据 `child.children` 找到 `code` 代码块及其上面到 head 之间的位置
+根据 `child.children`标签类型树 找到 `code` 代码块及其上面到 head 之间的位置
 
 ```ts
 /**
  * @description: 根据  child.children 找到 code 代码块及其上面到head之间的位置
- * @param {MarkDownTreeType["children"]} child 通过解析的markdown数据
+ * @param {MarkDownTreeType["children"]} child 通过解析的markdown标签类型树数据
  * @param {string[]} lang 解析代码块的语言
- * @param {MarkDownHastNodeTreeType[]} hastChild 解析转换后的标签树
+ * @param {MarkDownHastNodeTreeType[]} hastChild 解析转换后的html标签树
  * @param {OtherProps} otherProps  其他参数
  */
   const processor = getProcessor({});
@@ -94,7 +94,7 @@ const { file, child } = transformMarkdown(scope, processor);
 
 **newStepTwoTree**
 
-解析转换后的标签树，进行标签拼接字符串
+解析转换后的 html 标签树，进行标签拼接字符串
 
 ```ts
 /**

@@ -99,7 +99,7 @@ const getModulesBabelLoader = () => {
 /**
  * 配置好markdown的loader
  * @param {webpack.Configuration} config webpack配置
- * @param {boolean} isInterval 是否需要解析代码块以上到标题之间的内容并合并到展示组件中
+ * @param {Record<string,{lang?: string[];isInterval?: boolean;mdCodePreviewPath?: string;}>} other 是否需要解析代码块以上到标题之间的内容并合并到展示组件中
  * @returns {webpack.Configuration}
  * **/
 export const mdCodeModulesLoader = (

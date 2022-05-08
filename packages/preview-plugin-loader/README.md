@@ -1,4 +1,4 @@
-# 加载 markdown 文件
+# 解析 markdown 引入,输出 react 代码字符串
 
 1. loader
 2. plugin
@@ -11,7 +11,7 @@
 
 ```ts
 // .kktrc.ts
-import { mdCodeModulesLoader } from "md-code-preview-plugin-loader";
+import { mdCodeModulesLoader } from "md-react-plugin-loader";
 
 export default (conf, env, options) => {
   conf = mdCodeModulesLoader(conf);

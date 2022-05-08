@@ -5,12 +5,16 @@ const PreviewCode = (props) => {
 
   React.useEffect(() => {
     const getasr = async () => {
-      const DomDefault = React.lazy(() =>
-        import(`@uiw/react-layout/README${props.lang}.md`)
-      );
+      // const DomDefault = React.lazy(() =>
+      //   import(`@uiw/react-layout/README${props.lang}.md`)
+      // );
+      const dasss = await import(`@uiw/react-layout/README${props.lang}.md`);
+      const defaultItem = dasss.default;
+      const { Doms } = defaultItem;
+      console.log(defaultItem);
       setDome(
         <React.Suspense fallback="loading...">
-          <DomDefault />
+          <Doms />
         </React.Suspense>
       );
     };

@@ -1,7 +1,7 @@
 {
   "name": "md-plugin-loader-utils",
   "version": "1.0.0",
-  "description": "",
+  "description": "markdown 文件字符串转换成react代码工具",
   "author": "SunLxy <1011771396@qq.com>",
   "homepage": "",
   "license": "MIT",

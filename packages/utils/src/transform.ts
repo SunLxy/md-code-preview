@@ -17,7 +17,10 @@ export const getTransformValue = (
   filename: string,
   line: number
 ) => {
-  const isReact = /import React.+from ("|')react("|')/.test(str);
+  const isReact =
+    /import\x20+React(\x20+|[\x20+,]+({[a-zA-Z0-9,\s]+}|{})\x20+)from\x20+('|")react('|")/.test(
+      str
+    );
   // 先判断 是否引入 react
   const tran = isReact ? str : `import React from "react"\n ${str}`;
   const code = `${babelTransform(tran, `${filename}`).code}`
@@ -30,7 +33,7 @@ export const getTransformValue = (
       `exports["default"] = _default;`,
       `return _react["default"].createElement(_default)`
     );
-
+  // const newCode = `${tran.replace(/export\x20+default/, 'const _default = ')}\n`;
   return `function BaseCode${line}(){
     ${code}
   }`;

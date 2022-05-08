@@ -1,4 +1,4 @@
-# markdown 文件转换工具
+# markdown 文件字符串转换标签树
 
 **getProcessor**
 
@@ -20,7 +20,7 @@ const child = processor.parse(file);
 
 **transformMarkdown**
 
-用于转换读取的`markdown`字符串
+用于转换读取的`markdown`字符串,转换成标签类型树
 
 ```ts
 const processor = getProcessor();
