@@ -17,19 +17,19 @@ export default (conf, env, options) => {
   // console.log('env:', env)
   conf = rawModules(conf, env, options);
   conf = lessModules(conf, env, options);
-  conf.plugins.push(
-    // new MdCodePreviewPlugin({
-    //   cwd: path.join(process.cwd(), ".."),
-    //   pre: "code",
-    //   createJs: false,
-    //   isInterval: false,
-    // }),
-    new MdCodePreviewPlugin({
-      cwd: path.join(process.cwd(), ".."),
-      isInterval: false,
-      codePenOptions,
-    })
-  );
+  // conf.plugins.push(
+  //   // new MdCodePreviewPlugin({
+  //   //   cwd: path.join(process.cwd(), ".."),
+  //   //   pre: "code",
+  //   //   createJs: false,
+  //   //   isInterval: false,
+  //   // }),
+  //   new MdCodePreviewPlugin({
+  //     cwd: path.join(process.cwd(), ".."),
+  //     isInterval: false,
+  //     codePenOptions,
+  //   })
+  // );
   conf = mdCodeModulesLoader(conf, {
     mdCodePreviewPath: "@/components/markdown",
     isInterval: false,

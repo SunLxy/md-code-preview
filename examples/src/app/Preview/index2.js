@@ -9,12 +9,10 @@ const PreviewCode = (props) => {
       //   import(`@uiw/react-layout/README${props.lang}.md`)
       // );
       const dasss = await import(`@uiw/react-layout/README${props.lang}.md`);
-      const defaultItem = dasss.default;
-      const { Doms } = defaultItem;
-      console.log(defaultItem);
+      const DefaultItem = dasss.default;
       setDome(
         <React.Suspense fallback="loading...">
-          <Doms />
+          <DefaultItem />
         </React.Suspense>
       );
     };

@@ -8,6 +8,7 @@ export * from "./interface";
  */
 import "./styles/markdown.less";
 import "./styles/index.css";
+export { default as CodeLayout } from "./CodeLayout";
 const Preview = (props: PreviewProps) => {
   const {
     code,

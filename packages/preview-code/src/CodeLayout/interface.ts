@@ -9,9 +9,12 @@ export interface CodeProps {
   language?: string;
   /* 自定义操作按钮 **/
   customButton?: React.ReactNode;
+  /** 展示代码块内边距 **/
+  codePadding?: number;
 }
 
 export interface PreviewProps extends CodeProps {
+  prefixCls?: string;
   previewBodyClassName?: string;
   className?: string;
   children?: React.ReactNode;
